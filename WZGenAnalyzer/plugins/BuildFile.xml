@@ -1,0 +1,18 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+
+<use   name="FWCore/MessageLogger"/>
+<use   name="FWCore/Utilities"/>
+<use   name="DataFormats/Candidate"/>
+<use   name="DataFormats/Common"/>
+<use   name="PhysicsTools/PatUtils"/>
+<use   name="PhysicsTools/Utilities"/>
+<use   name="CommonTools/UtilAlgos"/>
+<use   name="root"/>
+
+<flags EDM_PLUGIN="1"/>
+
+<export>
+     <lib name=“1”/>
+</export>
