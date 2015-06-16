@@ -32,11 +32,14 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include <DataFormats/Candidate/interface/CompositeCandidate.h>
+#include "DataFormats/Math/interface/deltaR.h"
 #include "TTree.h"
 #include <vector>
 //
 // class declaration
 //
+
 
 class WZGenAnalyzer : public edm::EDAnalyzer {
     public:
@@ -47,12 +50,20 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
     private:
         edm::EDGetTokenT<reco::CandidateCollection> genLeptonsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> genJetsToken_;
+        edm::EDGetTokenT<reco::CandidateView> zMuMuCandsToken_;
+        edm::EDGetTokenT<reco::CandidateView> zeeCandsToken_;
+        edm::Service<TFileService> fileService_;
         unsigned int nKeepLeps_;
         unsigned int nKeepJets_;
-        const std::string jetsName_;
-        const std::string lepsName_;
+        std::string jetsName_;
+        std::string lepsName_;
         TTree* ntuple_;
+        double crossSection_;
+        float zMass_;
+        float zPt_;
+        bool isZMuMu_;
         unsigned int eventid_;
+        unsigned int nProcessed_;
         unsigned int nPass_;
         unsigned int nLeps_;
         unsigned int nJets_;
@@ -66,9 +77,16 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
         virtual void endJob() override;
         void addParticlesToNtuple();
-        void fillNtuple(edm::Handle<edm::OwnVector<reco::Candidate>>,
-                        edm::Handle<edm::OwnVector<reco::Candidate>>);
-
+        const reco::Candidate& chooseBestZ(edm::Handle<reco::CandidateView>,
+                                           edm::Handle<reco::CandidateView>);
+        void fillNtuple(edm::Handle<reco::CandidateCollection>,
+                        edm::Handle<reco::CandidateCollection>,
+                        const reco::Candidate&);
+        bool overlapsCollection(const reco::Candidate& cand, 
+                                edm::Handle<reco::CandidateCollection>& collection,
+                                const float deltaRCut,
+                                const unsigned int maxCompare);
+ 
         //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
         //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
         //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
@@ -79,16 +97,18 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
 WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
+    zMuMuCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zMuMuCands"))),
+    zeeCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zeeCands"))),
     nKeepLeps_(cfg.getUntrackedParameter<unsigned int> ("nKeepLeps", 3)),
     nKeepJets_(cfg.getUntrackedParameter<unsigned int> ("nKeepJets", 4)),
     jetsName_(cfg.getUntrackedParameter<std::string> ("jetsName", "jet")),
-    lepsName_(cfg.getUntrackedParameter<std::string> ("lepsName", "lep"))
+    lepsName_(cfg.getUntrackedParameter<std::string> ("lepsName", "lep")),
+    crossSection_(cfg.getParameter<double> ("crossSection"))
 {
+    nProcessed_ = 0;
     nLeps_ = 0;
-    nJets_ = 0;
     nPass_ = 0;
 }
-
 
 WZGenAnalyzer::~WZGenAnalyzer()
 {
@@ -107,19 +127,52 @@ WZGenAnalyzer::~WZGenAnalyzer()
 void
 WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 {
+    nProcessed_++;
     edm::Handle<reco::CandidateCollection> genLeptons;
     event.getByToken(genLeptonsToken_, genLeptons);
     edm::Handle<reco::CandidateCollection> genJets;
-    event.getByToken(genJetsToken_, genJets);
+    event.getByToken(genJetsToken_, genJets);   
+   
+    edm::Handle<reco::CandidateView> zMuMuCands;
+    event.getByToken(zMuMuCandsToken_, zMuMuCands); 
+    edm::Handle<reco::CandidateView> zeeCands;
+    event.getByToken(zeeCandsToken_, zeeCands);
 
-    if (genLeptons->size() >= nKeepLeps_) {
-        fillNtuple(genLeptons, genJets);
+    if (zeeCands->empty() && zMuMuCands->empty()) {
+        return;
+    }
+    //if (genLeptons->size() >= nKeepLeps_) {
+        fillNtuple(genLeptons, genJets, chooseBestZ(zMuMuCands, zeeCands));
         eventid_ = event.id().event();
         nPass_++;
-    }
+    //}
 }
 
 // ------------ method called once each job just before starting event loop  ------------
+
+//const reco::CandidateBaseRef&
+const reco::Candidate&
+WZGenAnalyzer::chooseBestZ(edm::Handle<reco::CandidateView> zMuMuCands,
+                           edm::Handle<reco::CandidateView> zeeCands) { 
+    const float ZMASS = 91.1876;
+    if (zeeCands->empty()) {
+        isZMuMu_ = true;
+        return (*zMuMuCands)[0];
+    }
+    else if (zMuMuCands->empty()) {
+        isZMuMu_ = false;
+        return (*zeeCands)[0];
+    }
+    if ((*zeeCands)[0].numberOfDaughters() != 2 || (*zMuMuCands)[0].numberOfDaughters() != 2) 
+        throw cms::Exception("CorruptData") << "Z constructed from wrong number of daughters\n";
+    if (((*zMuMuCands)[0].mass() - ZMASS) < ((*zeeCands)[0].mass() - ZMASS)) {
+        isZMuMu_ = false;
+        return (*zMuMuCands)[0];
+    }
+    isZMuMu_ = false;
+    return (*zeeCands)[0];
+}       
+
 void 
 WZGenAnalyzer::beginJob()
 {
@@ -130,8 +183,7 @@ WZGenAnalyzer::beginJob()
     leptonEtas_.resize(nKeepLeps_, -999);
     leptonPdgIds_.resize(nKeepLeps_, -999);
 
-    edm::Service<TFileService> fs;
-    ntuple_ = fs->make<TTree>("Ntuple", "Ntuple");
+    ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple");
     
     addParticlesToNtuple();
     ntuple_->Branch("evtid", &eventid_);
@@ -146,7 +198,7 @@ WZGenAnalyzer::addParticlesToNtuple() {
         ntuple_->Branch((particleName + "Eta").c_str(), &jetEtas_[i-1]);
         ntuple_->Branch((particleName + "pdgId").c_str(), &jetPdgIds_[i-1]);
     }
-    ntuple_->Branch((std::string("n") + jetsName_).c_str(), &nJets_);
+    ntuple_->Branch("nJets", &nJets_);
     for (unsigned int i = 1; i <= nKeepLeps_; i++)
     {
         std::string particleName = lepsName_ + std::to_string(i);
@@ -155,25 +207,38 @@ WZGenAnalyzer::addParticlesToNtuple() {
         ntuple_->Branch((particleName + "pdgId").c_str(), &leptonPdgIds_[i-1]);
     }
     ntuple_->Branch((std::string("n") + lepsName_).c_str(), &nLeps_);
+    ntuple_->Branch("zMass", &zMass_);
+    ntuple_->Branch("zPt", &zPt_);
+    ntuple_->Branch("isZMuMu", &isZMuMu_);
 }
 
 void
-WZGenAnalyzer::fillNtuple(edm::Handle<edm::OwnVector<reco::Candidate>> leps,
-                          edm::Handle<edm::OwnVector<reco::Candidate>> jets) {
+WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
+                          edm::Handle<reco::CandidateCollection> jets,
+                          const reco::Candidate& bestZ) {
+    nJets_ = 0;
     for(size_t i = 0; i < jets->size(); ++i) {
+        if (i > nKeepJets_)
+            break;
         const reco::Candidate& jet = (*jets)[i];
-        jetPts_[i] = jet.pt();
-        jetEtas_[i] = jet.eta();
-        jetPdgIds_[i] = jet.pdgId();
+        if (overlapsCollection(jet, leps, 0.5, 3))
+            continue;
+        jetPts_[nJets_] = jet.pt();
+        jetEtas_[nJets_] = jet.eta();
+        jetPdgIds_[nJets_] = jet.pdgId();
+        nJets_++;
     }
     for(size_t i = 0; i < leps->size(); ++i) {
+        if (i > nKeepLeps_)
+            break;
         const reco::Candidate& lep = (*leps)[i];
         leptonPts_[i] = lep.pt();
         leptonEtas_[i] = lep.eta();
         leptonPdgIds_[i] = lep.pdgId();
     }
+    zMass_ = bestZ.mass();
+    zPt_ = bestZ.pt();
     nLeps_ = leps->size();
-    nJets_ = jets->size();
     ntuple_->Fill();
     leptonEtas_.clear();
     leptonEtas_.resize(nKeepLeps_, -999);
@@ -190,11 +255,32 @@ WZGenAnalyzer::fillNtuple(edm::Handle<edm::OwnVector<reco::Candidate>> leps,
     jetPdgIds_.resize(nKeepJets_, -999);
 }
 // ------------ method called once each job just after ending the event loop  ------------
+bool
+WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand, 
+                                  edm::Handle<reco::CandidateCollection>& collection,
+                                  const float deltaRCut,
+                                  const unsigned int maxCompare) {
+    for(size_t i = 0; i < collection->size(); ++i) {
+        if (i == maxCompare)
+            break;
+        if (reco::deltaR((*collection)[i], cand) > deltaRCut) {
+            std::cout << "Failed dR cut\n";
+            return false;
+        }
+    }
+    return true;
+}
+
 void 
 WZGenAnalyzer::endJob() 
 {    
-    //ntuple_->Branch("nPass", &nPass_);
-    //ntuple_->Fill();
+    TTree* metaData = fileService_->make<TTree>("MetaData", "MetaData");
+    metaData->Branch("nProcessedEvents", &nProcessed_);
+    metaData->Branch("nPass", &nPass_);
+    metaData->Branch("inputXSection", &crossSection_);
+    float fidXSec = crossSection_ * static_cast<float>(nPass_)/nProcessed_;
+    metaData->Branch("fidXSection", &fidXSec);
+    metaData->Fill();
 }
 
 // ------------ method called when starting to processes a run  ------------
