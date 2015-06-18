@@ -28,7 +28,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.selectedGenParticles = cms.EDFilter("CandViewShallowCloneProducer",
     src = cms.InputTag("genParticles"),
-    cut = cms.string("pt > 10 && abs(eta) < 2.4")                           
+    cut = cms.string("pt > 0")# && abs(eta) < 2.4")                           
 )
 
 process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -39,7 +39,7 @@ process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("leptons"),
-    maxNumber = cms.uint32(2)
+    maxNumber = cms.uint32(10)
 )
 
 process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -66,11 +66,13 @@ process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
 
 process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zeeCands"),
+    minNumber = cms.uint32(2),
     maxNumber = cms.uint32(1)
 )
 
 process.sortedZMuMuCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zMuMuCands"),
+    minNumber = cms.uint32(2), 
     maxNumber = cms.uint32(1)
 )
 
@@ -107,6 +109,6 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
 process.p = cms.Path(((process.selectedGenParticles*process.leptons*process.sortedLeptons)+ 
     ((process.muons*process.zMuMuCands) + (process.electrons*process.zeeCands)) +
     (process.jets*process.selectedJets*process.sortedJets)) *
-    (process.sortedZMuMuCands + process.sortedZeeCands) * 
+    #(process.sortedZMuMuCands + process.sortedZeeCands) * 
     process.analyzeWZ
 )

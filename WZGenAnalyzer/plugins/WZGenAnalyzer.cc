@@ -102,7 +102,7 @@ WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
     zMuMuCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zMuMuCands"))),
     zeeCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zeeCands"))),
-    nKeepLeps_(cfg.getUntrackedParameter<unsigned int> ("nKeepLeps", 3)),
+    nKeepLeps_(cfg.getUntrackedParameter<unsigned int> ("nKeepLeps", 2)),
     nKeepJets_(cfg.getUntrackedParameter<unsigned int> ("nKeepJets", 4)),
     jetsName_(cfg.getUntrackedParameter<std::string> ("jetsName", "jet")),
     lepsName_(cfg.getUntrackedParameter<std::string> ("lepsName", "lep"))
@@ -142,10 +142,10 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     event.getByToken(zeeCandsToken_, zeeCands);
 
     if (genLeptons->size() < nKeepLeps_)
-        std::cout << "Didn't find 2 leptons";
+//        std::cout << "Didn't find " << nKeepLeps_ << " leptons";
         
-    if (zeeCands->empty() && zMuMuCands->empty()) {
-        std::cout << "Failed Z mass cut";
+    if (zeeCands->size() == 0 && zMuMuCands->size() == 0) {
+//        std::cout << "Failed Z mass cut";
         return;
     }
     if (genLeptons->size() >= nKeepLeps_) {
@@ -153,7 +153,6 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
         eventid_ = event.id().event();
         nPass_++;
     }
-    std::cout << "Failed lepton number cut";
 }
 
 // ------------ method called once each job just before starting event loop  ------------
