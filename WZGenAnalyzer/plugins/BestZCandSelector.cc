@@ -19,10 +19,11 @@
 #include "CommonTools/UtilAlgos/interface/SortCollectionSelector.h"
 #include "GenNtuplizer/WZGenAnalyzer/interface/ZMassComparator.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/Candidate/interface/CompositeCandidate.h"
 
 typedef ObjectSelector<
           SortCollectionSelector<
-            reco::CandidateCollection,
+            reco::CandidateView,
             BestZCand<reco::Candidate>
           >
         > BestZCandSelector;

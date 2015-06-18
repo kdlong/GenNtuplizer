@@ -34,6 +34,8 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include <DataFormats/Candidate/interface/CompositeCandidate.h>
 #include "DataFormats/Math/interface/deltaR.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+
 #include "TTree.h"
 #include <vector>
 //
@@ -77,6 +79,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
         virtual void endJob() override;
         void addParticlesToNtuple();
+        //void getCrossSection();
         const reco::Candidate& chooseBestZ(edm::Handle<reco::CandidateView>,
                                            edm::Handle<reco::CandidateView>);
         void fillNtuple(edm::Handle<reco::CandidateCollection>,
@@ -87,7 +90,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
                                 const float deltaRCut,
                                 const unsigned int maxCompare);
  
-        //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+        virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
         //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
         //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
         //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
@@ -102,12 +105,12 @@ WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     nKeepLeps_(cfg.getUntrackedParameter<unsigned int> ("nKeepLeps", 3)),
     nKeepJets_(cfg.getUntrackedParameter<unsigned int> ("nKeepJets", 4)),
     jetsName_(cfg.getUntrackedParameter<std::string> ("jetsName", "jet")),
-    lepsName_(cfg.getUntrackedParameter<std::string> ("lepsName", "lep")),
-    crossSection_(cfg.getParameter<double> ("crossSection"))
+    lepsName_(cfg.getUntrackedParameter<std::string> ("lepsName", "lep"))
 {
     nProcessed_ = 0;
     nLeps_ = 0;
     nPass_ = 0;
+    //getCrossSection();
 }
 
 WZGenAnalyzer::~WZGenAnalyzer()
@@ -138,14 +141,19 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     edm::Handle<reco::CandidateView> zeeCands;
     event.getByToken(zeeCandsToken_, zeeCands);
 
+    if (genLeptons->size() < nKeepLeps_)
+        std::cout << "Didn't find 2 leptons";
+        
     if (zeeCands->empty() && zMuMuCands->empty()) {
+        std::cout << "Failed Z mass cut";
         return;
     }
-    //if (genLeptons->size() >= nKeepLeps_) {
+    if (genLeptons->size() >= nKeepLeps_) {
         fillNtuple(genLeptons, genJets, chooseBestZ(zMuMuCands, zeeCands));
         eventid_ = event.id().event();
         nPass_++;
-    //}
+    }
+    std::cout << "Failed lepton number cut";
 }
 
 // ------------ method called once each job just before starting event loop  ------------
@@ -217,6 +225,7 @@ WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
                           edm::Handle<reco::CandidateCollection> jets,
                           const reco::Candidate& bestZ) {
     nJets_ = 0;
+    std::cout << "Filling\n";
     for(size_t i = 0; i < jets->size(); ++i) {
         if (i > nKeepJets_)
             break;
@@ -284,12 +293,15 @@ WZGenAnalyzer::endJob()
 }
 
 // ------------ method called when starting to processes a run  ------------
-/*
+
 void 
-WZGenAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
+WZGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
 {
+    edm::Handle< GenRunInfoProduct > genRunInfoProduct;
+    iRun.getByLabel("generator", genRunInfoProduct );
+    crossSection_ = (double) genRunInfoProduct->crossSection(); 
 }
-*/
+
 
 // ------------ method called when ending the processing of a run  ------------
 /*

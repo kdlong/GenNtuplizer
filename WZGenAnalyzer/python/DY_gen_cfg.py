@@ -39,7 +39,7 @@ process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("leptons"),
-    maxNumber = cms.uint32(3)
+    maxNumber = cms.uint32(2)
 )
 
 process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -56,12 +56,12 @@ process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('muons@+ muons@-'),
-                cut = cms.string('60 < mass < 120'),
+    cut = cms.string('0 < mass < 250'),
 )
 
 process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('electrons@+ electrons@-'),
-    cut = cms.string('60 < mass < 120'),
+    cut = cms.string('0 < mass < 250'),
 )
 
 process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
@@ -75,7 +75,7 @@ process.sortedZMuMuCands = cms.EDFilter("BestZCandSelector",
 )
 
 process.jets = cms.EDProducer("GenJetShallowCloneProducer",
-                              src = cms.InputTag("ak5GenJets")
+                              src = cms.InputTag("ak4GenJets")
 )
 
 #process.deltaRCutJets = cms.EDFilter( "DeltaROverlapExclusionSelector",
@@ -100,7 +100,8 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     zMuMuCands = cms.InputTag("zMuMuCands"),
-    zeeCands = cms.InputTag("zeeCands")
+    zeeCands = cms.InputTag("zeeCands"),
+    nKeepLeps = cms.untracked.uint32(2)
 )
 
 process.p = cms.Path(((process.selectedGenParticles*process.leptons*process.sortedLeptons)+ 
