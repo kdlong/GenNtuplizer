@@ -35,7 +35,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 
-#include "GenNtuplizer/WZGenAnalyzer/interface/BasicParticleEntry.h"
+#include "BasicParticleEntry.h"
 #include "TTree.h"
 #include <vector>
 //
