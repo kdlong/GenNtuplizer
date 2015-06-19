@@ -87,14 +87,14 @@ process.ak4GenJetsNoNu = RecoGenJets.ak4GenJetsNoNu
 
 process.selectedJets = cms.EDFilter("EtaPtMinCandViewSelector",
     src = cms.InputTag("ak4GenJetsNoNu"),
-    ptMin   = cms.double(30),
+    ptMin   = cms.double(10),
     etaMin = cms.double(-4.7),
     etaMax = cms.double(4.7)
 )
 
 process.sortedJets = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("selectedJets"),
-    maxNumber = cms.uint32(20)
+    maxNumber = cms.uint32(10)
 )
 
 process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",

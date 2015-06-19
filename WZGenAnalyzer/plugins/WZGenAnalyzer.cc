@@ -142,7 +142,7 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     event.getByToken(zeeCandsToken_, zeeCands);
 
     if (genLeptons->size() < nKeepLeps_)
-        std::cout << "Didn't find 2 leptons";
+        std::cout << "Didn't find " << nKeepLeps_ << " leptons";
         
     if (zeeCands->empty() && zMuMuCands->empty()) {
         std::cout << "Failed Z mass cut";
@@ -227,7 +227,7 @@ WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
     nJets_ = 0;
     std::cout << "Filling\n";
     for(size_t i = 0; i < jets->size(); ++i) {
-        if (i > nKeepJets_)
+        if (nJets_ > nKeepJets_)
             break;
         const reco::Candidate& jet = (*jets)[i];
         if (overlapsCollection(jet, leps, 0.5, 3))
@@ -272,12 +272,12 @@ WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand,
     for(size_t i = 0; i < collection->size(); ++i) {
         if (i == maxCompare)
             break;
-        if (reco::deltaR((*collection)[i], cand) > deltaRCut) {
-            std::cout << "Failed dR cut\n";
-            return false;
+        if (reco::deltaR((*collection)[i], cand) < deltaRCut) {
+            std::cout << "\nFailed dR cut. dR was " << reco::deltaR((*collection)[i], cand) << std::endl;
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 void 
