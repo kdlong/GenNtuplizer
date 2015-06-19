@@ -39,7 +39,7 @@ process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("leptons"),
-    maxNumber = cms.uint32(3)
+    maxNumber = cms.uint32(10)
 )
 
 process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -56,12 +56,12 @@ process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('muons@+ muons@-'),
-                cut = cms.string('60 < mass < 120'),
+    cut = cms.string('30 < mass < 250'),
 )
 
 process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('electrons@+ electrons@-'),
-    cut = cms.string('60 < mass < 120'),
+    cut = cms.string('30 < mass < 250'),
 )
 
 process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
@@ -73,11 +73,12 @@ process.sortedZMuMuCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zMuMuCands"),
     maxNumber = cms.uint32(1)
 )
+import RecoJets.Configuration.GenJetParticles_cff as GenJetParticles
 
-process.jets = cms.EDProducer("GenJetShallowCloneProducer",
-                              src = cms.InputTag("ak5GenJets")
-)
-
+process.genParticlesForJets = GenJetParticles.genParticlesForJets
+process.genParticlesForJetsNoNu = GenJetParticles.genParticlesForJetsNoNu
+import RecoJets.Configuration.RecoGenJets_cff as RecoGenJets
+process.ak4GenJetsNoNu = RecoGenJets.ak4GenJetsNoNu
 #process.deltaRCutJets = cms.EDFilter( "DeltaROverlapExclusionSelector",
 #    src = cms.InputTag("jets"),
 #    overlap = cms.InputTag("leptons"),
@@ -85,7 +86,7 @@ process.jets = cms.EDProducer("GenJetShallowCloneProducer",
 #)
 
 process.selectedJets = cms.EDFilter("EtaPtMinCandViewSelector",
-    src = cms.InputTag("jets"),
+    src = cms.InputTag("ak4GenJetsNoNu"),
     ptMin   = cms.double(30),
     etaMin = cms.double(-4.7),
     etaMax = cms.double(4.7)
@@ -100,12 +101,14 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     zMuMuCands = cms.InputTag("zMuMuCands"),
-    zeeCands = cms.InputTag("zeeCands")
+    zeeCands = cms.InputTag("zeeCands"),
+    nKeepLeps = cms.untracked.uint32(3)
 )
 
 process.p = cms.Path(((process.selectedGenParticles*process.leptons*process.sortedLeptons)+ 
     ((process.muons*process.zMuMuCands) + (process.electrons*process.zeeCands)) +
-    (process.jets*process.selectedJets*process.sortedJets)) *
+    (process.genParticlesForJets*process.genParticlesForJetsNoNu*process.ak4GenJetsNoNu)*
+    (process.selectedJets*process.sortedJets)) *
     (process.sortedZMuMuCands + process.sortedZeeCands) * 
     process.analyzeWZ
 )
