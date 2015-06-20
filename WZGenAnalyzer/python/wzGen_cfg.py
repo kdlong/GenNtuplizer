@@ -91,7 +91,7 @@ process.ak4GenJetsNoNu = RecoGenJets.ak4GenJetsNoNu
 
 process.selectedJets = cms.EDFilter("EtaPtMinCandViewSelector",
     src = cms.InputTag("ak4GenJetsNoNu"),
-    ptMin   = cms.double(10),
+    ptMin   = cms.double(30),
     etaMin = cms.double(-4.7),
     etaMax = cms.double(4.7)
 )

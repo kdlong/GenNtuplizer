@@ -14,11 +14,11 @@ class BasicParticleEntry {
         BasicParticleEntry();
         BasicParticleEntry(std::string name, unsigned int nKeep);
         ~BasicParticleEntry();
-        void setCollection(reco::CandidateView);
+        void setCollection(reco::CandidateCollection);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
     private:
-        reco::CandidateView particles_;
+        reco::CandidateCollection particles_;
         std::string name_;
         unsigned int num_;
         unsigned int nKeep_;

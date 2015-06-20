@@ -44,7 +44,7 @@ BasicParticleEntry::fillNtupleInfo() {
     }
 } 
 void
-BasicParticleEntry::setCollection(reco::CandidateView particles) {
+BasicParticleEntry::setCollection(reco::CandidateCollection particles) {
     particles_ = particles;
 }
 
