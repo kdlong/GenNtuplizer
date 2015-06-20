@@ -39,7 +39,7 @@ process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("leptons"),
-    maxNumber = cms.uint32(2)
+    maxNumber = cms.uint32(10)
 )
 
 process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -66,11 +66,13 @@ process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
 
 process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zeeCands"),
+    minNumber = cms.uint32(2),
     maxNumber = cms.uint32(1)
 )
 
 process.sortedZMuMuCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zMuMuCands"),
+    minNumber = cms.uint32(2), 
     maxNumber = cms.uint32(1)
 )
 import RecoJets.Configuration.GenJetParticles_cff as GenJetParticles
