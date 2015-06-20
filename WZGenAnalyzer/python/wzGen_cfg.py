@@ -28,7 +28,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.selectedGenParticles = cms.EDFilter("CandViewShallowCloneProducer",
     src = cms.InputTag("genParticles"),
-    cut = cms.string("pt > 10 && abs(eta) < 2.4")                           
+    cut = cms.string("")# && abs(eta) < 2.4")                           
 )
 
 process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -56,22 +56,26 @@ process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('muons@+ muons@-'),
-    cut = cms.string('30 < mass < 250'),
+    cut = cms.string('30 < mass < 250 & charge=0'),
+    minNumber = cms.uint32(2)
 )
 
 process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('electrons@+ electrons@-'),
-    cut = cms.string('30 < mass < 250'),
+    cut = cms.string('30 < mass < 250 & charge=0'),
+    minNumber = cms.uint32(2)
 )
 
 process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zeeCands"),
-    maxNumber = cms.uint32(1)
+    maxNumber = cms.uint32(3),
+    minNumber = cms.uint32(2)
 )
 
 process.sortedZMuMuCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("zMuMuCands"),
-    maxNumber = cms.uint32(1)
+    maxNumber = cms.uint32(3),
+    minNumber = cms.uint32(2)
 )
 import RecoJets.Configuration.GenJetParticles_cff as GenJetParticles
 
@@ -102,7 +106,9 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     leptons = cms.InputTag("sortedLeptons"),
     zMuMuCands = cms.InputTag("zMuMuCands"),
     zeeCands = cms.InputTag("zeeCands"),
-    nKeepLeps = cms.untracked.uint32(3)
+    nKeepLeps = cms.untracked.uint32(3),
+    nKeepJets = cms.untracked.uint32(2),
+    nKeepExtra = cms.untracked.uint32(0)
 )
 
 process.p = cms.Path(((process.selectedGenParticles*process.leptons*process.sortedLeptons)+ 
