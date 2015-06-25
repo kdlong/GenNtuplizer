@@ -34,6 +34,8 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "DataFormats/METReco/interface/GenMET.h"
+#include "DataFormats/METReco/interface/GenMETCollection.h"
 
 #include "BasicParticleEntry.h"
 #include "TTree.h"
@@ -52,6 +54,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
     private:
         edm::EDGetTokenT<reco::CandidateCollection> genLeptonsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> genJetsToken_;
+        edm::EDGetTokenT<reco::GenMETCollection> genMETToken_;
         edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
         edm::EDGetTokenT<reco::CandidateView> zMuMuCandsToken_;
         edm::EDGetTokenT<reco::CandidateView> zeeCandsToken_;
@@ -63,6 +66,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         unsigned int nKeepExtra_;
         float zMass_;
         float zPt_;
+        float MET_;
         bool isZMuMu_;
         unsigned int eventid_;
         unsigned int nProcessed_;
@@ -72,7 +76,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         virtual void endJob() override;
         void addParticlesToNtuple();
         const reco::Candidate& chooseBestZ(reco::CandidateView, reco::CandidateView);
-        void fillNtuple(const reco::Candidate&);
+        void fillNtuple(float, const reco::Candidate&);
         bool overlapsCollection(const reco::Candidate& cand, 
                                 reco::CandidateCollection collection,
                                 const float deltaRCut,
@@ -88,6 +92,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
 WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
+    genMETToken_(consumes<reco::GenMETCollection>(cfg.getParameter<edm::InputTag>("met"))),
     extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "extraParticle", edm::InputTag("genParticles")))),
     zMuMuCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zMuMuCands"))),
@@ -133,6 +138,10 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
+    
+    edm::Handle<reco::GenMETCollection> genMETCol;
+    event.getByToken(genMETToken_, genMETCol);
+    float genMET = (*genMETCol).front().pt();
 
     reco::CandidateCollection cleanedJets = cleanJets(*genJets, *genLeptons);
     particleEntries_["jets"]->setCollection(cleanedJets);
@@ -146,13 +155,22 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     edm::Handle<reco::CandidateView> zeeCands;
     event.getByToken(zeeCandsToken_, zeeCands);
     if (genLeptons->size() < nKeepLeps_) {
-        std::cout << "Didn't find " << nKeepLeps_ << " leptons";
+        std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
-    if (zeeCands->size() == 0 && zMuMuCands->size() == 0) {
+    if ((*genLeptons)[0].pt() < 20 || (*genLeptons)[0].pt() < 20) {
+        std::cout << "Failed lepton pt cuts";
         return;
     }
-    fillNtuple(chooseBestZ(*zMuMuCands, *zeeCands));
+    if (zeeCands->size() == 0 && zMuMuCands->size() == 0) {
+        std::cout << "Failed Z cut" << std::endl;
+        return;
+    }
+    if (genMET < 30) {
+        return;
+        std::cout << "Failed MET cut" << std::endl;
+    }
+    fillNtuple(genMET, chooseBestZ(*zMuMuCands, *zeeCands));
     eventid_ = event.id().event();
     nPass_++;
 }
@@ -195,6 +213,7 @@ WZGenAnalyzer::addParticlesToNtuple() {
         particleEntry.second->createNtupleEntry(ntuple_);
     ntuple_->Branch("zMass", &zMass_);
     ntuple_->Branch("zPt", &zPt_);
+    ntuple_->Branch("MET", &MET_);
     ntuple_->Branch("isZMuMu", &isZMuMu_);
 }
 /*
@@ -214,11 +233,12 @@ WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
     }
 */
 void
-WZGenAnalyzer::fillNtuple(const reco::Candidate& bestZ) {
+WZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
     for (auto& particleEntry : particleEntries_)
         particleEntry.second->fillNtupleInfo();
     zMass_ = bestZ.mass();
     zPt_ = bestZ.pt();
+    MET_ = MET;
     ntuple_->Fill();
 }
 // ------------ method called once each job just after ending the event loop  ------------

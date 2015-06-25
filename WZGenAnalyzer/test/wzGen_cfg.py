@@ -14,6 +14,7 @@ options.parseArguments()
 
 process.load("PhysicsTools.HepMCCandAlgos.genParticles_cfi")
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(options.maxEvents))
 
@@ -28,7 +29,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.selectedGenParticles = cms.EDFilter("CandViewShallowCloneProducer",
     src = cms.InputTag("genParticles"),
-    cut = cms.string("")# && abs(eta) < 2.4")                           
+    cut = cms.string("pt > 20 && abs(eta) < 2.4")                           
 )
 
 process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
@@ -56,13 +57,13 @@ process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
 
 process.zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('muons@+ muons@-'),
-    cut = cms.string('30 < mass < 250 & charge=0'),
+    cut = cms.string('60 < mass < 120 & charge=0'),
     minNumber = cms.uint32(2)
 )
 
 process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('electrons@+ electrons@-'),
-    cut = cms.string('30 < mass < 250 & charge=0'),
+    cut = cms.string('60 < mass < 120 & charge=0'),
     minNumber = cms.uint32(2)
 )
 
@@ -104,6 +105,7 @@ process.sortedJets = cms.EDFilter("LargestPtCandSelector",
 process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
+    met = cms.InputTag("genMetTrue"),
     zMuMuCands = cms.InputTag("zMuMuCands"),
     zeeCands = cms.InputTag("zeeCands"),
     nKeepLeps = cms.untracked.uint32(3),
