@@ -29,13 +29,33 @@ process.TFileService = cms.Service("TFileService",
 
 process.selectedGenParticles = cms.EDFilter("CandViewShallowCloneProducer",
     src = cms.InputTag("genParticles"),
-    cut = cms.string("pt > 20 && abs(eta) < 2.4")                           
+    cut = cms.string("")  
 )
 
-process.leptons = cms.EDFilter("PdgIdAndStatusCandSelector",
-                           src = cms.InputTag("selectedGenParticles"),
-                           pdgId = cms.vint32( 11, 13 ),
-                           status = cms.vint32( 1 )                          
+process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
+    src = cms.InputTag("selectedGenParticles"),
+    pdgId = cms.vint32( 13 ),
+    status = cms.vint32( 1 ),
+)
+
+process.selectedMuons = cms.EDFilter("CandViewShallowCloneProducer",
+    src = cms.InputTag("muons"),
+    cut = cms.string("pt > 10 && abs(eta) < 2.4")
+)
+
+process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
+    src = cms.InputTag("selectedGenParticles"),
+    pdgId = cms.vint32( 11 ),
+    status = cms.vint32( 1 ),                         
+)
+
+process.selectedElectrons = cms.EDFilter("CandViewShallowCloneProducer",
+    src = cms.InputTag("electrons"),
+    cut = cms.string("pt > 10 && abs(eta) < 2.5")
+)
+
+process.leptons = cms.EDProducer("CandMerger",
+    src = cms.VInputTag("selectedElectrons", "selectedMuons")
 )
 
 process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
@@ -43,26 +63,14 @@ process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     maxNumber = cms.uint32(10)
 )
 
-process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
-    src = cms.InputTag("selectedGenParticles"),
-    pdgId = cms.vint32( 13 ),
-    status = cms.vint32( 1 )                          
-)
-
-process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
-    src = cms.InputTag("selectedGenParticles"),
-    pdgId = cms.vint32( 11 ),
-    status = cms.vint32( 1 )                          
-)
-
 process.zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
-    decay = cms.string('muons@+ muons@-'),
+    decay = cms.string('selectedMuons@+ selectedMuons@-'),
     cut = cms.string('60 < mass < 120 & charge=0'),
     minNumber = cms.uint32(2)
 )
 
 process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
-    decay = cms.string('electrons@+ electrons@-'),
+    decay = cms.string('selectedElectrons@+ selectedElectrons@-'),
     cut = cms.string('60 < mass < 120 & charge=0'),
     minNumber = cms.uint32(2)
 )
@@ -84,11 +92,6 @@ process.genParticlesForJets = GenJetParticles.genParticlesForJets
 process.genParticlesForJetsNoNu = GenJetParticles.genParticlesForJetsNoNu
 import RecoJets.Configuration.RecoGenJets_cff as RecoGenJets
 process.ak4GenJetsNoNu = RecoGenJets.ak4GenJetsNoNu
-#process.deltaRCutJets = cms.EDFilter( "DeltaROverlapExclusionSelector",
-#    src = cms.InputTag("jets"),
-#    overlap = cms.InputTag("leptons"),
-#    maxDeltaR = cms.double(0.5),
-#)
 
 process.selectedJets = cms.EDFilter("EtaPtMinCandViewSelector",
     src = cms.InputTag("ak4GenJetsNoNu"),
@@ -113,10 +116,13 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     nKeepExtra = cms.untracked.uint32(0)
 )
 
-process.p = cms.Path(((process.selectedGenParticles*process.leptons*process.sortedLeptons)+ 
-    ((process.muons*process.zMuMuCands) + (process.electrons*process.zeeCands)) +
-    (process.genParticlesForJets*process.genParticlesForJetsNoNu*process.ak4GenJetsNoNu)*
-    (process.selectedJets*process.sortedJets)) *
-    (process.sortedZMuMuCands + process.sortedZeeCands) * 
+process.p = cms.Path((process.selectedGenParticles*
+    (process.electrons+process.muons) *
+    (process.selectedElectrons + process.selectedMuons)* 
+    process.leptons*process.sortedLeptons) * 
+    (process.zMuMuCands + process.zeeCands) *
+    (process.sortedZMuMuCands + process.sortedZeeCands) + 
+    (process.genParticlesForJets*process.genParticlesForJetsNoNu*process.ak4GenJetsNoNu*
+    process.selectedJets*process.sortedJets) *
     process.analyzeWZ
 )

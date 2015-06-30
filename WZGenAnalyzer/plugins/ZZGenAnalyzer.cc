@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    GenNtuplizer/WZGenAnalyzer
-// Class:      WZGenAnalyzer
+// Package:    GenNtuplizer/ZZGenAnalyzer
+// Class:      ZZGenAnalyzer
 // 
-/**\class WZGenAnalyzer WZGenAnalyzer.cc GenNtuplizer/WZGenAnalyzer/plugins/WZGenAnalyzer.cc
+/**\class ZZGenAnalyzer ZZGenAnalyzer.cc GenNtuplizer/ZZGenAnalyzer/plugins/ZZGenAnalyzer.cc
 
  Description: [one line class summary]
 
@@ -13,6 +13,8 @@
 //
 // Original Author:  Kenneth David Long
 //         Created:  Wed, 10 Jun 2015 12:29:36 GMT
+//
+// I swear I'm going to fix this and make it a filter which feeds the Ntuple maker
 //
 //
 
@@ -45,10 +47,10 @@
 //
 
 
-class WZGenAnalyzer : public edm::EDAnalyzer {
+class ZZGenAnalyzer : public edm::EDAnalyzer {
     public:
-        explicit WZGenAnalyzer(const edm::ParameterSet&);
-        ~WZGenAnalyzer();
+        explicit ZZGenAnalyzer(const edm::ParameterSet&);
+        ~ZZGenAnalyzer();
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
     private:
@@ -89,7 +91,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
 
         // ----------member data ---------------------------
 };
-WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
+ZZGenAnalyzer::ZZGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
     genMETToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("met"))),
@@ -116,7 +118,7 @@ WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     }
 }
 
-WZGenAnalyzer::~WZGenAnalyzer()
+ZZGenAnalyzer::~ZZGenAnalyzer()
 {
      // do anything here that needs to be done at desctruction time
      // (e.g. close files, deallocate resources etc.)
@@ -129,7 +131,7 @@ WZGenAnalyzer::~WZGenAnalyzer()
 
 // ------------ method called for each event    ------------
 void
-WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
+ZZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 {
     nProcessed_++;
     edm::Handle<reco::CandidateCollection> genLeptons;
@@ -158,18 +160,15 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
-    if ((*genLeptons)[0].pt() < 20 || (*genLeptons)[0].pt() < 20) {
+    if ((*genLeptons)[0].pt() < 20) {
         std::cout << "Failed lepton pt cuts";
         return;
     }
-    if (zeeCands->size() == 0 && zMuMuCands->size() == 0) {
+    if (zeeCands->size() + zMuMuCands->size() < 2) {
         std::cout << "Failed Z cut" << std::endl;
         return;
     }
-    //if (genMET < 30) {
-    //    return;
-    //    std::cout << "Failed MET cut" << std::endl;
-    //}
+
     fillNtuple(0, chooseBestZ(*zMuMuCands, *zeeCands));
     eventid_ = event.id().event();
     nPass_++;
@@ -178,7 +177,7 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 // ------------ method called once each job just before starting event loop  ------------
 
 const reco::Candidate&
-WZGenAnalyzer::chooseBestZ(reco::CandidateView zMuMuCands,
+ZZGenAnalyzer::chooseBestZ(reco::CandidateView zMuMuCands,
                            reco::CandidateView zeeCands) { 
     const float ZMASS = 91.1876;
     if (zeeCands.empty()) {
@@ -200,7 +199,7 @@ WZGenAnalyzer::chooseBestZ(reco::CandidateView zMuMuCands,
 }       
 
 void 
-WZGenAnalyzer::beginJob()
+ZZGenAnalyzer::beginJob()
 {
     ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
     addParticlesToNtuple();
@@ -208,7 +207,7 @@ WZGenAnalyzer::beginJob()
 }
 
 void
-WZGenAnalyzer::addParticlesToNtuple() {
+ZZGenAnalyzer::addParticlesToNtuple() {
     for (auto& particleEntry : particleEntries_)
         particleEntry.second->createNtupleEntry(ntuple_);
     ntuple_->Branch("zMass", &zMass_);
@@ -218,7 +217,7 @@ WZGenAnalyzer::addParticlesToNtuple() {
 }
 /*
 void
-WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
+ZZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
                           edm::Handle<reco::CandidateCollection> jets,
                           const reco::Candidate& bestZ) {
     nJets_ = 0;
@@ -233,7 +232,7 @@ WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
     }
 */
 void
-WZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
+ZZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
     std::cout << "Filling\n";
     for (auto& particleEntry : particleEntries_)
         particleEntry.second->fillNtupleInfo();
@@ -244,7 +243,7 @@ WZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
 }
 // ------------ method called once each job just after ending the event loop  ------------
 reco::CandidateCollection
-WZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {
+ZZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {
     reco::CandidateCollection cleanedJets;
     for(size_t i = 0; i < jets.size(); ++i) {
         const reco::Candidate& jet = jets[i];
@@ -256,7 +255,7 @@ WZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollecti
 }
 
 bool
-WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand, 
+ZZGenAnalyzer::overlapsCollection(const reco::Candidate& cand, 
                                   reco::CandidateCollection collection,
                                   const float deltaRCut,
                                   const unsigned int maxCompare) {
@@ -271,7 +270,7 @@ WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand,
 }
 
 void 
-WZGenAnalyzer::endJob() 
+ZZGenAnalyzer::endJob() 
 {    
     TTree* metaData = fileService_->make<TTree>("MetaData", "MetaData");
     metaData->Branch("nProcessedEvents", &nProcessed_);
@@ -286,14 +285,14 @@ WZGenAnalyzer::endJob()
 
 /*
 void 
-WZGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
+ZZGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
 {
 }
 */
 
 // ------------ method called when ending the processing of a run  ------------
 void 
-WZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
+ZZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
 {    
     edm::Handle< GenRunInfoProduct > genRunInfoProduct;
     iRun.getByLabel("generator", genRunInfoProduct );
@@ -303,7 +302,7 @@ WZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void 
-WZGenAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+ZZGenAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
@@ -311,14 +310,14 @@ WZGenAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void 
-WZGenAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+ZZGenAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-WZGenAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+ZZGenAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     edm::ParameterSetDescription desc;
@@ -327,4 +326,4 @@ WZGenAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(WZGenAnalyzer);
+DEFINE_FWK_MODULE(ZZGenAnalyzer);
