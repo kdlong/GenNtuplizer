@@ -39,29 +39,33 @@ process.selectedGenParticles = cms.EDFilter("CandViewShallowCloneProducer",
     cut = cms.string("")  
 )
 
-process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
-    src = cms.InputTag("selectedGenParticles"),
-    pdgId = cms.vint32( 13 ),
-    status = cms.vint32( 1 ),
+#process.muons = cms.EDFilter("PdgIdAndStatusCandSelector",
+#    src = cms.InputTag("selectedGenParticles"),
+#    pdgId = cms.vint32( 13 ),
+#    status = cms.vint32( 1 ),
+#)
+#
+#process.selectedMuons = cms.EDFilter("CandViewShallowCloneProducer",
+#    src = cms.InputTag("muons"),
+#    cut = cms.string("pt > 1")
+#)
+#
+#process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
+#    src = cms.InputTag("selectedGenParticles"),
+#    pdgId = cms.vint32( 11 ),
+#    status = cms.vint32( 1 ),                         
+#)
+process.selectedElectrons = cms.EDFilter("GenParticleSelector",
+    src = cms.InputTag("genParticles"),
+    cut = cms.string("abs(pdgId) == 11 && status == 1")  
 )
 
-process.selectedMuons = cms.EDFilter("CandViewShallowCloneProducer",
-    src = cms.InputTag("muons"),
-    cut = cms.string("pt > 10 && abs(eta) < 2.4")
+process.selectedMuons = cms.EDFilter("GenParticleSelector",
+    src = cms.InputTag("genParticles"),
+    cut = cms.string("abs(pdgId) == 13 && status == 1")  
 )
 
-process.electrons = cms.EDFilter("PdgIdAndStatusCandSelector",
-    src = cms.InputTag("selectedGenParticles"),
-    pdgId = cms.vint32( 11 ),
-    status = cms.vint32( 1 ),                         
-)
-
-process.selectedElectrons = cms.EDFilter("CandViewShallowCloneProducer",
-    src = cms.InputTag("electrons"),
-    cut = cms.string("pt > 10 && abs(eta) < 2.5")
-)
-
-process.leptons = cms.EDProducer("CandMerger",
+process.leptons = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", "selectedMuons")
 )
 
@@ -72,14 +76,12 @@ process.sortedLeptons = cms.EDFilter("LargestPtCandSelector",
 
 process.zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('selectedMuons@+ selectedMuons@-'),
-    cut = cms.string('60 < mass < 120 & charge=0'),
-    minNumber = cms.uint32(2)
+    cut = cms.string('mass > 12 & charge=0'),
 )
 
 process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('selectedElectrons@+ selectedElectrons@-'),
-    cut = cms.string('60 < mass < 120 & charge=0'),
-    minNumber = cms.uint32(2)
+    cut = cms.string('mass > 12 & charge=0'),
 )
 
 process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
@@ -114,7 +116,7 @@ process.sortedJets = cms.EDFilter("LargestPtCandSelector",
 
 process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
-    leptons = cms.InputTag("sortedLeptons"),
+    leptons = cms.InputTag("selectedMuons"),
     met = cms.InputTag("genMetTrue"),
     zMuMuCands = cms.InputTag("zMuMuCands"),
     zeeCands = cms.InputTag("zeeCands"),
@@ -125,7 +127,7 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
 )
 
 process.p = cms.Path((process.selectedGenParticles*
-    (process.electrons+process.muons) *
+    #(process.electrons+process.muons) *
     (process.selectedElectrons + process.selectedMuons)* 
     process.leptons*process.sortedLeptons) * 
     (process.zMuMuCands + process.zeeCands) *

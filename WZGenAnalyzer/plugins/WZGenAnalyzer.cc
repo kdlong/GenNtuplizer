@@ -100,7 +100,8 @@ WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
 {
     nProcessed_ = 0;
     nPass_ = 0;
-    
+    crossSection_ = cfg.getUntrackedParameter<double>("xSec", -1);
+
     unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
     std::string jetsName = cfg.getUntrackedParameter<std::string>("jetsName", "j");
     particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets);
@@ -154,14 +155,25 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     event.getByToken(zMuMuCandsToken_, zMuMuCands); 
     edm::Handle<reco::CandidateView> zeeCands;
     event.getByToken(zeeCandsToken_, zeeCands);
+    
+    std::cout << genLeptons->size();
+    /*for (size_t i = 0; i < genLeptons->size(); i++) {
+        const reco::GenParticle& lepton = dynamic_cast<const reco::GenParticle&>((*genLeptons)[i]);
+        if (lepton.fromHardProcessFinalState())
+            std::cout << "I found one!" << std::endl;
+        else
+            std::cout << "I didn't find one!" << std::endl;
+    }*/
+        
+
     if (genLeptons->size() < nKeepLeps_) {
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
-    if ((*genLeptons)[0].pt() < 20 || (*genLeptons)[0].pt() < 20) {
-        std::cout << "Failed lepton pt cuts";
-        return;
-    }
+    //if ((*genLeptons)[0].pt() < 20 || (*genLeptons)[0].pt() < 20) {
+    //    std::cout << "Failed lepton pt cuts";
+    //    return;
+    //}
     if (zeeCands->size() == 0 && zMuMuCands->size() == 0) {
         std::cout << "Failed Z cut" << std::endl;
         return;
@@ -256,7 +268,7 @@ WZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollecti
 }
 
 bool
-WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand, 
+WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand,
                                   reco::CandidateCollection collection,
                                   const float deltaRCut,
                                   const unsigned int maxCompare) {
@@ -295,9 +307,9 @@ WZGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
 void 
 WZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
 {    
-    edm::Handle< GenRunInfoProduct > genRunInfoProduct;
-    iRun.getByLabel("generator", genRunInfoProduct );
-    crossSection_ = (double) genRunInfoProduct->crossSection(); 
+    //edm::Handle< GenRunInfoProduct > genRunInfoProduct;
+    //iRun.getByLabel("generator", genRunInfoProduct );
+    //crossSection_ = (double) genRunInfoProduct->crossSection(); 
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
