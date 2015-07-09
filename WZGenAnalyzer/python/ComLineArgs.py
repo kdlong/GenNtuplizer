@@ -43,7 +43,7 @@ if options.useDefaultDataset != "":
     if options.outputFile == "test.root":
         if not os.path.isfile(sample_info["outputFile"]): 
             options.outputFile = sample_info["outputFile"]    
-        elif "Y" in raw_input('This file already exists! Overwrite? (y/n)'):
+        elif "Y" in raw_input('This file already exists! Overwrite? (y/n) ').upper():
             options.outputFile = sample_info["outputFile"]    
 
 if options.outputFile == "test.root":
