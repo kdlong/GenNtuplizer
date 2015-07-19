@@ -2,7 +2,7 @@
 <use name=FWCore/Framework>
 <use name=FWCore/ParameterSet>
 <export>
-    <lib name=GenNtuplizer/WZGenAnalyzer>
+    <lib name=GenNtuplizer/DibosonGenAnalyzer>
     <lib name=ZCandTest/ZCandTest>
 </export>
 <export>

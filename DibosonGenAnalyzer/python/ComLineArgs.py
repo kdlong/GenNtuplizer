@@ -2,7 +2,7 @@
 import os
 import sys
 from FWCore.ParameterSet.VarParsing import VarParsing
-import GenNtuplizer.WZGenAnalyzer.default_datasets as default_datasets
+import GenNtuplizer.DibosonGenAnalyzer.default_datasets as default_datasets
 options = VarParsing ('analysis')
 
 options.register ('crossSection',

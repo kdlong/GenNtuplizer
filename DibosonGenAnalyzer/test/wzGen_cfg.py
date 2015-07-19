@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-import GenNtuplizer.WZGenAnalyzer.ComLineArgs as ComLineArgs
+import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
 process = cms.Process("WZGenAnalyze")
 
@@ -61,13 +61,13 @@ process.zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     minNumber = cms.uint32(2)
 )
 
-process.sortedZeeCands = cms.EDFilter("BestZCandSelector",
+process.sortedZeeCands = cms.EDFilter("BestZCandViewSelector",
     src = cms.InputTag("zeeCands"),
     maxNumber = cms.uint32(3),
     minNumber = cms.uint32(2)
 )
 
-process.sortedZMuMuCands = cms.EDFilter("BestZCandSelector",
+process.sortedZMuMuCands = cms.EDFilter("BestZCandViewSelector",
     src = cms.InputTag("zMuMuCands"),
     maxNumber = cms.uint32(3),
     minNumber = cms.uint32(2)
@@ -105,7 +105,7 @@ process.sortedJets = cms.EDFilter("LargestPtCandSelector",
     maxNumber = cms.uint32(10)
 )
 
-process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
+process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     met = cms.InputTag("sortedNeutrinos"),

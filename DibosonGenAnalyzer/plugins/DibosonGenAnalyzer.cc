@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    GenNtuplizer/WZGenAnalyzer
-// Class:      WZGenAnalyzer
+// Package:    GenNtuplizer/DibosonGenAnalyzer
+// Class:      DibosonGenAnalyzer
 // 
-/**\class WZGenAnalyzer WZGenAnalyzer.cc GenNtuplizer/WZGenAnalyzer/plugins/WZGenAnalyzer.cc
+/**\class DibosonGenAnalyzer DibosonGenAnalyzer.cc GenNtuplizer/DibosonGenAnalyzer/plugins/DibosonGenAnalyzer.cc
 
  Description: [one line class summary]
 
@@ -46,10 +46,10 @@
 //
 
 
-class WZGenAnalyzer : public edm::EDAnalyzer {
+class DibosonGenAnalyzer : public edm::EDAnalyzer {
     public:
-        explicit WZGenAnalyzer(const edm::ParameterSet&);
-        ~WZGenAnalyzer();
+        explicit DibosonGenAnalyzer(const edm::ParameterSet&);
+        ~DibosonGenAnalyzer();
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
     private:
@@ -97,7 +97,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
 
         // ----------member data ---------------------------
 };
-WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
+DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
     genMETToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("met"))),
@@ -127,7 +127,7 @@ WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     }
 }
 
-WZGenAnalyzer::~WZGenAnalyzer()
+DibosonGenAnalyzer::~DibosonGenAnalyzer()
 {
      // do anything here that needs to be done at desctruction time
      // (e.g. close files, deallocate resources etc.)
@@ -140,7 +140,7 @@ WZGenAnalyzer::~WZGenAnalyzer()
 
 // ------------ method called for each event    ------------
 void
-WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
+DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 {
     nProcessed_++;
     edm::Handle<reco::CandidateCollection> genLeptons;
@@ -201,7 +201,7 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 // ------------ method called once each job just before starting event loop  ------------
 
 const reco::Candidate&
-WZGenAnalyzer::chooseBestZ(reco::CandidateView zMuMuCands,
+DibosonGenAnalyzer::chooseBestZ(reco::CandidateView zMuMuCands,
                            reco::CandidateView zeeCands) { 
     const float ZMASS = 91.1876;
     if (zeeCands.empty()) {
@@ -223,7 +223,7 @@ WZGenAnalyzer::chooseBestZ(reco::CandidateView zMuMuCands,
 }       
 
 void 
-WZGenAnalyzer::beginJob()
+DibosonGenAnalyzer::beginJob()
 {
     ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
     addParticlesToNtuple();
@@ -235,7 +235,7 @@ WZGenAnalyzer::beginJob()
 }
 
 void
-WZGenAnalyzer::addParticlesToNtuple() {
+DibosonGenAnalyzer::addParticlesToNtuple() {
     for (auto& particleEntry : particleEntries_)
         particleEntry.second->createNtupleEntry(ntuple_);
     ntuple_->Branch("zMass", &zMass_);
@@ -245,7 +245,7 @@ WZGenAnalyzer::addParticlesToNtuple() {
 }
 /*
 void
-WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
+DibosonGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
                           edm::Handle<reco::CandidateCollection> jets,
                           const reco::Candidate& bestZ) {
     nJets_ = 0;
@@ -260,7 +260,7 @@ WZGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
     }
 */
 void
-WZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
+DibosonGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
     std::cout << "Filling\n";
     for (auto& particleEntry : particleEntries_)
         particleEntry.second->fillNtupleInfo();
@@ -270,7 +270,7 @@ WZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
     ntuple_->Fill();
 }
 void
-WZGenAnalyzer::setWeightInfo(const edm::Event& event) {
+DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
     edm::Handle<GenEventInfoProduct> genEventInfo;
     event.getByToken(genEventInfoToken_, genEventInfo);
     weight_ = genEventInfo->weights()[0];
@@ -284,7 +284,7 @@ WZGenAnalyzer::setWeightInfo(const edm::Event& event) {
     }
 }
 reco::CandidateCollection
-WZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {
+DibosonGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {
     reco::CandidateCollection cleanedJets;
     for(size_t i = 0; i < jets.size(); ++i) {
         const reco::Candidate& jet = jets[i];
@@ -296,7 +296,7 @@ WZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollecti
 }
 
 bool
-WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand,
+DibosonGenAnalyzer::overlapsCollection(const reco::Candidate& cand,
                                   reco::CandidateCollection collection,
                                   const float deltaRCut,
                                   const unsigned int maxCompare) {
@@ -311,7 +311,7 @@ WZGenAnalyzer::overlapsCollection(const reco::Candidate& cand,
 }
 
 void 
-WZGenAnalyzer::endJob() 
+DibosonGenAnalyzer::endJob() 
 {    
     TTree* metaData = fileService_->make<TTree>("MetaData", "MetaData");
     metaData->Branch("nProcessedEvents", &nProcessed_);
@@ -326,13 +326,13 @@ WZGenAnalyzer::endJob()
 
 /*
 void 
-WZGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
+DibosonGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
 {
 }
 */
 // ------------ method called when ending the processing of a run  ------------
 void 
-WZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
+DibosonGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
 {   
 /*
     Currently just prints out the whole LHE Header. Kind of useless    
@@ -355,7 +355,7 @@ WZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void 
-WZGenAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+DibosonGenAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
@@ -363,14 +363,14 @@ WZGenAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void 
-WZGenAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+DibosonGenAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-WZGenAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+DibosonGenAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     edm::ParameterSetDescription desc;
@@ -379,4 +379,4 @@ WZGenAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(WZGenAnalyzer);
+DEFINE_FWK_MODULE(DibosonGenAnalyzer);

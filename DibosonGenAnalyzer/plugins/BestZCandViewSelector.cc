@@ -17,7 +17,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "CommonTools/UtilAlgos/interface/ObjectSelector.h"
 #include "CommonTools/UtilAlgos/interface/SortCollectionSelector.h"
-#include "GenNtuplizer/WZGenAnalyzer/interface/ZMassComparator.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/ZMassComparator.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/CompositeCandidate.h"
 
