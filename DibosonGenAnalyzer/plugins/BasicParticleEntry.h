@@ -18,7 +18,7 @@ class BasicParticleEntry {
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
         const reco::Candidate& getFirstDistinctMother(const reco::Candidate& cand);
-    private:
+    protected:
         reco::CandidateCollection particles_;
         std::string name_;
         unsigned int num_;

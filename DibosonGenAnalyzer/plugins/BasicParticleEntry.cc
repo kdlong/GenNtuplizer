@@ -21,11 +21,13 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
     }
     for (unsigned int i = 1; i <= nKeep_; i++)
     {
-        std::string particleName = name_ + std::to_string(i);
+        std::string particleName = name_;
+        if (nKeep_ != 1)
+            particleName += std::to_string(i);
         ntuple->Branch((particleName + "Pt").c_str(), &pts_[i-1]);
         ntuple->Branch((particleName + "Eta").c_str(), &etas_[i-1]);
         if (storeGenInfo_) {
-            ntuple->Branch((particleName + "pdgId").c_str(), &motherIds_[i-1]);
+            ntuple->Branch((particleName + "pdgId").c_str(), &pdgids_[i-1]);
             ntuple->Branch((particleName + "motherId").c_str(), &motherIds_[i-1]);
         } 
     }

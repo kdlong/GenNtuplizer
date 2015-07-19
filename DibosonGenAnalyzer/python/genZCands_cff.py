@@ -14,7 +14,7 @@ zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
 combinedZCands = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", "zeeCands")
 )
-sortedZCands = cms.EDFilter("BestZCandViewSelector",
+sortedZCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("combinedZCands"),
     maxNumber = cms.uint32(10)
 )
