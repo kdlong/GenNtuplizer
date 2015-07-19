@@ -1,12 +1,12 @@
 <export>
 </export>
-<library   name="GenNtuplizerWZGenAnalyzer_plugins" file="*.cc">
+<library   name="GenNtuplizerDibosonGenAnalyzer_plugins" file="*.cc">
   <flags   EDM_PLUGIN="1"/>
   <use name="FWCore/Framework"/>
   <use name="FWCore/PluginManager"/>
   <use name="FWCore/ParameterSet"/>
 
-  <use   name="GenNtuplizer/WZGenAnalyzer"/>
+  <use   name="GenNtuplizer/DibosonGenAnalyzer"/>
   <use   name="FWCore/MessageLogger"/>
   <use   name="FWCore/Utilities"/>
   <use   name="DataFormats/Candidate"/>

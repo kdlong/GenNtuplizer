@@ -105,16 +105,16 @@ ZZGenAnalyzer::ZZGenAnalyzer(const edm::ParameterSet& cfg) :
     
     unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
     std::string jetsName = cfg.getUntrackedParameter<std::string>("jetsName", "j");
-    particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets);
+    particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets, false);
     
     nKeepLeps_ = cfg.getUntrackedParameter<unsigned int>("nKeepLeps", 0);
     std::string lepsName = cfg.getUntrackedParameter<std::string>("lepsName", "l");
-    particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_);
+    particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_, true);
     
     nKeepExtra_ = cfg.getUntrackedParameter<unsigned int>("nKeepExtra", 0);
     if (nKeepExtra_ > 0) {
         std::string extraName = cfg.getUntrackedParameter<std::string>("extraName", "x");
-        particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_);
+        particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_, true);
     }
 }
 

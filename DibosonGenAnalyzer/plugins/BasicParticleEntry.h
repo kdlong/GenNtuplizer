@@ -12,19 +12,22 @@
 class BasicParticleEntry {
     public:
         BasicParticleEntry();
-        BasicParticleEntry(std::string name, unsigned int nKeep);
+        BasicParticleEntry(std::string name, unsigned int nKeep, bool);
         ~BasicParticleEntry();
         void setCollection(reco::CandidateCollection);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
+        const reco::Candidate& getFirstDistinctMother(const reco::Candidate& cand);
     private:
         reco::CandidateCollection particles_;
         std::string name_;
         unsigned int num_;
         unsigned int nKeep_;
+        bool storeGenInfo_;
         std::vector<float> pts_;
         std::vector<float> etas_;
-        std::vector<float> pdgids_;
+        std::vector<int> pdgids_;
+        std::vector<int> motherIds_;
 };
 
 #endif

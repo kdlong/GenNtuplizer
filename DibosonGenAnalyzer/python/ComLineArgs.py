@@ -18,7 +18,13 @@ options.register('isMiniAOD',
     "is MiniAOD file (run over prunedGenParticles"
     " rather than genParticles)"
 )
-
+options.register('redoJets',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "Remake GenJetsNoNu (only valid for miniAOD,"
+    " and only necessary for Phys14 samples)"
+)
 options.register('useDefaultDataset',
     '', # Default value
     options.multiplicity.singleton,

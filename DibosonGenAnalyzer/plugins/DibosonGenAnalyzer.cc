@@ -33,8 +33,6 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-#include "DataFormats/METReco/interface/GenMET.h"
-#include "DataFormats/METReco/interface/GenMETCollection.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
@@ -55,10 +53,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
     private:
         edm::EDGetTokenT<reco::CandidateCollection> genLeptonsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> genJetsToken_;
-        edm::EDGetTokenT<reco::CandidateCollection> genMETToken_;
         edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
-        edm::EDGetTokenT<reco::CandidateView> zMuMuCandsToken_;
-        edm::EDGetTokenT<reco::CandidateView> zeeCandsToken_;
+        edm::EDGetTokenT<reco::CandidateView> zCandsToken_;
         edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
         edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
         edm::Service<TFileService> fileService_;
@@ -69,7 +65,6 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         unsigned int nKeepExtra_;
         float zMass_;
         float zPt_;
-        float MET_;
         bool isZMuMu_;
         double weight_;
         double XWGTUP_;
@@ -83,7 +78,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         virtual void endJob() override;
         void addParticlesToNtuple();
         const reco::Candidate& chooseBestZ(reco::CandidateView, reco::CandidateView);
-        void fillNtuple(float, const reco::Candidate&);
+        void fillNtuple(const reco::Candidate&);
         void setWeightInfo(const edm::Event& event);
         bool overlapsCollection(const reco::Candidate& cand, 
                                 reco::CandidateCollection collection,
@@ -100,7 +95,6 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
 DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
-    genMETToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("met"))),
     extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "extraParticle", edm::InputTag("genParticles")))),
     zMuMuCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zMuMuCands"))),
@@ -114,16 +108,16 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
 
     unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
     std::string jetsName = cfg.getUntrackedParameter<std::string>("jetsName", "j");
-    particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets);
+    particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets, false);
     
     nKeepLeps_ = cfg.getUntrackedParameter<unsigned int>("nKeepLeps", 0);
     std::string lepsName = cfg.getUntrackedParameter<std::string>("lepsName", "l");
-    particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_);
+    particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_, true);
     
     nKeepExtra_ = cfg.getUntrackedParameter<unsigned int>("nKeepExtra", 0);
     if (nKeepExtra_ > 0) {
         std::string extraName = cfg.getUntrackedParameter<std::string>("extraName", "x");
-        particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_);
+        particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_, true);
     }
 }
 
@@ -184,16 +178,12 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     //    std::cout << "Failed lepton pt cuts";
     //    return;
     //}
-    if (zeeCands->size() == 0 && zMuMuCands->size() == 0) {
+    if (Cands->size() < nZCut) {
         std::cout << "Failed Z cut" << std::endl;
         return;
     }
-    //if (genMET < 30) {
-    //    return;
-    //    std::cout << "Failed MET cut" << std::endl;
-    //}
     setWeightInfo(event);
-    fillNtuple(0, chooseBestZ(*zMuMuCands, *zeeCands));
+    fillNtuple(chooseBestZ(*zMuMuCands, *zeeCands));
     eventid_ = event.id().event();
     nPass_++;
 }
@@ -240,7 +230,6 @@ DibosonGenAnalyzer::addParticlesToNtuple() {
         particleEntry.second->createNtupleEntry(ntuple_);
     ntuple_->Branch("zMass", &zMass_);
     ntuple_->Branch("zPt", &zPt_);
-    ntuple_->Branch("MET", &MET_);
     ntuple_->Branch("isZMuMu", &isZMuMu_);
 }
 /*
@@ -260,13 +249,12 @@ DibosonGenAnalyzer::fillNtuple(edm::Handle<reco::CandidateCollection> leps,
     }
 */
 void
-DibosonGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
+DibosonGenAnalyzer::fillNtuple(const reco::Candidate& bestZ) {
     std::cout << "Filling\n";
     for (auto& particleEntry : particleEntries_)
         particleEntry.second->fillNtupleInfo();
     zMass_ = bestZ.mass();
     zPt_ = bestZ.pt();
-    MET_ = MET;
     ntuple_->Fill();
 }
 void
