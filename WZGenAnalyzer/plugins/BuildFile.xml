@@ -1,20 +1,19 @@
-<use name="FWCore/Framework"/>
-<use name="FWCore/PluginManager"/>
-<use name="FWCore/ParameterSet"/>
-
-<use   name="GenNtuplizer/WZGenAnalyzer"/>
-<use   name="FWCore/MessageLogger"/>
-<use   name="FWCore/Utilities"/>
-<use   name="DataFormats/Candidate"/>
-<use   name="DataFormats/Common"/>
-<use   name="PhysicsTools/PatUtils"/>
-<use   name="PhysicsTools/Utilities"/>
-<use   name="CommonTools/UtilAlgos"/>
-<use   name="root"/>
-
 <export>
-  <lib name=“1”/>
 </export>
+<library   name="GenNtuplizerWZGenAnalyzer_plugins" file="*.cc">
+  <flags   EDM_PLUGIN="1"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/PluginManager"/>
+  <use name="FWCore/ParameterSet"/>
 
-<flags   EDM_PLUGIN="1"/>
+  <use   name="GenNtuplizer/WZGenAnalyzer"/>
+  <use   name="FWCore/MessageLogger"/>
+  <use   name="FWCore/Utilities"/>
+  <use   name="DataFormats/Candidate"/>
+  <use   name="DataFormats/Common"/>
+  <use   name="PhysicsTools/PatUtils"/>
+  <use   name="PhysicsTools/Utilities"/>
+  <use   name="CommonTools/UtilAlgos"/>
+  <use   name="root"/>
+</library>
 

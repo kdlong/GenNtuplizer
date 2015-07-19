@@ -2,7 +2,7 @@ def getSampleInfo(options):
     sample_info = { 
         'MGNLO-inc' : { "inputFiles" : "file:/afs/cern.ch/work/k/kelong/WZ_MCAnalysis/MG5aMCatNLO_WZ0j_OfficialGridpack/MG5aMCatNLO_WZ0j_OfficialGridpack_pythia8_TuneCUETP8M1.root",
             "crossSection" : 5.246, 
-            "outputFile" : "MG5aMCatNLO_WZ0j_OfficialGridpack/MG5aMCatNLO_WZ0j_OfficialGridpack_pythia8_TuneCUETP8M1_Ntuple.root",
+            "outputFile" : "/afs/cern.ch/work/k/kelong/WZ_MCAnalysis/MG5aMCatNLO_WZ0j_OfficialGridpack/MG5aMCatNLO_WZ0j_OfficialGridpack_pythia8_TuneCUETP8M1_Ntuple.root",
             "isMiniAOD" : 0
         },
         'MGNLO-01j' : { "inputFiles" : "file:/afs/cern.ch/work/k/kelong/WZ_MCAnalysis/MG5aMCatNLO_WZ01j_OfficialGridpack/MG5aMCatNLO_WZ01j_OfficialGridpack_pythia8_TuneCUETP8M1.root",

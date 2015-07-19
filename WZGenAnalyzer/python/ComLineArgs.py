@@ -1,5 +1,6 @@
 # parse variables from cmsRun
 import os
+import sys
 from FWCore.ParameterSet.VarParsing import VarParsing
 import GenNtuplizer.WZGenAnalyzer.default_datasets as default_datasets
 options = VarParsing ('analysis')
@@ -34,21 +35,24 @@ options.maxEvents = -1
 options.parseArguments() 
 
 if options.inputFiles == "" and options.useDefaultDataset == "":
-    print "You need to enter an inputFile name!"
+    sys.stderr.write("You need to enter an inputFile name!")
 if options.useDefaultDataset != "":
     sample_info = default_datasets.getSampleInfo(options)
     options.inputFiles = sample_info["inputFiles"]
     options.crossSection = sample_info["crossSection"]
     options.isMiniAOD = sample_info["isMiniAOD"]
-    if options.outputFile == "test.root":
+    if options.outputFile == "test.root" or "test_numEvent" in options.outputFile:
         if not os.path.isfile(sample_info["outputFile"]): 
+            print "Did it"
             options.outputFile = sample_info["outputFile"]    
-        elif "Y" in raw_input('This file already exists! Overwrite? (y/n) ').upper():
-            options.outputFile = sample_info["outputFile"]    
-
+        else:
+            sys.stderr.write('This file already exists! Overwrite? (y/n) ')
+            if "Y" in raw_input().upper():
+                options.outputFile = sample_info["outputFile"]    
+print options.outputFile
 if options.outputFile == "test.root":
-    print "You didn't enter an output file name. Using default" \
-          " name 'test.root'"
+    sys.stderr.write("You didn't enter an output file name. Using default"
+          " name 'test.root'")
 if "PWG-Off" in options.useDefaultDataset:
     options.isMiniAOD = 1
 elif options.useDefaultDataset != "":

@@ -2,7 +2,9 @@
 <use name=FWCore/Framework>
 <use name=FWCore/ParameterSet>
 <export>
-  <lib name=GenNtuplizer/WZGenAnalyzer>
+    <lib name=GenNtuplizer/WZGenAnalyzer>
+    <lib name=ZCandTest/ZCandTest>
 </export>
-
-<Flags SEAL_PLUGIN_NAME=GenNtuplizer>
+<export>
+    <lib   name="1"/>
+</export>

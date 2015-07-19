@@ -28,14 +28,15 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
-#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/METReco/interface/GenMET.h"
 #include "DataFormats/METReco/interface/GenMETCollection.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
 #include "BasicParticleEntry.h"
 #include "TTree.h"
@@ -58,6 +59,8 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
         edm::EDGetTokenT<reco::CandidateView> zMuMuCandsToken_;
         edm::EDGetTokenT<reco::CandidateView> zeeCandsToken_;
+        edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
+        edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
         edm::Service<TFileService> fileService_;
         TTree* ntuple_;
         std::map<std::string, BasicParticleEntry*> particleEntries_;
@@ -68,6 +71,10 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         float zPt_;
         float MET_;
         bool isZMuMu_;
+        double weight_;
+        double XWGTUP_;
+        std::vector<std::string> LHEWeightIDs_;
+        std::vector<double> LHEWeights_;
         unsigned int eventid_;
         unsigned int nProcessed_;
         unsigned int nPass_;
@@ -77,6 +84,7 @@ class WZGenAnalyzer : public edm::EDAnalyzer {
         void addParticlesToNtuple();
         const reco::Candidate& chooseBestZ(reco::CandidateView, reco::CandidateView);
         void fillNtuple(float, const reco::Candidate&);
+        void setWeightInfo(const edm::Event& event);
         bool overlapsCollection(const reco::Candidate& cand, 
                                 reco::CandidateCollection collection,
                                 const float deltaRCut,
@@ -96,7 +104,9 @@ WZGenAnalyzer::WZGenAnalyzer(const edm::ParameterSet& cfg) :
     extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "extraParticle", edm::InputTag("genParticles")))),
     zMuMuCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zMuMuCands"))),
-    zeeCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zeeCands")))
+    zeeCandsToken_(consumes<reco::CandidateView>(cfg.getParameter<edm::InputTag>("zeeCands"))),
+    genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
+    lheEventToken_(consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer")))
 {
     nProcessed_ = 0;
     nPass_ = 0;
@@ -182,6 +192,7 @@ WZGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
     //    return;
     //    std::cout << "Failed MET cut" << std::endl;
     //}
+    setWeightInfo(event);
     fillNtuple(0, chooseBestZ(*zMuMuCands, *zeeCands));
     eventid_ = event.id().event();
     nPass_++;
@@ -217,6 +228,10 @@ WZGenAnalyzer::beginJob()
     ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
     addParticlesToNtuple();
     ntuple_->Branch("evtid", &eventid_);
+    ntuple_->Branch("weight", &weight_);
+    ntuple_->Branch("XWGTUP", &XWGTUP_);
+    ntuple_->Branch("LHEweights", &LHEWeights_);
+    ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
 
 void
@@ -254,7 +269,20 @@ WZGenAnalyzer::fillNtuple(float MET, const reco::Candidate& bestZ) {
     MET_ = MET;
     ntuple_->Fill();
 }
-// ------------ method called once each job just after ending the event loop  ------------
+void
+WZGenAnalyzer::setWeightInfo(const edm::Event& event) {
+    edm::Handle<GenEventInfoProduct> genEventInfo;
+    event.getByToken(genEventInfoToken_, genEventInfo);
+    weight_ = genEventInfo->weights()[0];
+
+    edm::Handle<LHEEventProduct> lheEventInfo;
+    event.getByToken(lheEventToken_, lheEventInfo);
+    XWGTUP_ = lheEventInfo->originalXWGTUP();
+    for(const auto& weight : lheEventInfo->weights()) {
+        LHEWeightIDs_.push_back(weight.id);
+        LHEWeights_.push_back(weight.wgt);
+    }
+}
 reco::CandidateCollection
 WZGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {
     reco::CandidateCollection cleanedJets;
@@ -302,16 +330,28 @@ WZGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
 {
 }
 */
-
 // ------------ method called when ending the processing of a run  ------------
 void 
 WZGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
-{    
-    //edm::Handle< GenRunInfoProduct > genRunInfoProduct;
-    //iRun.getByLabel("generator", genRunInfoProduct );
-    //crossSection_ = (double) genRunInfoProduct->crossSection(); 
-}
+{   
+/*
+    Currently just prints out the whole LHE Header. Kind of useless    
 
+    edm::Handle<LHERunInfoProduct> lheRunInfoHandle;
+    iRun.getByLabel("externalLHEProducer", lheRunInfoHandle );
+
+    typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
+
+    for (headers_const_iterator iter=lheRunInfoHandle->headers_begin(); iter!=lheRunInfoHandle->headers_end(); iter++){
+        std::cout << iter->tag() << std::endl;
+        std::vector<std::string> lines = iter->lines();
+        weightNames_ = lines; 
+        for (unsigned int iLine = 0; iLine<lines.size(); iLine++) {
+            std::cout << lines.at(iLine);
+        }
+    }  
+*/
+}
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void 

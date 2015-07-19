@@ -22,12 +22,12 @@ process.TFileService = cms.Service("TFileService",
 
 process.selectedElectrons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("abs(pdgId) == 11 && status == 1 && statusFlags().fromHardProcess")  
+    cut = cms.string("abs(pdgId) == 11 && fromHardProcessFinalState")  
 )
 
 process.selectedMuons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("abs(pdgId) == 13 && isPromptFinalState")  
+    cut = cms.string("abs(pdgId) == 13 && fromHardProcessFinalState")  
 )
 
 process.leptons = cms.EDProducer("CandViewMerger",
@@ -109,8 +109,8 @@ process.analyzeWZ = cms.EDAnalyzer("WZGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     met = cms.InputTag("sortedNeutrinos"),
-    zMuMuCands = cms.InputTag("zMuMuCands"),
-    zeeCands = cms.InputTag("zeeCands"),
+    zMuMuCands = cms.InputTag("sortedZMuMuCands"),
+    zeeCands = cms.InputTag("sortedZeeCands"),
     nKeepLeps = cms.untracked.uint32(3),
     nKeepJets = cms.untracked.uint32(2),
     nKeepExtra = cms.untracked.uint32(0),

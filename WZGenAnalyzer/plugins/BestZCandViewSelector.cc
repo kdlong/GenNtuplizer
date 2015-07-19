@@ -26,6 +26,6 @@ typedef ObjectSelector<
             reco::CandidateView,
             BestZCand<reco::Candidate>
           >
-        > BestZCandSelector;
+        > BestZCandViewSelector;
 
-DEFINE_FWK_MODULE( BestZCandSelector );
+DEFINE_FWK_MODULE( BestZCandViewSelector );
