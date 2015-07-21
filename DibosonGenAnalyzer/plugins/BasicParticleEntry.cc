@@ -35,15 +35,11 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
 }
 void
 BasicParticleEntry::fillNtupleInfo() {
-    etas_.clear();
-    etas_.resize(nKeep_, -999);
-    pts_.clear();
-    pts_.resize(nKeep_, -999); 
+    etas_.assign(nKeep_, -999);
+    pts_.assign(nKeep_, -999); 
     if (storeGenInfo_) {
-        pdgids_.clear();
-        pdgids_.resize(nKeep_, -999);
-        motherIds_.clear();
-        motherIds_.resize(nKeep_, -999);
+        pdgids_.assign(nKeep_, -999);
+        motherIds_.assign(nKeep_, -999);
     }
     num_ = particles_.size();
     for(size_t i = 0; i < particles_.size(); i++) {

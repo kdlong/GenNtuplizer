@@ -56,7 +56,6 @@ ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
     isTrueZValues_.resize(nKeep_, -999);
     isUniqueValues_.resize(nKeep_, -999);
     masses_.resize(nKeep_, -999);
-    std::cout << "CREATING NEW ENTRY!"; 
     for (unsigned int i = 1; i <= nKeep_; i++)
     {
         std::string particleName = name_ + std::to_string(i);
@@ -68,12 +67,9 @@ ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
 void
 ZCandidateEntry::fillNtupleInfo() {
     BasicParticleEntry::fillNtupleInfo();
-    isUniqueValues_.clear();
-    isUniqueValues_.resize(nKeep_, -999);
-    isTrueZValues_.clear();
-    isTrueZValues_.resize(nKeep_, -999); 
-    masses_.clear();
-    masses_.resize(nKeep_, -999); 
+    isUniqueValues_.assign(nKeep_, -999);
+    isTrueZValues_.assign(nKeep_, -999); 
+    masses_.assign(nKeep_, -999); 
     
     for(size_t i = 0; i < particles_.size(); i++) {
         if (i == nKeep_)

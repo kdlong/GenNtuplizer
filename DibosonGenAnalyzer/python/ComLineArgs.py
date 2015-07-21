@@ -18,6 +18,13 @@ options.register('isMiniAOD',
     "is MiniAOD file (run over prunedGenParticles"
     " rather than genParticles)"
 )
+options.register('submit',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "is MiniAOD file (use input_file_list rather"
+    " than those specficed useby DefaultDataset)"
+)
 options.register('redoJets',
     0, # Default value
     options.multiplicity.singleton,
@@ -34,6 +41,7 @@ options.register('useDefaultDataset',
     "'MGNLO-inc': MG5_aMC@NLO inclusive NLO sample \n"
     "'MGNLO-01j': MG5_aMC@NLO 0,1j NLO FxFx Merged sample \n"
     "'MGLO-inc': MG5_aMC@NLO inclusive NLO sample \n"
+    "'MGLO-Phys14': MG5_aMC@NLO LO 012j SUSY Phys14 sample \n"
 )
 
 options.outputFile = "test.root"
@@ -44,12 +52,14 @@ if options.inputFiles == "" and options.useDefaultDataset == "":
     sys.stderr.write("You need to enter an inputFile name!")
 if options.useDefaultDataset != "":
     sample_info = default_datasets.getSampleInfo(options)
-    options.inputFiles = sample_info["inputFiles"]
+    if not options.submit:
+        options.inputFiles = sample_info["inputFiles"]
     options.crossSection = sample_info["crossSection"]
     options.isMiniAOD = sample_info["isMiniAOD"]
+    if "redoJets" in sample_info.keys():
+        options.redoJets = sample_info["redoJets"]
     if options.outputFile == "test.root" or "test_numEvent" in options.outputFile:
         if not os.path.isfile(sample_info["outputFile"]): 
-            print "Did it"
             options.outputFile = sample_info["outputFile"]    
         else:
             sys.stderr.write('This file already exists! Overwrite? (y/n) ')
@@ -59,10 +69,6 @@ print options.outputFile
 if options.outputFile == "test.root":
     sys.stderr.write("You didn't enter an output file name. Using default"
           " name 'test.root'")
-if "PWG-Off" in options.useDefaultDataset:
-    options.isMiniAOD = 1
-elif options.useDefaultDataset != "":
-    options.isMiniAOD = 0
 
 def getArgs():
     return options

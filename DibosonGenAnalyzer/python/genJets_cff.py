@@ -29,7 +29,7 @@ elif options.redoJets:
     )
 
     import RecoJets.Configuration.RecoGenJets_cff as RecoGenJets
-    ak4GenJetsNoNu = RecoJets.ak4GenJets.clone( 
+    ak4GenJetsNoNu = RecoGenJets.ak4GenJets.clone( 
             src = cms.InputTag("genParticlesForJetsNoNu") )
     selectJets += cms.Sequence(genParticlesForJetsNoNu*ak4GenJetsNoNu)
 

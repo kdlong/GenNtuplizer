@@ -122,6 +122,15 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
         std::string extraName = cfg.getUntrackedParameter<std::string>("extraName", "x");
         particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_, true);
     }
+
+    ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
+    addParticlesToNtuple();
+    
+    ntuple_->Branch("evtid", &eventid_);
+    ntuple_->Branch("weight", &weight_);
+    ntuple_->Branch("XWGTUP", &XWGTUP_);
+    ntuple_->Branch("LHEweights", &LHEWeights_);
+    ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
 
 DibosonGenAnalyzer::~DibosonGenAnalyzer()
@@ -176,13 +185,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
 void 
 DibosonGenAnalyzer::beginJob()
 {
-    ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
-    addParticlesToNtuple();
-    ntuple_->Branch("evtid", &eventid_);
-    ntuple_->Branch("weight", &weight_);
-    ntuple_->Branch("XWGTUP", &XWGTUP_);
-    ntuple_->Branch("LHEweights", &LHEWeights_);
-    ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
 
 void
@@ -219,10 +221,17 @@ DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
     edm::Handle<LHEEventProduct> lheEventInfo;
     event.getByToken(lheEventToken_, lheEventInfo);
     XWGTUP_ = lheEventInfo->originalXWGTUP();
+   
+    LHEWeights_.resize(lheEventInfo->weights().size(), 0);
+    LHEWeightIDs_.resize(lheEventInfo->weights().size(), "");
+    
+    int i = 0;
     for(const auto& weight : lheEventInfo->weights()) {
-        LHEWeightIDs_.push_back(weight.id);
-        LHEWeights_.push_back(weight.wgt);
+        LHEWeightIDs_[i] = weight.id;
+        LHEWeights_[i] = weight.wgt;
+        i++;
     }
+
 }
 reco::CandidateCollection
 DibosonGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {

@@ -1,5 +1,18 @@
 def getSampleInfo(options):
     sample_info = { 
+        'MGLO-Phys14' : {
+            "inputFiles" :
+                """/store/mc/Spring14miniaod/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/141029_PU40bx50_PLS170_V6AN2-v1/20000/243769ED-4C6B-E411-A87D-000F530E4774.root
+                /store/mc/Spring14miniaod/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/141029_PU40bx50_PLS170_V6AN2-v1/20000/3AB77DFA-306B-E411-B601-000F530E4790.root,
+                /store/mc/Spring14miniaod/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/141029_PU40bx50_PLS170_V6AN2-v1/20000/3EBD7BC1-526B-E411-BF6A-D4AE52E945A0.root,
+                /store/mc/Spring14miniaod/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/141029_PU40bx50_PLS170_V6AN2-v1/20000/B63AEDB9-396B-E411-9695-0002C94CD0EC.root,
+                /store/mc/Spring14miniaod/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/141029_PU40bx50_PLS170_V6AN2-v1/20000/F20317FD-306B-E411-80F0-0026B95CD6D9.root,
+                /store/mc/Spring14miniaod/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/141029_PU40bx50_PLS170_V6AN2-v1/20000/FCE80F2E-316B-E411-B867-AC853DA0692A.root""",
+            "crossSection" : 1.634, 
+            "outputFile" : "/afs/cern.ch/work/k/kelong/WZ_MCAnalysis/WZ012j_LO_SUSY_PHYS14/MGLO_WZ012j_SUSYPhys14_pythia8_Ntuple.root",
+            "isMiniAOD" : 1,
+            "redoJets" : 1
+        },
         'MGNLO-inc' : { "inputFiles" : "file:/afs/cern.ch/work/k/kelong/WZ_MCAnalysis/MG5aMCatNLO_WZ0j_OfficialGridpack/MG5aMCatNLO_WZ0j_OfficialGridpack_pythia8_TuneCUETP8M1.root",
             "crossSection" : 5.246, 
             "outputFile" : "/afs/cern.ch/work/k/kelong/WZ_MCAnalysis/MG5aMCatNLO_WZ0j_OfficialGridpack/MG5aMCatNLO_WZ0j_OfficialGridpack_pythia8_TuneCUETP8M1_Ntuple.root",
