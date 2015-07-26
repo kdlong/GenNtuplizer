@@ -125,10 +125,13 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
 
     ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
     addParticlesToNtuple();
-    
     ntuple_->Branch("evtid", &eventid_);
     ntuple_->Branch("weight", &weight_);
     ntuple_->Branch("XWGTUP", &XWGTUP_);
+    
+    // Raise autosave value to fix annoying issue of ntuple being written 
+    // into file multiple times
+    ntuple_->SetAutoSave(-30000000000000);
     ntuple_->Branch("LHEweights", &LHEWeights_);
     ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
@@ -222,16 +225,15 @@ DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
     event.getByToken(lheEventToken_, lheEventInfo);
     XWGTUP_ = lheEventInfo->originalXWGTUP();
    
-    LHEWeights_.resize(lheEventInfo->weights().size(), 0);
-    LHEWeightIDs_.resize(lheEventInfo->weights().size(), "");
-    
+    LHEWeights_.clear();
+    LHEWeightIDs_.clear();
+   
     int i = 0;
     for(const auto& weight : lheEventInfo->weights()) {
-        LHEWeightIDs_[i] = weight.id;
-        LHEWeights_[i] = weight.wgt;
+        LHEWeightIDs_.push_back(weight.id);
+        LHEWeights_.push_back(weight.wgt);
         i++;
     }
-
 }
 reco::CandidateCollection
 DibosonGenAnalyzer::cleanJets(reco::CandidateCollection jets, reco::CandidateCollection leps) {

@@ -2,17 +2,14 @@ import FWCore.ParameterSet.Config as cms
 import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
 options = ComLineArgs.getArgs()
-genJetsLabel = "slimmedGenJets" if options.isMiniAOD else "ak4GenJetsNoNu"
+genJetsLabel = "slimmedGenJets" if (options.isMiniAOD and not options.redoJets) else "ak4GenJetsNoNu"
 
 selectJets = cms.Sequence()
 
-if not options.isMiniAOD:
-    import RecoJets.Configuration.RecoGenJets_cff as RecoGenJets
-    ak4GenJetsNoNu = RecoGenJets.ak4GenJetsNoNu
-    selectJets += cms.Sequence(ak4GenJetsNoNu)
-elif options.redoJets:
+if not options.isMiniAOD or options.redoJets:
+    genParticlesLabel = "packedGenParticles" if options.isMiniAOD else "genParticles"
     genParticlesForJetsNoNu = cms.EDProducer("InputGenJetsParticleSelector",
-        src = cms.InputTag("packedGenParticles"),
+        src = cms.InputTag(genParticlesLabel),
         ignoreParticleIDs = cms.vuint32(
             1000022,
             1000012, 1000014, 1000016,

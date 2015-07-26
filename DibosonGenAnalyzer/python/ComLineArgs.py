@@ -2,7 +2,7 @@
 import os
 import sys
 from FWCore.ParameterSet.VarParsing import VarParsing
-import GenNtuplizer.DibosonGenAnalyzer.default_datasets as default_datasets
+import GenNtuplizer.MetaData.default_datasets as default_datasets
 options = VarParsing ('analysis')
 
 options.register ('crossSection',
@@ -48,27 +48,28 @@ options.outputFile = "test.root"
 options.maxEvents = -1
 options.parseArguments() 
 
-if options.inputFiles == "" and options.useDefaultDataset == "":
-    sys.stderr.write("You need to enter an inputFile name!")
-if options.useDefaultDataset != "":
-    sample_info = default_datasets.getSampleInfo(options)
-    if not options.submit:
-        options.inputFiles = sample_info["inputFiles"]
-    options.crossSection = sample_info["crossSection"]
-    options.isMiniAOD = sample_info["isMiniAOD"]
-    if "redoJets" in sample_info.keys():
-        options.redoJets = sample_info["redoJets"]
-    if options.outputFile == "test.root" or "test_numEvent" in options.outputFile:
-        if not os.path.isfile(sample_info["outputFile"]): 
-            options.outputFile = sample_info["outputFile"]    
-        else:
-            sys.stderr.write('This file already exists! Overwrite? (y/n) ')
-            if "Y" in raw_input().upper():
-                options.outputFile = sample_info["outputFile"]    
-print options.outputFile
-if options.outputFile == "test.root":
-    sys.stderr.write("You didn't enter an output file name. Using default"
-          " name 'test.root'")
 
 def getArgs():
+    if options.inputFiles == "" and options.useDefaultDataset == "":
+        sys.stderr.write("You need to enter an inputFile name!")
+    if options.useDefaultDataset != "":
+        sample_info = default_datasets.getSampleInfo(options)
+        if not options.submit:
+            options.inputFiles = sample_info["inputFiles"]
+        options.crossSection = sample_info["crossSection"]
+        options.isMiniAOD = sample_info["isMiniAOD"]
+        if "redoJets" in sample_info.keys():
+            options.redoJets = sample_info["redoJets"]
+        if options.outputFile == "test.root" or "test_numEvent" in options.outputFile:
+            if not os.path.isfile(sample_info["outputFile"]): 
+                options.outputFile = sample_info["outputFile"]    
+            else:
+                sys.stderr.write('This file already exists! Overwrite? (y/n) ')
+                if "Y" in raw_input().upper():
+                    options.outputFile = sample_info["outputFile"]    
+                else:
+                    exit(0)
+    if options.outputFile == "test.root":
+        sys.stderr.write("You didn't enter an output file name. Using default"
+            " name 'test.root'")    
     return options
