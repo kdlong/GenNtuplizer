@@ -4,13 +4,12 @@ cd ${0%/*}
 farmoutAnalysisJobs \
     --infer-cmssw-path \
     --input-files-per-job=5 \
-    --input-file-list=../../MetaData/WZ/WZ_mg5amcatnlo_files.txt \
+    --input-file-list=../../MetaData/ZZ/ZZ_powheg_files.txt \
     --assume-input-files-exist \
-    $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    MGNLO_Off_GenNtuples \
-    ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
-    useDefaultDataset=WZ-MGNLO-Off \
+    powhegOff_GenNtuples \
+    ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
+    useDefaultDataset=ZZ-PWG-Off \
     submit=1 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'

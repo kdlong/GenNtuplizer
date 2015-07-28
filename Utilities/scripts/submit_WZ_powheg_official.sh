@@ -7,6 +7,7 @@ farmoutAnalysisJobs \
     --input-file-list=../../MetaData/WZ/WZ_powheg_files.txt \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
+    --resubmit-failed-jobs \
     powhegOff_GenNtuples \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-PWG-Off \

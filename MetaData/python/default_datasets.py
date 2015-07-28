@@ -74,7 +74,7 @@ def getSampleInfo(options):
             "isMiniAOD" : 1
         },
         'ZZ-MGNLO-inc' : { "inputFiles" : "file:/afs/cern.ch/work/k/kelong/DibosonMCAnalysis/ZZTo4LNu0j_5f_NLO_FXFX/MG5aMCatNLO_ZZTo4LNu0j_pythia8_TuneCUETP8M1.root",
-            "crossSection" : 1.179, 
+            "crossSection" : 1.181, 
             "outputFile" : "file:/afs/cern.ch/work/k/kelong/DibosonMCAnalysis/ZZTo4LNu0j_5f_NLO_FXFX/MG5aMCatNLO_ZZTo4LNu0j_pythia8_TuneCUETP8M1_Ntuple.root",
             "isMiniAOD" : 0
         }

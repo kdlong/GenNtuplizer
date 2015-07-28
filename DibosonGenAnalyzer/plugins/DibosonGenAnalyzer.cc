@@ -98,7 +98,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
         "extraParticle", edm::InputTag("genParticles")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
     genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
-    lheEventToken_(consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer")))
+    lheEventToken_(consumes<LHEEventProduct>(cfg.getParameter<edm::InputTag>("lheEventSource")))
 {
     nProcessed_ = 0;
     nPass_ = 0;
