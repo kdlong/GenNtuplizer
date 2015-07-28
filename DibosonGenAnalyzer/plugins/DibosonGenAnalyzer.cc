@@ -66,6 +66,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         unsigned int nKeepLeps_;
         unsigned int nKeepExtra_;
         unsigned int nZsCut_;
+        double initSumWeights_;
+        double fidSumWeights_;
         double weight_;
         double XWGTUP_;
         std::vector<std::string> LHEWeightIDs_;
@@ -79,6 +81,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         void addParticlesToNtuple();
         void fillNtuple();
         void setWeightInfo(const edm::Event& event);
+        double getEventWeight(const edm::Event& event);
         bool overlapsCollection(const reco::Candidate& cand, 
                                 reco::CandidateCollection collection,
                                 const float deltaRCut,
@@ -101,6 +104,8 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     lheEventToken_(consumes<LHEEventProduct>(cfg.getParameter<edm::InputTag>("lheEventSource")))
 {
     nProcessed_ = 0;
+    initSumWeights_ = 0;
+    fidSumWeights_ = 0;
     nPass_ = 0;
     crossSection_ = cfg.getUntrackedParameter<double>("xSec", -1);
     nZsCut_  = cfg.getUntrackedParameter<unsigned int>("nZsCut", 1);
@@ -152,6 +157,8 @@ void
 DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 {
     nProcessed_++;
+    initSumWeights_ += getEventWeight(event);
+    
     edm::Handle<reco::CandidateCollection> genLeptons;
     event.getByToken(genLeptonsToken_, genLeptons);
     particleEntries_["leps"]->setCollection(*genLeptons);
@@ -215,12 +222,17 @@ DibosonGenAnalyzer::fillNtuple() {
     ntuple_->Fill();
 }
 
-void
-DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
+double DibosonGenAnalyzer::getEventWeight(const edm::Event& event) {
     edm::Handle<GenEventInfoProduct> genEventInfo;
     event.getByToken(genEventInfoToken_, genEventInfo);
-    weight_ = genEventInfo->weights()[0];
+    return genEventInfo->weights()[0];
+} 
 
+void
+DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
+    weight_ = getEventWeight(event);
+    fidSumWeights_ += weight_;
+    
     edm::Handle<LHEEventProduct> lheEventInfo;
     event.getByToken(lheEventToken_, lheEventInfo);
     XWGTUP_ = lheEventInfo->originalXWGTUP();
@@ -269,7 +281,9 @@ DibosonGenAnalyzer::endJob()
     metaData->Branch("nProcessedEvents", &nProcessed_);
     metaData->Branch("nPass", &nPass_);
     metaData->Branch("inputXSection", &crossSection_);
-    float fidXSec = crossSection_ * static_cast<float>(nPass_)/nProcessed_;
+    metaData->Branch("initSumWeights", &initSumWeights_);
+    metaData->Branch("fidSumWeights", &fidSumWeights_);
+    float fidXSec = crossSection_ * fidSumWeights_/initSumWeights_;
     metaData->Branch("fidXSection", &fidXSec);
     metaData->Fill();
 }

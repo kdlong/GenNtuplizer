@@ -8,7 +8,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    MGNLO_Off_GenNtuples \
+    MGNLO_Off_GenNtuples_weights \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-MGNLO-Off \
     submit=1 \
