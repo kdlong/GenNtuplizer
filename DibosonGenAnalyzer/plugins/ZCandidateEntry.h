@@ -6,8 +6,6 @@
 class ZCandidateEntry : public BasicParticleEntry {
     public:
         ZCandidateEntry(std::string name, unsigned int nKeep);
-        bool sameKinematics(const reco::Candidate& cand1, 
-                            const reco::Candidate& cand2);
         bool hasUniqueDaughters(const reco::Candidate& cand, 
                                size_t idx,
                                reco::CandidateCollection compCands);

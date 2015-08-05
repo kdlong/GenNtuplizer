@@ -67,3 +67,11 @@ BasicParticleEntry::getFirstDistinctMother(const reco::Candidate& cand) {
         mother = const_cast<reco::Candidate*>(mother->mother(0));
     return *mother;
 }
+
+bool 
+BasicParticleEntry::sameKinematics(const reco::Candidate& cand1, 
+                          const reco::Candidate& cand2) {
+    return ((std::abs(cand1.pt() - cand2.pt()) < 0.001)
+            && (std::abs(cand1.eta() - cand2.eta()) < 0.001)
+            && (std::abs(cand1.phi() - cand2.phi()) < 0.001));
+}

@@ -14,6 +14,8 @@ class BasicParticleEntry {
         BasicParticleEntry();
         BasicParticleEntry(std::string name, unsigned int nKeep, bool);
         ~BasicParticleEntry();
+        bool sameKinematics(const reco::Candidate& cand1, 
+                            const reco::Candidate& cand2);
         void setCollection(reco::CandidateCollection);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
