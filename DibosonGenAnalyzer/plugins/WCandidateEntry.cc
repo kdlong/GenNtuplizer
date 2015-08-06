@@ -1,20 +1,20 @@
-#include "ZCandidateEntry.h"
+#include "WCandidateEntry.h"
 
-ZCandidateEntry::ZCandidateEntry(std::string name, unsigned int nKeep) :
+WCandidateEntry::WCandidateEntry(std::string name, unsigned int nKeep) :
     BasicParticleEntry(name, nKeep, false) {}
 
 bool 
-ZCandidateEntry::isTrueZ(const reco::Candidate& zCand) {
-    if (zCand.numberOfDaughters() != 2) {
+WCandidateEntry::isTrueW(const reco::Candidate& wCand) {
+    if (wCand.numberOfDaughters() != 2) {
         std::cout << "Invalid Z Candidate! Must be formed from two objects";
         exit(0);
     }
-    const reco::Candidate& daughter1 = *zCand.daughter(0);
-    const reco::Candidate& daughter2 = *zCand.daughter(1);
+    const reco::Candidate& daughter1 = *wCand.daughter(0);
+    const reco::Candidate& daughter2 = *wCand.daughter(1);
     if (daughter1.numberOfMothers() > 0 && daughter2.numberOfMothers() > 0) {
         const reco::Candidate& dau1mother = getFirstDistinctMother(daughter1);
         const reco::Candidate& dau2mother = getFirstDistinctMother(daughter2);
-        return ((daughter1.pdgId() + daughter2.pdgId() == 0) 
+        return ((abs(daughter1.pdgId() + daughter2.pdgId()) == 1) 
 //                && daughter1.fromHardProcessFinalState()
 //                && daughter2.fromHardProcessFinalState()
                 && (dau1mother.pdgId() == dau2mother.pdgId())
@@ -25,7 +25,7 @@ ZCandidateEntry::isTrueZ(const reco::Candidate& zCand) {
 }
 
 bool 
-ZCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand, 
+WCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand, 
                               size_t idx,
                               reco::CandidateCollection compCands) {
     for(size_t i = 0; i < idx; i++) {
@@ -44,9 +44,9 @@ ZCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
 }
 
 void
-ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
+WCandidateEntry::createNtupleEntry(TTree* ntuple) {
     BasicParticleEntry::createNtupleEntry(ntuple);
-    isTrueZValues_.resize(nKeep_, -999);
+    isTrueWValues_.resize(nKeep_, -999);
     isUniqueValues_.resize(nKeep_, -999);
     masses_.resize(nKeep_, -999);
     for (unsigned int i = 1; i <= nKeep_; i++)
@@ -54,14 +54,14 @@ ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
         std::string particleName = name_ + std::to_string(i);
         ntuple->Branch((particleName + "mass").c_str(), &masses_[i-1]);
         ntuple->Branch((particleName + "isUnique").c_str(), &isUniqueValues_[i-1]);
-        ntuple->Branch((particleName + "isTrueZ").c_str(), &isTrueZValues_[i-1]);
+        ntuple->Branch((particleName + "isTrueW").c_str(), &isTrueWValues_[i-1]);
     }
 }
 void
-ZCandidateEntry::fillNtupleInfo() {
+WCandidateEntry::fillNtupleInfo() {
     BasicParticleEntry::fillNtupleInfo();
     isUniqueValues_.assign(nKeep_, -999);
-    isTrueZValues_.assign(nKeep_, -999); 
+    isTrueWValues_.assign(nKeep_, -999); 
     masses_.assign(nKeep_, -999); 
     
     for(size_t i = 0; i < particles_.size(); i++) {
@@ -69,7 +69,7 @@ ZCandidateEntry::fillNtupleInfo() {
             break;
         const reco::Candidate& particle = particles_[i];
         isUniqueValues_[i] = hasUniqueDaughters(particle, i, particles_);
-        isTrueZValues_[i] = isTrueZ(particle);
+        isTrueWValues_[i] = isTrueW(particle);
         masses_[i] = particle.mass();
     }
 }

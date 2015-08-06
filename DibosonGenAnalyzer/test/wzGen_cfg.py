@@ -11,6 +11,7 @@ process.load("GenNtuplizer.DibosonGenAnalyzer.genLeptons_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genZCands_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genJets_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genNeutrinos_cff")
+process.load("GenNtuplizer.DibosonGenAnalyzer.genWCands_cff")
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
@@ -31,16 +32,19 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     extraParticle = cms.untracked.InputTag("sortedNeutrinos"),
     lheEventSource = cms.InputTag("externalLHEProducer" if options.isMiniAOD else "source"),
     zCands = cms.InputTag("sortedZCands"),
+    wCands = cms.untracked.InputTag("sortedWCands"),
     nKeepZs = cms.untracked.uint32(2),
     nKeepLeps = cms.untracked.uint32(3),
     nKeepJets = cms.untracked.uint32(2),
     nKeepExtra = cms.untracked.uint32(1),
     extraName = cms.untracked.string("Nu"),
+    nKeepWs = cms.untracked.uint32(3),
     xSec = cms.untracked.double(options.crossSection)
 )
 process.p = cms.Path(process.selectLeptons * 
     process.selectZCands * 
     process.selectNeutrinos * 
+    process.selectWCands *
     process.selectJets *
     process.analyzeWZ
 )

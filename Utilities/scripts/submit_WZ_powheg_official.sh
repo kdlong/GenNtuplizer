@@ -8,7 +8,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $1 \
-    powhegOff_GenNtuples_weights \
+    powhegOff_GenNtuples_Wtruth \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-PWG-Off \
     submit=1 \

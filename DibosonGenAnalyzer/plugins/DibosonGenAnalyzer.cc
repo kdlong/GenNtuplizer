@@ -38,6 +38,7 @@
 
 #include "BasicParticleEntry.h"
 #include "ZCandidateEntry.h"
+#include "WCandidateEntry.h"
 #include "TTree.h"
 #include <vector>
 //
@@ -55,7 +56,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         edm::EDGetTokenT<reco::CandidateCollection> genLeptonsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> genJetsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
-        edm::EDGetTokenT<reco::CandidateCollection> zMuMuCandsToken_;
+        edm::EDGetTokenT<reco::CandidateCollection> wCandsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> zCandsToken_;
         edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
         edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
@@ -65,6 +66,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         double crossSection_;
         unsigned int nKeepLeps_;
         unsigned int nKeepExtra_;
+        unsigned int nKeepWs_;
         unsigned int nZsCut_;
         double initSumWeights_;
         double fidSumWeights_;
@@ -99,6 +101,8 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
     extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "extraParticle", edm::InputTag("genParticles")))),
+    wCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
+        "wCands", edm::InputTag("genParticles")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
     genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
     lheEventToken_(consumes<LHEEventProduct>(cfg.getParameter<edm::InputTag>("lheEventSource")))
@@ -126,6 +130,11 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     if (nKeepExtra_ > 0) {
         std::string extraName = cfg.getUntrackedParameter<std::string>("extraName", "x");
         particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_, true);
+    }
+    nKeepWs_ = cfg.getUntrackedParameter<unsigned int>("nKeepWs", 0);
+    if (nKeepWs_ > 0) {
+        std::string WsName = cfg.getUntrackedParameter<std::string>("WsName", "W");
+        particleEntries_["Ws"] = new WCandidateEntry(WsName, nKeepWs_);
     }
 
     ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
@@ -173,6 +182,11 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         event.getByToken(extraParticleToken_, extraParticle);
         particleEntries_["extra"]->setCollection(*extraParticle);
     }
+    if (nKeepWs_ > 0) { 
+        edm::Handle<reco::CandidateCollection> wCands;
+        event.getByToken(wCandsToken_, wCands);
+        particleEntries_["Ws"]->setCollection(*wCands);
+    }
     edm::Handle<reco::CandidateCollection> zCands;
     event.getByToken(zCandsToken_, zCands);
     particleEntries_["Zs"]->setCollection(*zCands);
@@ -204,6 +218,10 @@ DibosonGenAnalyzer::addParticlesToNtuple() {
             static_cast<ZCandidateEntry*>(
                 particleEntry.second)->createNtupleEntry(ntuple_);
         }
+        else if (particleEntry.first == "Ws") {
+            static_cast<WCandidateEntry*>(
+                particleEntry.second)->createNtupleEntry(ntuple_);
+        }
         else
             particleEntry.second->createNtupleEntry(ntuple_);
     }
@@ -214,6 +232,10 @@ DibosonGenAnalyzer::fillNtuple() {
     for (auto& particleEntry : particleEntries_) {
         if (particleEntry.first == "Zs") {
             static_cast<ZCandidateEntry*>(
+                particleEntry.second)->fillNtupleInfo();;
+        }
+        else if (particleEntry.first == "Ws") {
+            static_cast<WCandidateEntry*>(
                 particleEntry.second)->fillNtupleInfo();;
         }
         else
