@@ -18,6 +18,24 @@ options.register('isMiniAOD',
     "is MiniAOD file (run over prunedGenParticles"
     " rather than genParticles)"
 )
+options.register('includeTaus',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "include gen taus in ntuple"
+)
+options.register('genMet',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "Use genMET instead of neutrinos"
+)
+options.register('hardProcess',
+    1, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "require leptons be from hard process"
+)
 options.register('submit',
     0, # Default value
     options.multiplicity.singleton,

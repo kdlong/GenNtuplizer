@@ -11,15 +11,32 @@ zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     cut = cms.string('charge=0'),
     minNumber = cms.uint32(2)
 )
+
+
+if options.includeTaus:
+    zttCands = cms.EDProducer("CandViewShallowCloneCombiner",
+        decay = cms.string('selectedTaus@+ selectedTaus@-'),
+        cut = cms.string('charge=0'),
+        minNumber = cms.uint32(2)
+    )
+
 combinedZCands = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", "zeeCands")
+)
+combinedZCands = cms.EDProducer("CandViewMerger",
+    src = cms.VInputTag("zMuMuCands", "zeeCands")
+) if not options.includeTaus else cms.EDProducer("CandViewMerger",
+    src = cms.VInputTag("zMuMuCands", 
+        "zeeCands",
+        "zttCands"
+    )
 )
 sortedZCands = cms.EDFilter("BestZCandSelector",
     src = cms.InputTag("combinedZCands"),
     maxNumber = cms.uint32(10)
 )
 
-selectZCands = cms.Sequence(
-        (zMuMuCands + zeeCands)
-        * combinedZCands
-        * sortedZCands)
+selectZCands = cms.Sequence((zMuMuCands + zeeCands) if not options.includeTaus else
+    (zMuMuCands + zeeCands + zttCands))
+
+selectZCands += cms.Sequence(combinedZCands*sortedZCands)

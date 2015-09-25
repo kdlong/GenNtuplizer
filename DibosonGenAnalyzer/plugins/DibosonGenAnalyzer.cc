@@ -59,11 +59,14 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         edm::EDGetTokenT<reco::CandidateCollection> wCandsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> zCandsToken_;
         edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
+        edm::EDGetTokenT<LHERunInfoProduct> lheRunInfoToken_;
         edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
         edm::Service<TFileService> fileService_;
         TTree* ntuple_;
         std::map<std::string, BasicParticleEntry*> particleEntries_;
+        std::string lheHeader_;
         double crossSection_;
+        std::string extraName_;
         unsigned int nKeepLeps_;
         unsigned int nKeepExtra_;
         unsigned int nKeepWs_;
@@ -74,6 +77,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         double XWGTUP_;
         std::vector<std::string> LHEWeightIDs_;
         std::vector<double> LHEWeights_;
+        std::vector<double> LHEWeightSums_;
         unsigned int eventid_;
         unsigned int nProcessed_;
         unsigned int nPass_;
@@ -105,8 +109,11 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
         "wCands", edm::InputTag("genParticles")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
     genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
-    lheEventToken_(consumes<LHEEventProduct>(cfg.getParameter<edm::InputTag>("lheEventSource")))
+    lheRunInfoToken_(consumes<LHERunInfoProduct, edm::InRun>(
+        cfg.getParameter<edm::InputTag>("lheSource"))),
+    lheEventToken_(consumes<LHEEventProduct>(cfg.getParameter<edm::InputTag>("lheSource")))
 {
+    lheHeader_ = "";
     nProcessed_ = 0;
     initSumWeights_ = 0;
     fidSumWeights_ = 0;
@@ -128,8 +135,8 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     
     nKeepExtra_ = cfg.getUntrackedParameter<unsigned int>("nKeepExtra", 0);
     if (nKeepExtra_ > 0) {
-        std::string extraName = cfg.getUntrackedParameter<std::string>("extraName", "x");
-        particleEntries_["extra"] = new BasicParticleEntry(extraName, nKeepExtra_, true);
+        std::string extraName_ = cfg.getUntrackedParameter<std::string>("extraName", "x");
+        particleEntries_["extra"] = new BasicParticleEntry(extraName_, nKeepExtra_, true);
     }
     nKeepWs_ = cfg.getUntrackedParameter<unsigned int>("nKeepWs", 0);
     if (nKeepWs_ > 0) {
@@ -147,7 +154,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     // into file multiple times
     ntuple_->SetAutoSave(-30000000000000);
     ntuple_->Branch("LHEweights", &LHEWeights_);
-    ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
+    //ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
 
 DibosonGenAnalyzer::~DibosonGenAnalyzer()
@@ -182,8 +189,8 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         event.getByToken(extraParticleToken_, extraParticle);
         particleEntries_["extra"]->setCollection(*extraParticle);
     }
+    edm::Handle<reco::CandidateCollection> wCands;
     if (nKeepWs_ > 0) { 
-        edm::Handle<reco::CandidateCollection> wCands;
         event.getByToken(wCandsToken_, wCands);
         particleEntries_["Ws"]->setCollection(*wCands);
     }
@@ -196,6 +203,8 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
+    //if (wCands->size() != 1)
+    //   return; 
     if (zCands->size() < nZsCut_) {
         std::cout << "Failed Z cut" << std::endl;
         return;
@@ -262,11 +271,15 @@ DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
     LHEWeights_.clear();
     LHEWeightIDs_.clear();
    
-    int i = 0;
     for(const auto& weight : lheEventInfo->weights()) {
         LHEWeightIDs_.push_back(weight.id);
         LHEWeights_.push_back(weight.wgt);
-        i++;
+    }
+    if (LHEWeightSums_.empty())
+        LHEWeightSums_ = LHEWeights_;
+    else {
+        for (size_t i = 0; i < LHEWeightSums_.size(); i++)
+            LHEWeightSums_[i] += LHEWeights_[i];
     }
 }
 reco::CandidateCollection
@@ -307,6 +320,9 @@ DibosonGenAnalyzer::endJob()
     metaData->Branch("fidSumWeights", &fidSumWeights_);
     float fidXSec = crossSection_ * fidSumWeights_/initSumWeights_;
     metaData->Branch("fidXSection", &fidXSec);
+    metaData->Branch("LHEweightIDs", &LHEWeightIDs_);
+    metaData->Branch("LHEheader", &lheHeader_);
+    metaData->Branch("LHEweightSums", &LHEWeightSums_);
     metaData->Fill();
 }
 
@@ -322,23 +338,16 @@ DibosonGenAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const&)
 void 
 DibosonGenAnalyzer::endRun(edm::Run const& iRun, edm::EventSetup const&)
 {   
-/*
-    Currently just prints out the whole LHE Header. Kind of useless    
-
+    if (lheHeader_ != "")
+        return; //The LHE header really really really should be the same for each run
     edm::Handle<LHERunInfoProduct> lheRunInfoHandle;
-    iRun.getByLabel("externalLHEProducer", lheRunInfoHandle );
+    iRun.getByToken( lheRunInfoToken_, lheRunInfoHandle );
 
     typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
-
     for (headers_const_iterator iter=lheRunInfoHandle->headers_begin(); iter!=lheRunInfoHandle->headers_end(); iter++){
-        std::cout << iter->tag() << std::endl;
-        std::vector<std::string> lines = iter->lines();
-        weightNames_ = lines; 
-        for (unsigned int iLine = 0; iLine<lines.size(); iLine++) {
-            std::cout << lines.at(iLine);
-        }
+        for (const auto& line : iter->lines())
+            lheHeader_ += line;
     }  
-*/
 }
 // ------------ method called when starting to processes a luminosity block  ------------
 /*

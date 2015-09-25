@@ -10,6 +10,7 @@ from genNeutrinos_cff import *
 #
 wpCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('sortedNeutrinos sortedLeptons@+'),
+    #decay = cms.string('sortedNeutrinos selectedMuons@+'),
     cut = cms.string('charge=1'),
     checkCharge = cms.bool(False),
     minNumber = cms.uint32(2)
@@ -17,10 +18,12 @@ wpCands = cms.EDProducer("CandViewShallowCloneCombiner",
 
 wmCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string('sortedNeutrinos sortedLeptons@-'),
+    #decay = cms.string('sortedNeutrinos selectedMuons@-'),
     cut = cms.string('charge=-1'),
     checkCharge = cms.bool(False),
     minNumber = cms.uint32(2)
 )
+
 combinedWCands = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("wmCands", "wpCands")
 )
