@@ -11,8 +11,6 @@ zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     cut = cms.string('charge=0'),
     minNumber = cms.uint32(2)
 )
-
-
 if options.includeTaus:
     zttCands = cms.EDProducer("CandViewShallowCloneCombiner",
         decay = cms.string('selectedTaus@+ selectedTaus@-'),
@@ -36,7 +34,12 @@ sortedZCands = cms.EDFilter("BestZCandSelector",
     maxNumber = cms.uint32(10)
 )
 
+trueZs = cms.EDFilter("CandViewSelector",
+    src = cms.InputTag(genParticlesLabel),
+    cut = cms.string("pdgId == 23 && isHardProcess")  
+)
+
 selectZCands = cms.Sequence((zMuMuCands + zeeCands) if not options.includeTaus else
     (zMuMuCands + zeeCands + zttCands))
 
-selectZCands += cms.Sequence(combinedZCands*sortedZCands)
+selectZCands += cms.Sequence(trueZs + combinedZCands*sortedZCands)

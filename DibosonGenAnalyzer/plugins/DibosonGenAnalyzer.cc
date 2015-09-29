@@ -104,9 +104,9 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
     extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
-        "extraParticle", edm::InputTag("genParticles")))),
+        "extraParticle", edm::InputTag("leptons")))),
     wCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
-        "wCands", edm::InputTag("genParticles")))),
+        "wCands", edm::InputTag("zCands")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
     genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
     lheRunInfoToken_(consumes<LHERunInfoProduct, edm::InRun>(
@@ -120,7 +120,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     nPass_ = 0;
     crossSection_ = cfg.getUntrackedParameter<double>("xSec", -1);
     nZsCut_  = cfg.getUntrackedParameter<unsigned int>("nZsCut", 1);
-
+    
     unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
     std::string jetsName = cfg.getUntrackedParameter<std::string>("jetsName", "j");
     particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets, false);
@@ -143,7 +143,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
         std::string WsName = cfg.getUntrackedParameter<std::string>("WsName", "W");
         particleEntries_["Ws"] = new WCandidateEntry(WsName, nKeepWs_);
     }
-
+    
     ntuple_ = fileService_->make<TTree>("Ntuple", "Ntuple"); 
     addParticlesToNtuple();
     ntuple_->Branch("evtid", &eventid_);
@@ -154,7 +154,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     // into file multiple times
     ntuple_->SetAutoSave(-30000000000000);
     ntuple_->Branch("LHEweights", &LHEWeights_);
-    //ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
+    ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
 
 DibosonGenAnalyzer::~DibosonGenAnalyzer()
@@ -207,7 +207,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     //   return; 
     if (zCands->size() < nZsCut_) {
         std::cout << "Failed Z cut" << std::endl;
-        return;
     }
     setWeightInfo(event);
     fillNtuple();

@@ -6,8 +6,10 @@ WCandidateEntry::WCandidateEntry(std::string name, unsigned int nKeep) :
 bool 
 WCandidateEntry::isTrueW(const reco::Candidate& wCand) {
     if (wCand.numberOfDaughters() != 2) {
-        std::cout << "Invalid Z Candidate! Must be formed from two objects";
-        exit(0);
+        if (std::abs(wCand.pdgId()) == 24)
+            return true;
+        std::cerr << "Z candidate not formed from two objects";
+        return false;
     }
     const reco::Candidate& daughter1 = *wCand.daughter(0);
     const reco::Candidate& daughter2 = *wCand.daughter(1);
@@ -51,7 +53,9 @@ WCandidateEntry::createNtupleEntry(TTree* ntuple) {
     masses_.resize(nKeep_, -999);
     for (unsigned int i = 1; i <= nKeep_; i++)
     {
-        std::string particleName = name_ + std::to_string(i);
+        std::string particleName = name_;
+        if (nKeep_ != 1)
+            particleName += std::to_string(i);
         ntuple->Branch((particleName + "mass").c_str(), &masses_[i-1]);
         ntuple->Branch((particleName + "isUnique").c_str(), &isUniqueValues_[i-1]);
         ntuple->Branch((particleName + "isTrueW").c_str(), &isTrueWValues_[i-1]);
