@@ -199,9 +199,9 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     particleEntries_["Zs"]->setCollection(*zCands);
     
     std::cout << genLeptons->size();
-       if (genLeptons->size() < nKeepLeps_) {
+    if (genLeptons->size() < nKeepLeps_) {
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
-        return;    
+        //return;    
     }
     //if (wCands->size() != 1)
     //   return; 

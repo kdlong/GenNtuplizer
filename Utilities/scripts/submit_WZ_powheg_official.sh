@@ -8,9 +8,10 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $1 \
-    powhegOff_GenNtuples_withSums_15_09_21 \
+    powhegOff_GenNtuples_withTaus \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-PWG-Off \
+    includeTaus=0 \
     submit=1 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'

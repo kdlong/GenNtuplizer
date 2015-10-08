@@ -8,7 +8,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    MGNLO_Off_GenNtuples_withTausV2 \
+    MGNLO_Off_GenNtuples_withTaus \
     ../../DibosonGenAnalyzer/test/wz2l2qGen_cfg.py \
     includeTaus=1 \
     useDefaultDataset=WZto2L2Q-MGNLO-Off \

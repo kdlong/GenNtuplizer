@@ -112,6 +112,16 @@ def getSampleInfo(options):
             "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZ_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
             "isMiniAOD" : 1
         },
+        'WW-PWG-Off': {
+            "inputFiles" : 
+                """/store/mc/RunIISpring15DR74/WWTo2L2Nu_13TeV-powheg/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/50000/082EF100-DC05-E511-AD3F-A0040420FE80.root,
+                /store/mc/RunIISpring15DR74/WWTo2L2Nu_13TeV-powheg/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/50000/1A158D26-E005-E511-BD80-00074305CDC0.root,
+                /store/mc/RunIISpring15DR74/WWTo2L2Nu_13TeV-powheg/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/50000/22314C20-7A07-E511-989B-A0040420FE80.root""",
+            "crossSection" : 10.481, 
+            "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_WW/test.root",
+            "isMiniAOD" : 1,
+            "hardProcess" : 0
+        },
         'ZZ-MGNLO-inc' : { "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/ZZTo4LNu0j_5f_NLO_FXFX/MG5aMCatNLO_ZZTo4LNu0j_muMass_pythia8_TuneCUETP8M1.root",
             "crossSection" : 1.181, 
             "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/ZZTo4LNu0j_5f_NLO_FXFX/MG5aMCatNLO_ZZTo4LNu0j_muMass_pythia8_TuneCUETP8M1_Ntuple.root",
