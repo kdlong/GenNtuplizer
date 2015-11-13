@@ -201,7 +201,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     std::cout << genLeptons->size();
     if (genLeptons->size() < nKeepLeps_) {
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
-        //return;    
+        return;    
     }
     //if (wCands->size() != 1)
     //   return; 
