@@ -7,20 +7,20 @@ genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParti
 selectedElectrons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
     cut = cms.string("abs(pdgId) == 11 && %s" %
-        ("fromHardProcessFinalState" if options.hardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
+        ("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
 )
 
 selectedMuons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
     cut = cms.string("abs(pdgId) == 13 && %s" %
-        ("fromHardProcessFinalState" if options.hardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
+        ("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
 )
 
 if options.includeTaus:
     selectedTaus = cms.EDFilter("GenParticleSelector",
         src = cms.InputTag(genParticlesLabel),
         cut = cms.string("abs(pdgId) == 15 && isLastCopy && %s" %
-            ("statusFlags().fromHardProcess" if options.hardProcess else " status == 1"))  
+            ("statusFlags().fromHardProcess" if not options.isHardProcess else "isHardProcess()"))  
     )
 
 leptons = cms.EDProducer("CandViewMerger",

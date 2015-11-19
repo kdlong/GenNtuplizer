@@ -8,10 +8,10 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    powhegOff_GenNtuples_isHardProcess \
+    powhegOff_GenNtuples \
     ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
     useDefaultDataset=ZZ-PWG-Off \
     submit=1 \
-    hardProcess=0 \
+    ishardProcess=0 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'

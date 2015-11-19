@@ -3,15 +3,15 @@ cd ${0%/*}
 # Condor submission script
 farmoutAnalysisJobs \
     --infer-cmssw-path \
-    --input-files-per-job=5 \
-    --input-file-list=../../MetaData/WZ/WZ_mg5amcatnlo_files.txt \
+    --input-files-per-job=1 \
+    --input-file-list=../../MetaData/ZZ/ZZ_powheg_files.txt \
     --assume-input-files-exist \
     $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    MGNLO_Off_GenNtuples \
-    ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
-    useDefaultDataset=WZ-MGNLO-Off \
-    isHardProcess=0 \
+    powhegOff_GenNtuples_isHardProcess \
+    ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
+    useDefaultDataset=ZZ-PWG-Off \
     submit=1 \
+    isHardProcess=1 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'

@@ -126,7 +126,6 @@ def getSampleInfo(options):
             "crossSection" : 10.481, 
             "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_WW/test.root",
             "isMiniAOD" : 1,
-            "hardProcess" : 0
         },
         'ZZ-MGNLO-inc' : { "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/ZZTo4LNu0j_5f_NLO_FXFX/MG5aMCatNLO_ZZTo4LNu0j_muMass_pythia8_TuneCUETP8M1.root",
             "crossSection" : 1.181, 

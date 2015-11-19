@@ -30,7 +30,7 @@ options.register('genMet',
     options.varType.int,
     "Use genMET instead of neutrinos"
 )
-options.register('hardProcess',
+options.register('isHardProcess',
     1, # Default value
     options.multiplicity.singleton,
     options.varType.int,
