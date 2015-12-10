@@ -19,11 +19,25 @@ def getSampleInfo(options):
             "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZto2L2Q/WZto2L2Q_powheg_pythia8_CUETP8M1_Ntuple.root",
             "isMiniAOD" : 0
         },
+        'WZto2E1Mu1Nu-8TeV-NewPDFs-PWG': {
+            "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZ_8TeV/Newest_PDFs/WZto2E1Mu1Nu_8TeV_newpdfs_powheg_pythia8_CUETP8M1.root",
+            "crossSection" : 0.076555, 
+            "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZ_8TeV/Newest_PDFs/WZto2E1Mu1Nu_8TeV_newpdfs_powheg_pythia8_CUETP8M1_Ntuple.root",
+            "isMiniAOD" : 0,
+            "is8TeV" : 1
+        },
+        'WZto2Mu1E1Nu-8TeV-2013PDFs-PWG': {
+            "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZ_8TeV/2013_PDFs/WZto2Mu1E1Nu_8TeV_2013pdfs_powheg_pythia8_CUETP8M1.root",
+            "crossSection" : 0.077067, 
+            "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZ_8TeV/2013_PDFs/WZto2Mu1E1Nu_8TeV_2013pdfs_powheg_pythia8_CUETP8M1_Ntuple.root",
+            "isMiniAOD" : 0
+        },
         'WZto2L2Q-PWG-neg': {
             "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZto2L2Q/mll4_negweights/WZto2L2Q_powheg_negweights_pythia8_CUETP8M1.root",
             "crossSection" : 6.789, 
             "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZto2L2Q/WZto2L2Q_powheg_negweights_pythia8_CUETP8M1_Ntuple.root",
-            "isMiniAOD" : 0
+            "isMiniAOD" : 0,
+            "is8TeV" : 1
         },
         'WZto2L2Q-MGNLO-Off' : { "inputFiles" : 
                 """/store/mc/RunIISpring15DR74/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/20000/00456448-0734-E511-BABA-002618943982.root,
@@ -76,13 +90,18 @@ def getSampleInfo(options):
         'WZ-MGNLO-Off' : {
             "inputFiles" :
                 """/store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/002CAF8C-3A26-E511-B14A-0025905A607E.root,
-                /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/00CA6490-0C2F-E511-9A70-001E67398D72.root,
                 /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/00F5EF70-3326-E511-8AFF-0025905A6066.root,
                 /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/06F9B6E2-A629-E511-B9E2-B083FED76637.root,
                 /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/0A80F6F9-2D2A-E511-88E0-008CFA1111E0.root""",
             "crossSection" : 5.289, 
             "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialSample/MG5aMCatNLO_WZ01j_OfficialSample_pythia8_TuneCUETP8M1_Ntuple.root",
             "isMiniAOD" : 1
+        },
+        'WZ-MGNLO-Off-New' : {
+            "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialGridpack/new_gridpack/MG5aMCatNLO_WZ01j_OfficialGridpack_new_pythia8_TuneCUETP8M1.root",
+            "crossSection" : 4.712, 
+            "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialGridpack/new_gridpack/MG5aMCatNLO_WZ01j_OfficialGridpack_new_pythia8_TuneCUETP8M1_Ntuple.root",
+            "isMiniAOD" : 0
         },
         'WZ-PWG-Off': {
             "inputFiles" : 

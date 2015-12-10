@@ -50,6 +50,12 @@ options.register('redoJets',
     "Remake GenJetsNoNu (only valid for miniAOD,"
     " and only necessary for Phys14 samples)"
 )
+options.register('is8TeV',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "use 8 TeV setup (for jets)"
+)
 options.register('useDefaultDataset',
     '', # Default value
     options.multiplicity.singleton,
@@ -78,11 +84,13 @@ def getArgs():
         options.isMiniAOD = sample_info["isMiniAOD"]
         if "redoJets" in sample_info.keys():
             options.redoJets = sample_info["redoJets"]
+        if "is8TeV" in sample_info.keys():
+            options.is8TeV = sample_info["is8TeV"]
         if options.outputFile == "test.root" or "test_numEvent" in options.outputFile:
             if not os.path.isfile(sample_info["outputFile"]): 
                 options.outputFile = sample_info["outputFile"]    
             else:
-                sys.stderr.write('This file already exists! Overwrite? (y/n) ')
+                sys.stderr.write('The file %s already exists! Overwrite? (y/n) ' % sample_info["outputFile"])
                 if "Y" in raw_input().upper():
                     options.outputFile = sample_info["outputFile"]    
                 else:

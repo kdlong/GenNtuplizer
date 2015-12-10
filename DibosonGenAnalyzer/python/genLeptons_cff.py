@@ -12,7 +12,7 @@ selectedElectrons = cms.EDFilter("GenParticleSelector",
 
 selectedMuons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("abs(pdgId) == 13 && %s" %
+    cut = cms.string("abs(pdgId) == 13 && %s" % 
         ("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
 )
 
