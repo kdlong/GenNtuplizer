@@ -36,6 +36,12 @@ options.register('isHardProcess',
     options.varType.int,
     "require leptons be from hard process"
 )
+options.register('includeRadiated',
+    1, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "Include leptons from radiated gamma*"
+)
 options.register('submit',
     0, # Default value
     options.multiplicity.singleton,

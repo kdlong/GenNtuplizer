@@ -1,10 +1,11 @@
 #include "ZCandidateEntry.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 ZCandidateEntry::ZCandidateEntry(std::string name, unsigned int nKeep) :
     BasicParticleEntry(name, nKeep, false) {}
 
 bool 
-ZCandidateEntry::isTrueZ(const reco::Candidate& zCand) {
+ZCandidateEntry::isTrueDecay(const reco::Candidate& zCand) {
     if (zCand.numberOfDaughters() != 2) {
         if (zCand.pdgId() == 23)
             return true;
@@ -21,6 +22,21 @@ ZCandidateEntry::isTrueZ(const reco::Candidate& zCand) {
 //                && daughter2.fromHardProcessFinalState()
                 && (dau1mother.pdgId() == dau2mother.pdgId())
                 && sameKinematics(dau1mother, dau2mother));
+    }
+    std::cout << "Why don't the leptons have mothers?" << std::endl;
+    return false;    
+}
+bool
+ZCandidateEntry::isRadiated(const reco::Candidate& zCand) {
+    if (zCand.numberOfDaughters() != 2) {
+        return false;
+    }
+    const reco::GenParticle& daughter1 = *dynamic_cast<const reco::GenParticle*>(zCand.daughter(0));
+    const reco::GenParticle& daughter2 = *dynamic_cast<const reco::GenParticle*>(zCand.daughter(1));
+    if (daughter1.numberOfMothers() > 0 && daughter2.numberOfMothers() > 0) {
+        return !(daughter1.fromHardProcessFinalState() && 
+               daughter2.fromHardProcessFinalState()) &&
+               isTrueDecay(zCand) 
     }
     std::cout << "Why don't the leptons have mothers?" << std::endl;
     return false;    
@@ -48,7 +64,8 @@ ZCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
 void
 ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
     BasicParticleEntry::createNtupleEntry(ntuple);
-    isTrueZValues_.resize(nKeep_, -999);
+    isTrueDecayValues_.resize(nKeep_, -999);
+    isRadiatedValues_.resize(nKeep_, -999);
     isUniqueValues_.resize(nKeep_, -999);
     masses_.resize(nKeep_, -999);
     for (unsigned int i = 1; i <= nKeep_; i++)
@@ -58,14 +75,16 @@ ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
             particleName += std::to_string(i);
         ntuple->Branch((particleName + "mass").c_str(), &masses_[i-1]);
         ntuple->Branch((particleName + "isUnique").c_str(), &isUniqueValues_[i-1]);
-        ntuple->Branch((particleName + "isTrueZ").c_str(), &isTrueZValues_[i-1]);
+        ntuple->Branch((particleName + "isTrueDecay").c_str(), &isTrueDecayValues_[i-1]);
+        ntuple->Branch((particleName + "isRadiated").c_str(), &isRadiatedValues_[i-1]);
     }
 }
 void
 ZCandidateEntry::fillNtupleInfo() {
     BasicParticleEntry::fillNtupleInfo();
     isUniqueValues_.assign(nKeep_, -999);
-    isTrueZValues_.assign(nKeep_, -999); 
+    isTrueDecayValues_.assign(nKeep_, -999); 
+    isRadiatedValues_.assign(nKeep_, -999); 
     masses_.assign(nKeep_, -999); 
     
     for(size_t i = 0; i < particles_.size(); i++) {
@@ -73,7 +92,8 @@ ZCandidateEntry::fillNtupleInfo() {
             break;
         const reco::Candidate& particle = particles_[i];
         isUniqueValues_[i] = hasUniqueDaughters(particle, i, particles_);
-        isTrueZValues_[i] = isTrueZ(particle);
+        isTrueDecayValues_[i] = isTrueDecay(particle);
+        isRadiatedValues_[i] = isRadiated(particle);
         masses_[i] = particle.mass();
     }
 }
