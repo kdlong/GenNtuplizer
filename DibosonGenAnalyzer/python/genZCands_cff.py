@@ -20,18 +20,11 @@ if options.includeTaus:
 
 combinedZCands = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", "zeeCands")
-)
-combinedZCands = cms.EDProducer("CandViewMerger",
-    src = cms.VInputTag("zMuMuCands", "zeeCands")
 ) if not options.includeTaus else cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", 
         "zeeCands",
         "zttCands"
     )
-)
-sortedZCands = cms.EDFilter("BestZCandSelector",
-    src = cms.InputTag("combinedZCands"),
-    maxNumber = cms.uint32(10)
 )
 
 trueZs = cms.EDFilter("CandViewSelector",
@@ -39,7 +32,37 @@ trueZs = cms.EDFilter("CandViewSelector",
     cut = cms.string("pdgId == 23 && isHardProcess")  
 )
 
-selectZCands = cms.Sequence((zMuMuCands + zeeCands) if not options.includeTaus else
-    (zMuMuCands + zeeCands + zttCands))
+selectZCands = cms.Sequence(((zMuMuCands + zeeCands) if not options.includeTaus else
+    (zMuMuCands + zeeCands + zttCands))*trueZs)
 
-selectZCands += cms.Sequence(trueZs + combinedZCands*sortedZCands)
+
+if options.includeRadiated:
+    radMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
+        decay = cms.string('radiatedMuons@+ radiatedMuons@-'),
+        cut = cms.string('charge=0'),
+        minNumber = cms.uint32(2)
+    )
+    radEECands = cms.EDProducer("CandViewShallowCloneCombiner",
+        decay = cms.string('radiatedElectrons@+ radiatedElectrons@-'),
+        cut = cms.string('charge=0'),
+        minNumber = cms.uint32(2)
+    )
+    combinedRadCands = cms.EDProducer("CandViewMerger",
+        src = cms.VInputTag("zMuMuCands", "zeeCands")
+    )
+    sortedRadCands = cms.EDFilter("BestZCandSelector",
+        src = cms.InputTag("combinedRadCands"),
+        maxNumber = cms.uint32(10)
+    )
+    combinedCands = cms.EDProducer("CandViewMerger",
+        src = cms.VInputTag("combinedZCands", "combinedRadCands")
+    )
+    selectZCands += (radMuMuCands+radEECands)*combinedRadCands
+else:
+    combinedCands = combinedZCands
+sortedZCands = cms.EDFilter("BestZCandSelector",
+    src = cms.InputTag("combinedZCands"),
+    maxNumber = cms.uint32(10)
+)
+selectZCands += cms.Sequence(combinedZCands*combinedCands*sortedZCands)
+

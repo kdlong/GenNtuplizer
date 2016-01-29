@@ -9,11 +9,13 @@ class ZCandidateEntry : public BasicParticleEntry {
         bool hasUniqueDaughters(const reco::Candidate& cand, 
                                size_t idx,
                                reco::CandidateCollection compCands);
-        bool isTrueZ(const reco::Candidate& zCand);
+        bool isTrueDecay(const reco::Candidate& zCand);
+        bool isRadiated(const reco::Candidate& zCand);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
     private:
-        std::vector<int> isTrueZValues_;
+        std::vector<int> isTrueDecayValues_;
+        std::vector<int> isRadiatedValues_;
         std::vector<int> isUniqueValues_;
         std::vector<float> masses_;
 };

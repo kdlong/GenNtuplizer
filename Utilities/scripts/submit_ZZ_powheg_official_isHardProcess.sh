@@ -1,6 +1,7 @@
 #!/bin/bash
 cd ${0%/*}
 # Condor submission script
+DATE=`date +%Y-%m-%d`
 farmoutAnalysisJobs \
     --infer-cmssw-path \
     --input-files-per-job=1 \
@@ -8,7 +9,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    powhegOff_GenNtuples_isHardProcess \
+    powhegOff_GenNtuples_$DATE \
     ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
     useDefaultDataset=ZZ-PWG-Off \
     submit=1 \

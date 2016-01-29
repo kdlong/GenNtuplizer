@@ -41,7 +41,9 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     nKeepWs = cms.untracked.uint32(3),
     xSec = cms.untracked.double(options.crossSection)
 )
-process.p = cms.Path(process.selectLeptons * 
+process.p = cms.Path(process.selectLeptons if not options.includeRadiated else
+        process.selectLeptons*process.selectRadiatedLeptons)
+process.p *= (process.selectRadiatedLeptons*
     process.selectZCands * 
     process.selectNeutrinos * 
     process.selectWCands *
