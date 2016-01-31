@@ -31,7 +31,7 @@ if options.includeTaus:
             ("statusFlags().fromHardProcess && isLastCopy" if not options.isHardProcess else "isHardProcess()"))  
     )
 
-leptons = cms.EDProducer("CandViewMerger",
+leps = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", "selectedMuons")
 ) if not options.includeTaus else cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", 
@@ -39,25 +39,23 @@ leptons = cms.EDProducer("CandViewMerger",
         "selectedTaus"
     )
 )
-
-sortedLeptons = cms.EDFilter("LargestPtCandSelector",
-    src = cms.InputTag("leptons"),
-    maxNumber = cms.uint32(10)
-)
 selectLeptons = cms.Sequence(
     (selectedMuons + selectedElectrons) if not options.includeTaus else
     (selectedMuons + selectedElectrons + selectedTaus)
 )
 
-selectLeptons += cms.Sequence(leptons*sortedLeptons)
-    
-radiatedLeptons = cms.EDProducer("CandViewMerger",
-    src = cms.VInputTag("radiatedElectrons", "radiatedMuons")
-)
-sortedRadiatedLeptons = cms.EDFilter("LargestPtCandSelector",
-    src = cms.InputTag("radiatedLeptons"),
+if options.includeRadiated:
+    radiatedLeptons = cms.EDProducer("CandViewMerger",
+        src = cms.VInputTag("radiatedElectrons", "radiatedMuons")
+    )
+    leptons = cms.EDProducer("CandViewMerger",
+        src = cms.VInputTag("radiatedLeptons", "leps")
+    )
+    selectLeptons += ((radiatedMuons + radiatedElectrons)*radiatedLeptons)
+else:
+    leptons = leps
+sortedLeptons = cms.EDFilter("LargestPtCandSelector",
+    src = cms.InputTag("leptons"),
     maxNumber = cms.uint32(10)
 )
-
-selectRadiatedLeptons = cms.Sequence((radiatedMuons + radiatedElectrons)*
-        radiatedLeptons*sortedRadiatedLeptons)
+selectLeptons += cms.Sequence(leps*leptons*sortedLeptons)

@@ -16,6 +16,8 @@ class BasicParticleEntry {
         ~BasicParticleEntry();
         bool sameKinematics(const reco::Candidate& cand1, 
                             const reco::Candidate& cand2);
+        bool isHardProcess(const reco::Candidate& cand);
+        bool fromHardProcessFinalState(const reco::Candidate& cand);
         void setCollection(reco::CandidateCollection);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
@@ -30,6 +32,8 @@ class BasicParticleEntry {
         std::vector<float> etas_;
         std::vector<int> pdgids_;
         std::vector<int> motherIds_;
+        std::vector<int> isHPvals_;
+        std::vector<int> fromHPFSvals_;
 };
 
 #endif

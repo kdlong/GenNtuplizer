@@ -1,4 +1,5 @@
 #include "BasicParticleEntry.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 BasicParticleEntry::BasicParticleEntry(std::string name, 
         unsigned int nKeep, 
@@ -16,6 +17,8 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
     etas_.resize(nKeep_, -999);
     pts_.resize(nKeep_, -999);
     if (storeGenInfo_) {
+        isHPvals_.resize(nKeep_, -999);
+        fromHPFSvals_.resize(nKeep_, -999);
         pdgids_.resize(nKeep_, -999);
         motherIds_.resize(nKeep_, -999);
     }
@@ -27,17 +30,32 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
         ntuple->Branch((particleName + "Pt").c_str(), &pts_[i-1]);
         ntuple->Branch((particleName + "Eta").c_str(), &etas_[i-1]);
         if (storeGenInfo_) {
+            ntuple->Branch((particleName + "isHardProcess").c_str(), &motherIds_[i-1]);
+            ntuple->Branch((particleName + "fromHardProcessFS").c_str(), &motherIds_[i-1]);
             ntuple->Branch((particleName + "pdgId").c_str(), &pdgids_[i-1]);
             ntuple->Branch((particleName + "motherId").c_str(), &motherIds_[i-1]);
         } 
     }
     ntuple->Branch((std::string("n") + name_).c_str(), &num_);
 }
+bool
+BasicParticleEntry::isHardProcess(const reco::Candidate& particle) {
+    const reco::GenParticle& part = dynamic_cast<const reco::GenParticle&>(particle);
+    return part.isHardProcess();
+}
+bool
+BasicParticleEntry::fromHardProcessFinalState(const reco::Candidate& particle) {
+    const reco::GenParticle& part = dynamic_cast<const reco::GenParticle&>(particle);
+    return part.fromHardProcessFinalState();
+}
+
 void
 BasicParticleEntry::fillNtupleInfo() {
     etas_.assign(nKeep_, -999);
     pts_.assign(nKeep_, -999); 
     if (storeGenInfo_) {
+        isHPvals_.assign(nKeep_, -999);
+        fromHPFSvals_.assign(nKeep_, -999);
         pdgids_.assign(nKeep_, -999);
         motherIds_.assign(nKeep_, -999);
     }
@@ -49,6 +67,8 @@ BasicParticleEntry::fillNtupleInfo() {
         pts_[i] = particle.pt();
         etas_[i] = particle.eta();
         if (storeGenInfo_) {
+            isHPvals_[i] = isHardProcess(particle);
+            fromHPFSvals_[i] = fromHardProcessFinalState(particle);
             pdgids_[i] = particle.pdgId();
             motherIds_[i] = getFirstDistinctMother(particle).pdgId();
         }

@@ -38,6 +38,30 @@ def getSampleInfo(options):
             "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/POWHEG_WZto2L2Q/WZto2L2Q_powheg_negweights_pythia8_CUETP8M1_Ntuple.root",
             "isMiniAOD" : 0
         },
+        'DYm10-50': {
+            "inputFiles" : """/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/2699AF1F-9F6D-E511-BDD8-0025901D4AF0.root,
+                /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/8E01AB4A-9E6D-E511-A8F9-0025901D4C44.root,
+                /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/8E646CF8-9E6D-E511-993C-0025907DBA06.root,
+                /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/92A460D0-9D6D-E511-8B8E-0025907DC9BE.root,
+                /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/00D1FF52-036F-E511-A7F8-047D7B881D90.root""",
+            "crossSection" : 18610, 
+            "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
+            "isMiniAOD" : 1,
+            "includeRadiated" : 1,
+            "isHardProcess" : 0
+        },
+        'DYm50': {
+            "inputFiles" : """/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/00759690-D16E-E511-B29E-00261894382D.root,
+            /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/00E88378-6F6F-E511-9D54-001E6757EAA4.root,
+            /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/02CD8A95-736F-E511-B76E-00266CFFBF34.root,
+            /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/041705A6-6F6F-E511-AC9C-001E6757F1D4.root,
+            /store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/06CC58CE-F66E-E511-93B5-0026189438F9.root""",
+            "crossSection" : 6025.2, 
+            "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
+            "isMiniAOD" : 1,
+            "includeRadiated" : 1,
+            "isHardProcess" : 0
+        },
         'WZto2L2Q-MGNLO-Off' : { "inputFiles" : 
                 """/store/mc/RunIISpring15DR74/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/20000/00456448-0734-E511-BABA-002618943982.root,
                 /store/mc/RunIISpring15DR74/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/20000/04BFCB9E-E82F-E511-A94B-00A0D1EE8AF0.root,

@@ -37,7 +37,7 @@ options.register('isHardProcess',
     "require leptons be from hard process"
 )
 options.register('includeRadiated',
-    1, # Default value
+    0, # Default value
     options.multiplicity.singleton,
     options.varType.int,
     "Include leptons from radiated gamma*"
@@ -88,6 +88,10 @@ def getArgs():
             options.inputFiles = sample_info["inputFiles"]
         options.crossSection = sample_info["crossSection"]
         options.isMiniAOD = sample_info["isMiniAOD"]
+        if "isHardProcess" in sample_info.keys():
+            options.isHardProcess = sample_info["isHardProcess"]
+        if "includeRadiated" in sample_info.keys():
+            options.includeRadiated = sample_info["includeRadiated"]
         if "redoJets" in sample_info.keys():
             options.redoJets = sample_info["redoJets"]
         if "is8TeV" in sample_info.keys():

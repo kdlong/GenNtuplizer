@@ -10,7 +10,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.load("GenNtuplizer.DibosonGenAnalyzer.genLeptons_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genZCands_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genJets_cff")
-process.load("GenNtuplizer.DibosonGenAnalyzer.genTauFilter_cff")
+process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
@@ -40,9 +40,8 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     nKeepJets = cms.untracked.uint32(2),
     xSec = cms.untracked.double(options.crossSection)
 )
-process.p = cms.Path(process.selectLeptons * 
+process.p = cms.Path(process.selectLeptons *
     process.selectZCands * 
     process.selectJets *
-    process.filterGenTaus *
     process.analyzeZZ
 )
