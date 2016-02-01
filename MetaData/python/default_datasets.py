@@ -157,7 +157,7 @@ def getSampleInfo(options):
                 /store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/2C89C1AB-7B16-E511-8BE9-00266CF9AFF0.root,
                 /store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/34EA7F00-9116-E511-9ABD-AC853D9DAC1D.root""",
             "crossSection" : 1.256, 
-            "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZ_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
+            "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZ_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
             "isMiniAOD" : 1
         },
         'WW-PWG-Off': {

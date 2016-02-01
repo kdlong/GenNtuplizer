@@ -71,6 +71,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         unsigned int nKeepExtra_;
         unsigned int nKeepWs_;
         unsigned int nZsCut_;
+        float lep_system_mass_;
         double initSumWeights_;
         double fidSumWeights_;
         double weight_;
@@ -149,6 +150,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     ntuple_->Branch("evtid", &eventid_);
     ntuple_->Branch("weight", &weight_);
     ntuple_->Branch("XWGTUP", &XWGTUP_);
+    ntuple_->Branch((std::to_string(nKeepLeps_) + "lmass").c_str(), &lep_system_mass_);
     
     // Raise autosave value to fix annoying issue of ntuple being written 
     // into file multiple times
@@ -181,7 +183,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     reco::Candidate::LorentzVector lepton_system = reco::Candidate::LorentzVector();
     for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons->size()); i++)
         lepton_system += (*genLeptons)[i].p4();
-    std::cout << "Lepton system mass is " << lepton_system.mass();
+    lep_system_mass_ = lepton_system.mass();
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
 
