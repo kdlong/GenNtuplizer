@@ -17,12 +17,12 @@ selectedMuons = cms.EDFilter("GenParticleSelector",
 
 radiatedElectrons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("abs(pdgId) == 11 && isPromptFinalState()")
+    cut = cms.string("abs(pdgId) == 11 && isPromptFinalState() && !fromHardProcessFinalState()")
 )
 
 radiatedMuons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("abs(pdgId) == 13 && isPromptFinalState()")
+    cut = cms.string("abs(pdgId) == 13 && isPromptFinalState() && !fromHardProcessFinalState()")
 )
 if options.includeTaus:
     selectedTaus = cms.EDFilter("GenParticleSelector",
@@ -31,7 +31,7 @@ if options.includeTaus:
             ("statusFlags().fromHardProcess && isLastCopy" if not options.isHardProcess else "isHardProcess()"))  
     )
 
-leps = cms.EDProducer("CandViewMerger",
+_leptons = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", "selectedMuons")
 ) if not options.includeTaus else cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", 
@@ -49,13 +49,13 @@ if options.includeRadiated:
         src = cms.VInputTag("radiatedElectrons", "radiatedMuons")
     )
     leptons = cms.EDProducer("CandViewMerger",
-        src = cms.VInputTag("radiatedLeptons", "leps")
+        src = cms.VInputTag("radiatedLeptons", "_leptons")
     )
-    selectLeptons += ((radiatedMuons + radiatedElectrons)*radiatedLeptons)
+    selectLeptons += ((radiatedMuons + radiatedElectrons)*radiatedLeptons*_leptons)
 else:
-    leptons = leps
+    leptons = _leptons
 sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("leptons"),
     maxNumber = cms.uint32(10)
 )
-selectLeptons += cms.Sequence(leps*leptons*sortedLeptons)
+selectLeptons += cms.Sequence(leptons*sortedLeptons)

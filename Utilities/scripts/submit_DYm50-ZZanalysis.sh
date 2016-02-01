@@ -4,15 +4,14 @@ cd ${0%/*}
 DATE=`date +%Y-%m-%d`
 farmoutAnalysisJobs \
     --infer-cmssw-path \
-    --input-files-per-job=10 \
-    --input-file-list=../../MetaData/ZZ/ZZ_powheg_files.txt \
+    --input-files-per-job=20 \
+    --input-file-list=../../MetaData/Drell-Yan/DYm50_mg5amcatnlo_files.txt \
     --assume-input-files-exist \
-    $1 \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    powhegOff_GenNtuples_$DATE \
+    $1 \
+    DrellYan_m50_mg5amcatnlo_GenNtuples_$DATE \
     ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
-    useDefaultDataset=ZZ-PWG-Off \
+    useDefaultDataset=DYm50\
     submit=1 \
-    isHardProcess=0 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'

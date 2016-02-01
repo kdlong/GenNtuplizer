@@ -11,6 +11,7 @@ process.load("GenNtuplizer.DibosonGenAnalyzer.genLeptons_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genZCands_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genJets_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
+process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.promptLeptonsFilter_cff")
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
@@ -41,6 +42,7 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     xSec = cms.untracked.double(options.crossSection)
 )
 process.p = cms.Path(process.selectLeptons *
+#    process.filterPromptLeps *
     process.selectZCands * 
     process.selectJets *
     process.analyzeZZ
