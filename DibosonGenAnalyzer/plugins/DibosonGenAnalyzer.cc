@@ -67,7 +67,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         std::string lheHeader_;
         double crossSection_;
         std::string extraName_;
-        unsigned int nKeepLeps_;
+        size_t nKeepLeps_;
         unsigned int nKeepExtra_;
         unsigned int nKeepWs_;
         unsigned int nZsCut_;
@@ -128,7 +128,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     nKeepLeps_ = cfg.getUntrackedParameter<unsigned int>("nKeepLeps", 0);
     std::string lepsName = cfg.getUntrackedParameter<std::string>("lepsName", "l");
     particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_, true);
-    
+
     unsigned int nKeepZs  = cfg.getUntrackedParameter<unsigned int>("nKeepZs", 0);
     std::string ZsName = cfg.getUntrackedParameter<std::string>("ZsName", "Z");
     particleEntries_["Zs"] = new ZCandidateEntry(ZsName, nKeepZs);
@@ -178,7 +178,10 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     edm::Handle<reco::CandidateCollection> genLeptons;
     event.getByToken(genLeptonsToken_, genLeptons);
     particleEntries_["leps"]->setCollection(*genLeptons);
-    
+    reco::Candidate::LorentzVector lepton_system = reco::Candidate::LorentzVector();
+    for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons->size()); i++)
+        lepton_system += (*genLeptons)[i].p4();
+    std::cout << "Lepton system mass is " << lepton_system.mass();
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
 
