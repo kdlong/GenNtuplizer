@@ -18,7 +18,7 @@ if options.includeTaus:
         minNumber = cms.uint32(2)
     )
 
-_combinedHPCands = cms.EDProducer("CandViewMerger",
+combinedHPCands = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", "zeeCands")
 ) if not options.includeTaus else cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", 
@@ -55,14 +55,14 @@ if options.includeRadiated:
         maxNumber = cms.uint32(10)
     )
     combinedZCands = cms.EDProducer("CandViewMerger",
-        src = cms.VInputTag("combinedZCands", "combinedRadCands")
+        src = cms.VInputTag("combinedHPCands", "combinedRadCands")
     )
-    selectZCands += (radMuMuCands+radEECands)*combinedRadCands*_combinedHPCands
+    selectZCands += (radMuMuCands+radEECands)*combinedRadCands*combinedHPCands*combinedZCands
 else:
-    combinedZCands = _combinedHPCands
+    selectZCands += combinedHPCands
 sortedZCands = cms.EDFilter("BestZCandSelector",
-    src = cms.InputTag("combinedZCands"),
+    src = cms.InputTag("combinedZCands" if options.includeRadiated else "combinedHPCands"),
     maxNumber = cms.uint32(10)
 )
-selectZCands += cms.Sequence(combinedZCands*sortedZCands)
+selectZCands *= sortedZCands
 

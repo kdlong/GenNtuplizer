@@ -30,8 +30,8 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
         ntuple->Branch((particleName + "Pt").c_str(), &pts_[i-1]);
         ntuple->Branch((particleName + "Eta").c_str(), &etas_[i-1]);
         if (storeGenInfo_) {
-            ntuple->Branch((particleName + "isHardProcess").c_str(), &fromHPFSvals_[i-1]);
-            ntuple->Branch((particleName + "fromHardProcessFS").c_str(), &isHPvals_[i-1]);
+            ntuple->Branch((particleName + "fromHardProcess").c_str(), &fromHPFSvals_[i-1]);
+            ntuple->Branch((particleName + "isHardProcessFS").c_str(), &isHPvals_[i-1]);
             ntuple->Branch((particleName + "pdgId").c_str(), &pdgids_[i-1]);
             ntuple->Branch((particleName + "motherId").c_str(), &motherIds_[i-1]);
         } 

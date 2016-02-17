@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
-process = cms.Process("WZGenAnalyze")
+process = cms.Process("WWGenAnalyze")
 
 process.load("PhysicsTools.HepMCCandAlgos.genParticles_cfi")
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -26,25 +26,26 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string(options.outputFile)
 )
 
-process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
+process.analyzeWW = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     extraParticle = cms.untracked.InputTag("sortedNeutrinos" if not options.genMet else "slimmedMETs"),
     lheSource = cms.InputTag("externalLHEProducer" if options.isMiniAOD else "source"),
     zCands = cms.InputTag("sortedZCands"),
-    wCands = cms.untracked.InputTag("sortedWCands"),
+    wCands = cms.untracked.InputTag("trueWs"),
     nKeepZs = cms.untracked.uint32(0),
-    nKeepLeps = cms.untracked.uint32(4),
+    nKeepLeps = cms.untracked.uint32(2),
     nKeepJets = cms.untracked.uint32(2),
-    nKeepExtra = cms.untracked.uint32(1),
+    nKeepExtra = cms.untracked.uint32(2),
     extraName = cms.untracked.string("Nu" if not options.genMet else "genMET"),
-    nKeepWs = cms.untracked.uint32(5),
+    nKeepWs = cms.untracked.uint32(2),
     xSec = cms.untracked.double(options.crossSection)
 )
-process.p = cms.Path(process.selectLeptons * 
-    process.selectZCands * 
+process.p = cms.Path(process.selectLeptons if not options.includeRadiated else
+        process.selectLeptons*process.selectRadiatedLeptons)
+process.p *= (process.selectZCands * 
     process.selectNeutrinos * 
     process.selectWCands *
     process.selectJets *
-    process.analyzeWZ
+    process.analyzeWW
 )

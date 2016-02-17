@@ -35,14 +35,14 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     zCands = cms.InputTag("sortedZCands"),
-    lheSource = cms.InputTag("externalLHEProducer" if options.isMiniAOD else "source"),
+    lheSource = cms.InputTag("source"),#"externalLHEProducer" if options.isMiniAOD else "source"),
     nKeepZs = cms.untracked.uint32(4),
     nKeepLeps = cms.untracked.uint32(4),
     nKeepJets = cms.untracked.uint32(2),
     xSec = cms.untracked.double(options.crossSection)
 )
 process.p = cms.Path(process.selectLeptons *
-#    process.filterPromptLeps *
+    #process.filterPromptLeps *
     process.selectZCands * 
     process.selectJets *
     process.analyzeZZ

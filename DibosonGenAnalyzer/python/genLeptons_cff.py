@@ -31,7 +31,7 @@ if options.includeTaus:
             ("statusFlags().fromHardProcess && isLastCopy" if not options.isHardProcess else "isHardProcess()"))  
     )
 
-_leptons = cms.EDProducer("CandViewMerger",
+hpleptons = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", "selectedMuons")
 ) if not options.includeTaus else cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("selectedElectrons", 
@@ -48,14 +48,14 @@ if options.includeRadiated:
     radiatedLeptons = cms.EDProducer("CandViewMerger",
         src = cms.VInputTag("radiatedElectrons", "radiatedMuons")
     )
-    leptons = cms.EDProducer("CandViewMerger",
-        src = cms.VInputTag("radiatedLeptons", "_leptons")
+    allleptons = cms.EDProducer("CandViewMerger",
+        src = cms.VInputTag("radiatedLeptons", "hpleptons")
     )
-    selectLeptons += ((radiatedMuons + radiatedElectrons)*radiatedLeptons*_leptons)
+    selectLeptons += ((radiatedMuons + radiatedElectrons)*hpleptons*radiatedLeptons*allleptons)
 else:
-    leptons = _leptons
+    selectLeptons += hpleptons
 sortedLeptons = cms.EDFilter("LargestPtCandSelector",
-    src = cms.InputTag("leptons"),
+    src = cms.InputTag("hpleptons" if not options.includeRadiated else "allleptons"),
     maxNumber = cms.uint32(10)
 )
-selectLeptons += cms.Sequence(leptons*sortedLeptons)
+selectLeptons += sortedLeptons

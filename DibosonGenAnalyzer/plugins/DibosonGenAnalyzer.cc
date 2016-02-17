@@ -78,7 +78,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         double XWGTUP_;
         std::vector<std::string> LHEWeightIDs_;
         std::vector<double> LHEWeights_;
-        std::vector<double> LHEWeightSums_;
+        std::vector<double> fidLHEWeightSums_;
+        std::vector<double> initLHEWeightSums_;
         unsigned int eventid_;
         unsigned int nProcessed_;
         unsigned int nPass_;
@@ -156,7 +157,6 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     // into file multiple times
     ntuple_->SetAutoSave(-30000000000000);
     ntuple_->Branch("LHEweights", &LHEWeights_);
-    ntuple_->Branch("LHEweightIDs", &LHEWeightIDs_);
 }
 
 DibosonGenAnalyzer::~DibosonGenAnalyzer()
@@ -176,7 +176,15 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
 {
     nProcessed_++;
     initSumWeights_ += getEventWeight(event);
-    
+    edm::Handle<LHEEventProduct> lheEventInfo;
+    event.getByToken(lheEventToken_, lheEventInfo);
+    if (initLHEWeightSums_.empty())
+        initLHEWeightSums_.resize(lheEventInfo->weights().size(), 0);
+    int i = 0;
+    for(const auto& weight : lheEventInfo->weights()) {
+        initLHEWeightSums_[i] += weight.wgt;
+        i++;
+    }
     edm::Handle<reco::CandidateCollection> genLeptons;
     event.getByToken(genLeptonsToken_, genLeptons);
     particleEntries_["leps"]->setCollection(*genLeptons);
@@ -204,10 +212,10 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     particleEntries_["Zs"]->setCollection(*zCands);
     
     std::cout << genLeptons->size();
-    if (genLeptons->size() < nKeepLeps_) {
-        std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
-        return;    
-    }
+    //if (genLeptons->size() < nKeepLeps_) {
+    //    std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
+        //return;    
+    //}
     //if (wCands->size() != 1)
     //   return; 
     if (zCands->size() < nZsCut_) {
@@ -279,11 +287,11 @@ DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
         LHEWeightIDs_.push_back(weight.id);
         LHEWeights_.push_back(weight.wgt);
     }
-    if (LHEWeightSums_.empty())
-        LHEWeightSums_ = LHEWeights_;
+    if (fidLHEWeightSums_.empty())
+        fidLHEWeightSums_ = LHEWeights_;
     else {
-        for (size_t i = 0; i < LHEWeightSums_.size(); i++)
-            LHEWeightSums_[i] += LHEWeights_[i];
+        for (size_t i = 0; i < fidLHEWeightSums_.size(); i++)
+            fidLHEWeightSums_[i] += LHEWeights_[i];
     }
 }
 reco::CandidateCollection
@@ -326,7 +334,8 @@ DibosonGenAnalyzer::endJob()
     metaData->Branch("fidXSection", &fidXSec);
     metaData->Branch("LHEweightIDs", &LHEWeightIDs_);
     metaData->Branch("LHEheader", &lheHeader_);
-    metaData->Branch("LHEweightSums", &LHEWeightSums_);
+    metaData->Branch("initLHEweightSums", &initLHEWeightSums_);
+    metaData->Branch("fidLHEweightSums", &fidLHEWeightSums_);
     metaData->Fill();
 }
 
