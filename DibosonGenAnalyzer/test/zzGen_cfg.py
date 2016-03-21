@@ -10,8 +10,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.load("GenNtuplizer.DibosonGenAnalyzer.genLeptons_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genZCands_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genJets_cff")
-process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
-process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.promptLeptonsFilter_cff")
+#process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
+process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.Zmassfilter_cff")
+#process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.promptLeptonsFilter_cff")
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
@@ -35,14 +36,15 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sortedLeptons"),
     zCands = cms.InputTag("sortedZCands"),
-    lheSource = cms.InputTag("source"),#"externalLHEProducer" if options.isMiniAOD else "source"),
-    nKeepZs = cms.untracked.uint32(4),
+    lheSource = cms.InputTag("externalLHEProducer" if options.isMiniAOD else "source"),
+    nKeepZs = cms.untracked.uint32(8),
     nKeepLeps = cms.untracked.uint32(4),
     nKeepJets = cms.untracked.uint32(2),
     xSec = cms.untracked.double(options.crossSection)
 )
 process.p = cms.Path(process.selectLeptons *
     #process.filterPromptLeps *
+    #process.Zmassfilter*
     process.selectZCands * 
     process.selectJets *
     process.analyzeZZ
