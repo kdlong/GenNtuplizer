@@ -18,6 +18,18 @@ options.register('isMiniAOD',
     "is MiniAOD file (run over prunedGenParticles"
     " rather than genParticles)"
 )
+options.register('lheSource',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "Use 'source' as LHE product name"
+)
+options.register('isPythia6',
+    0, # Default value
+    options.multiplicity.singleton,
+    options.varType.int,
+    "Use status = 3 leptons from Pythia6"
+)
 options.register('includeTaus',
     0, # Default value
     options.multiplicity.singleton,
@@ -84,18 +96,6 @@ def getArgs():
         sys.stderr.write("You need to enter an inputFile name!")
     if options.useDefaultDataset != "":
         sample_info = default_datasets.getSampleInfo(options)
-        if not options.submit:
-            options.inputFiles = sample_info["inputFiles"]
-        options.crossSection = sample_info["crossSection"]
-        options.isMiniAOD = sample_info["isMiniAOD"]
-        if "isHardProcess" in sample_info.keys():
-            options.isHardProcess = sample_info["isHardProcess"]
-        if "includeRadiated" in sample_info.keys():
-            options.includeRadiated = sample_info["includeRadiated"]
-        if "redoJets" in sample_info.keys():
-            options.redoJets = sample_info["redoJets"]
-        if "is8TeV" in sample_info.keys():
-            options.is8TeV = sample_info["is8TeV"]
         if options.outputFile == "test.root" or "test_numEvent" in options.outputFile:
             if not os.path.isfile(sample_info["outputFile"]): 
                 options.outputFile = sample_info["outputFile"]    
@@ -105,6 +105,12 @@ def getArgs():
                     options.outputFile = sample_info["outputFile"]    
                 else:
                     exit(0)
+        if not options.submit:
+            options.inputFiles = sample_info["inputFiles"]
+        for key, value in sample_info.iteritems():
+            if key in ["inputFiles", "outputFile"]:
+                continue
+            setattr(options, key, value)
     if options.outputFile == "test.root":
         sys.stderr.write("You didn't enter an output file name. Using default"
             " name 'test.root'")    

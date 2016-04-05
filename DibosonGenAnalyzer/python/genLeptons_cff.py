@@ -3,18 +3,18 @@ import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
+leptonsFlag = "status = 3" if options.isPythia6 else \
+        ("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()") #"statusFlags().fromHardProcessBeforeFSR()"))  
 
 selectedElectrons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
     cut = cms.string("abs(pdgId) == 11 && %s" %
-            "status = 3")
-        #("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
+            leptonsFlag)
 )
 selectedMuons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
     cut = cms.string("abs(pdgId) == 13 && %s" % 
-            "status = 3")
-        #("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()")) #"statusFlags().fromHardProcessBeforeFSR()"))  
+            leptonsFlag)
 )
 
 radiatedElectrons = cms.EDFilter("GenParticleSelector",
@@ -30,8 +30,8 @@ if options.includeTaus:
     selectedTaus = cms.EDFilter("GenParticleSelector",
         src = cms.InputTag(genParticlesLabel),
         cut = cms.string("abs(pdgId) == 15 && %s" %
-            "status = 3")
-        #("statusFlags().fromHardProcess && isLastCopy" if not options.isHardProcess else "isHardProcess()"))  
+            "status = 3" if options.isPythia6 else \
+        ("statusFlags().fromHardProcess && isLastCopy" if not options.isHardProcess else "isHardProcess()"))  
     )
 
 hpleptons = cms.EDProducer("CandViewMerger",
