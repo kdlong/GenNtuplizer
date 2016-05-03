@@ -9,7 +9,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $1 \
-    powhegOff_GenNtuples_$DATE \
+    powhegOff_GenNtuples_fromHardProcessFS_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-PWG-Off \
     isHardProcess=0 \

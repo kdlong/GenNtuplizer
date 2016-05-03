@@ -203,9 +203,9 @@ def getSampleInfo(options):
             "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZto2L2Q_Incl/MG5aMCatNLO_WZto2L2Q_Incl_pythia8_TuneCUETP8M1_Ntuple.root",  
             "isMiniAOD" : 0
         },
-        'WZ-MGNLO-inc' : { "inputFiles" : "file:/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j/MG5aMCatNLO_WZ0j_pythia8_TuneCUETP8M1.root",
+        'WZ-MGNLO-inc' : { "inputFiles" : "file:root://cmsxrootd.hep.wisc.edu//store/user/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j/MG5aMCatNLO_WZ0j_pythia8_TuneCUETP8M1.root",
             "crossSection" : 4.415, 
-            "outputFile" : "file:/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j/MG5aMCatNLO_WZ0j_pythia8_TuneCUETP8M1_Ntuple.root",
+            "outputFile" : "file:/data/kelong/DibosonAnalysisData/GenAnalysis/MG5aMCatNLO_WZ0j/MG5aMCatNLO_WZ0j_pythia8_TuneCUETP8M1_Ntuple.root",
             "isMiniAOD" : 0
         },
         'WZ-MGNLO-inc-ERROR' : { "inputFiles" : "file:/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j_OfficialGridpack/MG5aMCatNLO_WZ0j_OfficialGridpack_pythia8_TuneCUETP8M1.root",
@@ -229,7 +229,7 @@ def getSampleInfo(options):
                 /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/00F5EF70-3326-E511-8AFF-0025905A6066.root,
                 /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/06F9B6E2-A629-E511-B9E2-B083FED76637.root,
                 /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/0A80F6F9-2D2A-E511-88E0-008CFA1111E0.root""",
-            "crossSection" : 5.289, 
+            "crossSection" : 4.71, 
             "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialSample/MG5aMCatNLO_WZ01j_OfficialSample_pythia8_TuneCUETP8M1_Ntuple.root",
             "isMiniAOD" : 1
         },

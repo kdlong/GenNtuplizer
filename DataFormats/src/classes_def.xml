@@ -1,0 +1,6 @@
+<lcgdict>
+<selection>
+    <class name="DressedGenParticle"/>
+    <class name="std::vector<DressedGenParticle>"/>
+</selection>
+</lcgdict>
