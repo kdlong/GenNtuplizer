@@ -24,11 +24,14 @@ DressedGenParticlesProducer::DressedGenParticlesProducer(
         associatesToken_(consumes<reco::GenParticleCollection>(
             cfg.getParameter<edm::InputTag>("associates"))),
         dRmax_(cfg.getUntrackedParameter<double>("dRmax", 0.1)) {
-    produces<DressedGenParticleCollection>();
+    produces<edm::OwnVector<reco::Candidate>>();
+    //produces<DressedGenParticleCollection>();
 }
 
 void DressedGenParticlesProducer::produce(edm::Event& event, const edm::EventSetup& es) {
-    std::auto_ptr<DressedGenParticleCollection> dressedCollection(new DressedGenParticleCollection);
+    //std::auto_ptr<edm::OwnVector<DressedGenParticle>> dressedCollection(new edm::OwnVector<DressedGenParticle>);
+    //std::auto_ptr<DressedGenParticleCollection> dressedCollection(new DressedGenParticleCollection);
+    std::auto_ptr<edm::OwnVector<reco::Candidate>> dressedCollection(new edm::OwnVector<reco::Candidate>);
     
     edm::Handle<reco::GenParticleCollection> baseCollection;
     event.getByToken(baseCollectionToken_, baseCollection);
@@ -40,6 +43,12 @@ void DressedGenParticlesProducer::produce(edm::Event& event, const edm::EventSet
         DressedGenParticle dressed_part = DressedGenParticle(base_particle,
             *associates, dRmax_);
         dressedCollection->push_back(dressed_part);
+        if (dressed_part.numAssociated() > 0) {
+            std::cout << "the pdgid was " << dressed_part.pdgId() << std::endl;
+            std::cout << "the pt was " << dressed_part.pt() << std::endl;
+            std::cout << "the undressed pt was " << dressed_part.undressedPt() << std::endl;
+            std::cout << "number of associated photons is" << dressed_part.numAssociated() << std::endl;
+        }
     }
     event.put(dressedCollection);
 }

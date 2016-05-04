@@ -20,9 +20,14 @@ class DressedGenParticle : public reco::GenParticle {
         DressedGenParticle(Charge q, const PolarLorentzVector & p4, const Point & vtx, 
             int pdgId, int status, bool integerCharge);
         DressedGenParticle* clone() const;
+        const LorentzVector undressedP4() const;
+        float undressedPt() const;
+        float numAssociated() const;
+        reco::GenParticleCollection getAssociated() const;
     private:
         int dressParticle();
-        reco::GenParticleRefVector associates;
+        //reco::GenParticleRefVector associates;
+        reco::GenParticleCollection associates;
         const LorentzVector p4_undressed;
 };
 

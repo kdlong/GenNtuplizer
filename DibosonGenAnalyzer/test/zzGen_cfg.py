@@ -33,7 +33,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
-    leptons = cms.InputTag("sortedDressedLeptons"),
+    leptons = cms.InputTag("dressedLeptons"),
     zCands = cms.InputTag("sortedZCands"),
     lheSource = cms.InputTag("externalLHEProducer" \
         if (options.isMiniAOD or options.lheSource == 0) else "source"),
