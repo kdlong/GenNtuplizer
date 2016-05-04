@@ -36,6 +36,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
+#include "GenNtuplizer/DataFormats/interface/DressedGenParticle.h"
 #include "BasicParticleEntry.h"
 #include "ZCandidateEntry.h"
 #include "WCandidateEntry.h"
@@ -191,6 +192,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     reco::Candidate::LorentzVector lepton_system = reco::Candidate::LorentzVector();
     for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons->size()); i++)
         lepton_system += (*genLeptons)[i].p4();
+    //DressedGenParticle test = DressedGenParticle(dynamic_cast<const reco::GenParticle>((*genLeptons)[0]))
     lep_system_mass_ = lepton_system.mass();
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
@@ -212,10 +214,14 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     particleEntries_["Zs"]->setCollection(*zCands);
     
     std::cout << genLeptons->size();
-    //if (genLeptons->size() < nKeepLeps_) {
-    //    std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
-        //return;    
-    //}
+    if (genLeptons->size() < nKeepLeps_) {
+        std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
+        return;    
+    }
+    DressedGenParticle test = DressedGenParticle(dynamic_cast<const reco::GenParticle&>((*genLeptons)[0]));
+    std::cout << "Hey there!" << "pdgid is " << test.pdgId() << std::endl;
+    std::cout << "status = " << test.status() << " And fromHardProcessFinalState() = " << test.fromHardProcessFinalState();
+    std::cout << std::endl;
     //if (wCands->size() != 1)
     //   return; 
     if (zCands->size() < nZsCut_) {
