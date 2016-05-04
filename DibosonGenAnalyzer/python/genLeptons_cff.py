@@ -30,7 +30,7 @@ radiatedMuons = cms.EDFilter("GenParticleSelector",
 if options.includeTaus:
     selectedTaus = cms.EDFilter("GenParticleSelector",
         src = cms.InputTag(genParticlesLabel),
-        cut = cms.string("abs(pdgId) == 15 && %s" % tauFlag
+        cut = cms.string("abs(pdgId) == 15 && %s" % tauFlag)
     )
 
 hpleptons = cms.EDProducer("CandViewMerger",

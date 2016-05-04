@@ -1,6 +1,10 @@
 <lcgdict>
 <selection>
     <class name="DressedGenParticle"/>
+    <class name="DressedGenParticleCollection"/>
     <class name="std::vector<DressedGenParticle>"/>
+    <class name="edm::RefProd<DressedGenParticleCollection>"/>
+    <class name="edm::RefVector<DressedGenParticleCollection>"/>
+    <class name="edm::Wrapper<DressedGenParticleCollection>"/>
 </selection>
 </lcgdict>
