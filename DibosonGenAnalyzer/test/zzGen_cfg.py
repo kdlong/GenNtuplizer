@@ -38,7 +38,7 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     zCands = cms.InputTag("sortedZCands"),
     lheSource = cms.InputTag("externalLHEProducer" \
         if (options.isMiniAOD or options.lheSource == 0) else "source"),
-    nKeepZs = cms.untracked.uint32(8),
+    nKeepZs = cms.untracked.uint32(4),
     nKeepLeps = cms.untracked.uint32(4),
     nKeepJets = cms.untracked.uint32(2),
     xSec = cms.untracked.double(options.crossSection)
