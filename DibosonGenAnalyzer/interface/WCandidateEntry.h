@@ -1,7 +1,7 @@
 #ifndef W_CANDIDATE_ENTRY_H
 #define W_CANDIDATE_ENTRY_H
 
-#include "BasicParticleEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
 
 class WCandidateEntry : public BasicParticleEntry {
     public:

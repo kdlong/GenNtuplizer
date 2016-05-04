@@ -1,4 +1,4 @@
-#include "BasicParticleEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 BasicParticleEntry::BasicParticleEntry(std::string name, 

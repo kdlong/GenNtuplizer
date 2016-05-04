@@ -37,9 +37,9 @@
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
 #include "GenNtuplizer/DataFormats/interface/DressedGenParticle.h"
-#include "BasicParticleEntry.h"
-#include "ZCandidateEntry.h"
-#include "WCandidateEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/ZCandidateEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/WCandidateEntry.h"
 #include "TTree.h"
 #include <vector>
 //

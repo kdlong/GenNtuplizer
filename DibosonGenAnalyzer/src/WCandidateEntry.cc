@@ -1,23 +1,22 @@
-#include "ZCandidateEntry.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/WCandidateEntry.h"
 
-ZCandidateEntry::ZCandidateEntry(std::string name, unsigned int nKeep) :
+WCandidateEntry::WCandidateEntry(std::string name, unsigned int nKeep) :
     BasicParticleEntry(name, nKeep, false) {}
 
 bool 
-ZCandidateEntry::isTrueDecay(const reco::Candidate& zCand) {
-    if (zCand.numberOfDaughters() != 2) {
-        if (zCand.pdgId() == 23)
+WCandidateEntry::isTrueW(const reco::Candidate& wCand) {
+    if (wCand.numberOfDaughters() != 2) {
+        if (std::abs(wCand.pdgId()) == 24)
             return true;
         std::cerr << "Z candidate not formed from two objects";
         return false;
     }
-    const reco::Candidate& daughter1 = *zCand.daughter(0);
-    const reco::Candidate& daughter2 = *zCand.daughter(1);
+    const reco::Candidate& daughter1 = *wCand.daughter(0);
+    const reco::Candidate& daughter2 = *wCand.daughter(1);
     if (daughter1.numberOfMothers() > 0 && daughter2.numberOfMothers() > 0) {
         const reco::Candidate& dau1mother = getFirstDistinctMother(daughter1);
         const reco::Candidate& dau2mother = getFirstDistinctMother(daughter2);
-        return ((daughter1.pdgId() + daughter2.pdgId() == 0) 
+        return ((abs(daughter1.pdgId() + daughter2.pdgId()) == 1) 
 //                && daughter1.fromHardProcessFinalState()
 //                && daughter2.fromHardProcessFinalState()
                 && (dau1mother.pdgId() == dau2mother.pdgId())
@@ -28,14 +27,7 @@ ZCandidateEntry::isTrueDecay(const reco::Candidate& zCand) {
 }
 
 bool 
-ZCandidateEntry::isRadiated(const reco::Candidate& cand) {
-    const reco::GenParticle* daughter1 = dynamic_cast<const reco::GenParticle*>(cand.daughter(0));
-    const reco::GenParticle* daughter2 = dynamic_cast<const reco::GenParticle*>(cand.daughter(0));
-    return (daughter1 && daughter2) ? (daughter1->isPromptFinalState() && daughter2->isPromptFinalState()) : 0;
-}
-
-bool 
-ZCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand, 
+WCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand, 
                               size_t idx,
                               reco::CandidateCollection compCands) {
     for(size_t i = 0; i < idx; i++) {
@@ -54,9 +46,9 @@ ZCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
 }
 
 void
-ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
+WCandidateEntry::createNtupleEntry(TTree* ntuple) {
     BasicParticleEntry::createNtupleEntry(ntuple);
-    isTrueDecayValues_.resize(nKeep_, -999);
+    isTrueWValues_.resize(nKeep_, -999);
     isUniqueValues_.resize(nKeep_, -999);
     masses_.resize(nKeep_, -999);
     for (unsigned int i = 1; i <= nKeep_; i++)
@@ -66,14 +58,14 @@ ZCandidateEntry::createNtupleEntry(TTree* ntuple) {
             particleName += std::to_string(i);
         ntuple->Branch((particleName + "mass").c_str(), &masses_[i-1]);
         ntuple->Branch((particleName + "isUnique").c_str(), &isUniqueValues_[i-1]);
-        ntuple->Branch((particleName + "isTrueDecay").c_str(), &isTrueDecayValues_[i-1]);
+        ntuple->Branch((particleName + "isTrueW").c_str(), &isTrueWValues_[i-1]);
     }
 }
 void
-ZCandidateEntry::fillNtupleInfo() {
+WCandidateEntry::fillNtupleInfo() {
     BasicParticleEntry::fillNtupleInfo();
     isUniqueValues_.assign(nKeep_, -999);
-    isTrueDecayValues_.assign(nKeep_, -999); 
+    isTrueWValues_.assign(nKeep_, -999); 
     masses_.assign(nKeep_, -999); 
     
     for(size_t i = 0; i < particles_.size(); i++) {
@@ -81,7 +73,7 @@ ZCandidateEntry::fillNtupleInfo() {
             break;
         const reco::Candidate& particle = particles_[i];
         isUniqueValues_[i] = hasUniqueDaughters(particle, i, particles_);
-        isTrueDecayValues_[i] = isTrueDecay(particle);
+        isTrueWValues_[i] = isTrueW(particle);
         masses_[i] = particle.mass();
     }
 }

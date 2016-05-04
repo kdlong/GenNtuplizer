@@ -3,9 +3,5 @@
 <use name="FWCore/ParameterSet"/>
 <use name="GenNtuplizer/DataFormats"/>
 <export>
-    <lib name="GenNtuplizer/DibosonGenAnalyzer"/>
-    <lib name="ZCandTest/ZCandTest"/>
-</export>
-<export>
     <lib   name="1"/>
 </export>
