@@ -15,8 +15,7 @@ class DressedGenParticlesProducer : public edm::EDProducer {
 //        void DressedGenParticlesProducer::disambiguateAssociatesByDR(
 //            auto overlap, reco::GenParticleCollection dressed1,
 //            reco::GenParticleCollection dressed2);
-//        void DressedGenParticlesProducer::RemoveDoubleCounting(
-//            reco::CandidateCollection& dressedParticles);
+        void removeDoubleCounting(reco::CandidateCollection& dressedParticles);
         bool allUniqueAssociates(reco::CandidateCollection& dressedParticles);
     private:
         edm::EDGetTokenT<reco::GenParticleCollection> baseCollectionToken_;
@@ -80,22 +79,37 @@ bool DressedGenParticlesProducer::allUniqueAssociates(
             std::cout << " pdgId " << assoc.pdgId() << " pt " 
                       << assoc.pt() << " eta " << assoc.eta() << std::endl; 
         }
+        removeDoubleCounting(dressedParticles);
     }
     return (allAssociated.size() == uniqueAssociated.size());
 }
-//void DressedGenParticlesProducer::RemoveDoubleCounting(
-//        reco::CandidateCollection& dressedParticles) {
-//    for(size_t i = 0; i < v.size(); i++)
-//    {
-//        reco::GenParticleCollection associates = dressedParticles[i].getAssociated()
-//        for(size_t j = i + 1; j < v.size(); j++) {
-//            auto overlap = std::set_intersection(associates,
-//                dressedParticles[j].getAssociated());
-//            disambiguateAssociates(overlap, 
-//                dressedParticles[i], dressedParticles[j]);
-//        }
-//    }
-//}
+void DressedGenParticlesProducer::removeDoubleCounting(
+        reco::CandidateCollection& dressedParticles) {
+    for(size_t i = 0; i < dressedParticles.size(); i++)
+    {
+        const DressedGenParticle& dressed_part_i = 
+            dynamic_cast<const DressedGenParticle&>(dressedParticles[i]);
+        reco::GenParticleCollection associates = dressed_part_i.getAssociated();
+        for(size_t j = i + 1; j < dressedParticles.size(); j++) {
+            const DressedGenParticle& dressed_part_j = 
+                dynamic_cast<const DressedGenParticle&>(dressedParticles[j]);
+            std::cout << std::endl << "Lepton # " << j;
+            std::cout << std::endl << "Associated Photons = " << dressed_part_j.numAssociated();
+            std::cout << std::endl << "Lepton kinematics:";
+            std::cout << std::endl << " pdgId " << dressed_part_j.pdgId() << " pt " 
+                        << dressed_part_j.pt() << " eta " << dressed_part_j.eta() << std::endl; 
+            for (const auto& assoc : associates) {
+                std::cout << "Associated = " << dressed_part_j.isAssociated(assoc);
+                std::cout << std::endl << " pdgId " << assoc.pdgId() << " pt " 
+                        << assoc.pt() << " eta " << assoc.eta() << std::endl; 
+            }
+            //auto overlap = std::set_intersection(associates,
+            //    dressedParticles[j].getAssociated());
+            //disambiguateAssociates(overlap, 
+            //    dressedParticles[i], dressedParticles[j]);
+        }
+    }
+}
 //void DressedGenParticlesProducer::disambiguateAssociatesByDR(auto overlap, 
 //        reco::GenParticleCollection dressed1,
 //        reco::GenParticleCollection dressed2) {

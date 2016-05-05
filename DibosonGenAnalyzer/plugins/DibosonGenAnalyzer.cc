@@ -192,7 +192,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     reco::Candidate::LorentzVector lepton_system = reco::Candidate::LorentzVector();
     for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons->size()); i++)
         lepton_system += (*genLeptons)[i].p4();
-    //DressedGenParticle test = DressedGenParticle(dynamic_cast<const reco::GenParticle>((*genLeptons)[0]))
     lep_system_mass_ = lepton_system.mass();
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
