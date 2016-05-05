@@ -23,10 +23,11 @@ class DressedGenParticle : public reco::GenParticle {
         const LorentzVector undressedP4() const;
         float undressedPt() const;
         float numAssociated() const;
+        bool isAssociated(reco::GenParticle associated) const;
         reco::GenParticleCollection getAssociated() const;
+        bool dissociate(const reco::GenParticle& associated);
     private:
-        int dressParticle();
-        //reco::GenParticleRefVector associates;
+        void dressParticle();
         reco::GenParticleCollection associates;
         const LorentzVector p4_undressed;
 };

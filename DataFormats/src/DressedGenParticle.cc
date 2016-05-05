@@ -2,8 +2,11 @@
 #include "DataFormats/Candidate/interface/CompositeRefCandidateT.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
-int DressedGenParticle::dressParticle() {
-    return 0;
+void DressedGenParticle::dressParticle() {
+    this->setP4(p4_undressed);
+    for (const auto& associated : associates) {
+        this->setP4(this->p4() + associated.p4());
+    }
 }
 DressedGenParticle::~DressedGenParticle() { }
 
@@ -42,4 +45,19 @@ float DressedGenParticle::numAssociated() const {
 }
 reco::GenParticleCollection DressedGenParticle::getAssociated() const {
     return associates;
+}
+bool DressedGenParticle::dissociate(const reco::GenParticle& associated) {
+    if (!isAssociated(associated)) {
+        return false;
+    }
+    return true;
+//    associates.erase(std::remove(associates.begin(), 
+//        associates.end(), associated), associates.end());
+//    this->setP4(this->p4() - associated.p4());
+//    return true;
+}
+bool DressedGenParticle::isAssociated(reco::GenParticle associated) const{
+    return true;
+    //return (std::find(associates.begin(), associates.end(), 
+    //    associated) != associates.end());
 }
