@@ -7,13 +7,13 @@ process.load("PhysicsTools.HepMCCandAlgos.genParticles_cfi")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.load("GenNtuplizer.DibosonGenAnalyzer.genLeptons_cff")
-process.load("GenNtuplizer.DibosonGenAnalyzer.dressedGenLeptons_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genZCands_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genJets_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.Zmassfilter_cff")
 
 options = ComLineArgs.getArgs()
+process.load("GenNtuplizer.DibosonGenAnalyzer.%sLeptons_cff" % 
+    ("dressedGen" if options.leptonType == "dressed" else "gen"))
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
 
 if "WZ" in options.useDefaultDataset:
@@ -33,7 +33,8 @@ process.TFileService = cms.Service("TFileService",
 
 process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
-    leptons = cms.InputTag("dressedLeptons"),
+    leptons = cms.InputTag("%sLeptons" % 
+        ("dressed" if options.leptonType == "dressed" else "sorted")),
     zCands = cms.InputTag("sortedZCands"),
     lheSource = cms.InputTag("externalLHEProducer" \
         if (options.isMiniAOD or options.lheSource == 0) else "source"),
@@ -42,9 +43,9 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     nKeepJets = cms.untracked.uint32(2),
     xSec = cms.untracked.double(options.crossSection)
 )
-process.p = cms.Path(process.selectLeptons *
-    process.dressLeptons*
-    process.selectZCands * 
+process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
+    else process.selectLeptons)
+process.p *= (process.selectZCands * 
     process.selectJets *
     process.analyzeZZ
 )

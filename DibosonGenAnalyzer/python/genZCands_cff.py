@@ -1,25 +1,24 @@
-from genLeptons_cff import *
+import FWCore.ParameterSet.Config as cms
+import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
+options = ComLineArgs.getArgs()
+genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
+decay_string = "{type}{part}@+ {type}{part}@-"
+lep_type = "dressed" if options.leptonType == "dressed" else "selected"
 zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
-    decay = cms.string('selectedMuons@+ selectedMuons@-'),
-#    decay = cms.string('sortedLeptons@+ sortedLeptons@+'),
-#    cut = cms.string(''),
-   cut = cms.string('charge=0'),
+    decay = cms.string(decay_string.format(type=lep_type, part="Muons")),
+    cut = cms.string('charge=0'),
     minNumber = cms.uint32(2)
 )
 
 zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
-    decay = cms.string('selectedElectrons@+ selectedElectrons@-'),
-#    decay = cms.string('sortedLeptons@- sortedLeptons@-'),
-#    cut = cms.string(''),
+    decay = cms.string(decay_string.format(type=lep_type, part="Electrons")),
     cut = cms.string('charge=0'),
     minNumber = cms.uint32(2)
 )
 if options.includeTaus:
     zttCands = cms.EDProducer("CandViewShallowCloneCombiner",
-#    decay = cms.string('sortedLeptons@+ sortedLeptons@-'),
-#    cut = cms.string(''),
-        decay = cms.string('selectedTaus@+ selectedTaus@-'),
+        decay = cms.string(decay_string.format(type="selected", part="Taus")),
         cut = cms.string('charge=0'),
         minNumber = cms.uint32(2)
     )
@@ -44,12 +43,12 @@ selectZCands = cms.Sequence(((zMuMuCands + zeeCands) if not options.includeTaus 
 
 if options.includeRadiated:
     radMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
-        decay = cms.string('radiatedMuons@+ radiatedMuons@-'),
+        decay = cms.string(decay_string.format(type="radiated", part="Muons")),
         cut = cms.string('charge=0'),
         minNumber = cms.uint32(2)
     )
     radEECands = cms.EDProducer("CandViewShallowCloneCombiner",
-        decay = cms.string('radiatedElectrons@+ radiatedElectrons@-'),
+        decay = cms.string(decay_string.format(type="radiated", part="Electrons")),
         cut = cms.string('charge=0'),
         minNumber = cms.uint32(2)
     )

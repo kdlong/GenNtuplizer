@@ -3,8 +3,17 @@ import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
-leptonsFlag = "status = 3" if options.isPythia6 else \
-        ("fromHardProcessFinalState" if not options.isHardProcess else "isHardProcess()") #"statusFlags().fromHardProcessBeforeFSR()"))  
+leptonOpts = {"hardProcess" : "isHardProcess",
+        "fromHardProcessFS" : "fromHardProcessFinalState", 
+        "pythia6HardProcess" :  "status = 3",
+        "finalstate" : "status = 1"
+}
+try:
+    leptonsFlag = leptonOpts[options.leptonType]
+except:
+    print "Invalid lepton type choice. Please choose from"
+    print leptonOpts
+    exit(0)
 tauFlag = leptonsFlag.replace("fromHardProcessFinalState", "statusFlags().fromHardProcess && isLastCopy")
 
 selectedElectrons = cms.EDFilter("GenParticleSelector",

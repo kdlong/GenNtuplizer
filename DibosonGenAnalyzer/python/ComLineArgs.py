@@ -24,12 +24,6 @@ options.register('lheSource',
     options.varType.int,
     "Use 'source' as LHE product name"
 )
-options.register('isPythia6',
-    0, # Default value
-    options.multiplicity.singleton,
-    options.varType.int,
-    "Use status = 3 leptons from Pythia6"
-)
 options.register('includeTaus',
     0, # Default value
     options.multiplicity.singleton,
@@ -42,11 +36,16 @@ options.register('genMet',
     options.varType.int,
     "Use genMET instead of neutrinos"
 )
-options.register('isHardProcess',
+options.register('leptonType',
     1, # Default value
     options.multiplicity.singleton,
-    options.varType.int,
-    "require leptons be from hard process"
+    options.varType.string,
+    "Leptons type. Options:" 
+    "\n    hardProcess --> isHardProcess() -- default"
+    "\n    fromHardProcessFS --> fromHardProcessFinalState()"
+    "\n    dressed --> dressed leptons, configured in dressedGenLeptons"
+    "\n    pythia6HardProcess --> status = 3"
+    "\n    finalstate --> status = 1"
 )
 options.register('includeRadiated',
     0, # Default value
@@ -78,12 +77,9 @@ options.register('useDefaultDataset',
     '', # Default value
     options.multiplicity.singleton,
     options.varType.string,
-    "use default dataset. Valid options are: \n"
-    "'PWG-Off': POWHEG Official RunII MiniAOD Sample \n"
-    "'MGNLO-inc': MG5_aMC@NLO inclusive NLO sample \n"
-    "'MGNLO-01j': MG5_aMC@NLO 0,1j NLO FxFx Merged sample \n"
-    "'MGLO-inc': MG5_aMC@NLO inclusive NLO sample \n"
-    "'MGLO-Phys14': MG5_aMC@NLO LO 012j SUSY Phys14 sample \n"
+    "use default dataset. Valid options are: \n" \
+    + "\n\t".join(default_datasets.getSampleList())
+
 )
 
 options.outputFile = "test.root"

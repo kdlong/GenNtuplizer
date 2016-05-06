@@ -217,7 +217,9 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
-    const DressedGenParticle& test = dynamic_cast<const DressedGenParticle&>((*genLeptons)[0]);
+    for (const auto& part : *genLeptons) {
+        std::cout << "in analyzer pdgid is " << part.pdgId() << std::endl;
+    }
     //if (wCands->size() != 1)
     //   return; 
     if (zCands->size() < nZsCut_) {

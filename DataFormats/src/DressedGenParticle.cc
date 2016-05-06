@@ -61,6 +61,6 @@ bool DressedGenParticle::isAssociated(const reco::GenParticle& associated) const
     std::vector<reco::GenParticle>::const_iterator end = associates.end();
     std::vector<reco::GenParticle>::const_iterator entry = std::find_if(
         associates.begin(), associates.end(), 
-        [&associated](const reco::GenParticle& part) {return &part == &associated;});
+        [&associated](const reco::GenParticle& part) {return part.pt() == associated.pt();});
     return (entry != end);
 }
