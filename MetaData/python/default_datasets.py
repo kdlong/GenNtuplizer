@@ -224,12 +224,14 @@ sample_info = {
     },
     'WZ-MGNLO-Off' : {
         "inputFiles" :
-            """/store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/002CAF8C-3A26-E511-B14A-0025905A607E.root,
-            /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/00F5EF70-3326-E511-8AFF-0025905A6066.root,
-            /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/06F9B6E2-A629-E511-B9E2-B083FED76637.root,
-            /store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/30000/0A80F6F9-2D2A-E511-88E0-008CFA1111E0.root""",
+            """/store/mc/RunIIFall15MiniAODv2/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/040D125D-64D9-E511-98EE-001E67397E1D.root,
+            /store/mc/RunIIFall15MiniAODv2/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/046A4DDA-62D9-E511-94B1-002590A80E1E.root,
+            /store/mc/RunIIFall15MiniAODv2/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/0CB354CA-14DA-E511-9DD8-0017A477041C.root,
+            /store/mc/RunIIFall15MiniAODv2/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/10851676-21DA-E511-BF48-A0369F3102B6.root,
+            /store/mc/RunIIFall15MiniAODv2/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/18058539-6DD9-E511-A325-5C260AFC8CF4.root,
+            /store/mc/RunIIFall15MiniAODv2/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/1EB3E9CF-17DA-E511-81CC-3417EBE2E9BC.root""",
         "crossSection" : 4.71, 
-        "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialSample/MG5aMCatNLO_WZ01j_OfficialSample_pythia8_TuneCUETP8M1_Ntuple.root",
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialSample/MG5aMCatNLO_WZ01j_OfficialSample_pythia8_TuneCUETP8M1_Ntuple.root",
         "isMiniAOD" : 1
     },
     'WZ-MGNLO-Off-New' : {

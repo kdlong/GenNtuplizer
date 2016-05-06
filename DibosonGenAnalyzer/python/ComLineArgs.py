@@ -37,7 +37,7 @@ options.register('genMet',
     "Use genMET instead of neutrinos"
 )
 options.register('leptonType',
-    1, # Default value
+    "hardProcess", # Default value
     options.multiplicity.singleton,
     options.varType.string,
     "Leptons type. Options:" 

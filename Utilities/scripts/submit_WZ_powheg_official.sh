@@ -4,15 +4,15 @@ cd ${0%/*}
 DATE=`date +%Y-%m-%d`
 farmoutAnalysisJobs \
     --infer-cmssw-path \
-    --input-files-per-job=1 \
+    --input-files-per-job=5 \
     --input-file-list=../../MetaData/WZ/WZ_powheg_files.txt \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
-    $1 \
-    powhegOff_GenNtuples_fromHardProcessFS_$DATE \
+    $2 \
+    powhegOff_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-PWG-Off \
-    isHardProcess=0 \
     submit=1 \
+    leptonType=$1 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'
