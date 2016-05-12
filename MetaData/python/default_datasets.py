@@ -202,6 +202,12 @@ sample_info = {
         "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZto2L2Q_Incl/MG5aMCatNLO_WZto2L2Q_Incl_pythia8_TuneCUETP8M1_Ntuple.root",  
         "isMiniAOD" : 0
     },
+    'WZto2Mu1E1Nu-fixed-MGNLO-inc' : { 
+        "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j/WZTo2Mu1E1Nu_mg5amcnlo_inc_pythia8.root",
+        "crossSection" : 0.5244, 
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j/WZTo2Mu1E1Nu_mg5amcnlo_inc_pythia8_Ntuple.root",  
+        "isMiniAOD" : 0
+    },
     'WZ-MGNLO-inc' : { "inputFiles" : "file:root://cmsxrootd.hep.wisc.edu//store/user/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ0j/MG5aMCatNLO_WZ0j_pythia8_TuneCUETP8M1.root",
         "crossSection" : 4.415, 
         "outputFile" : "file:/data/kelong/DibosonAnalysisData/GenAnalysis/MG5aMCatNLO_WZ0j/MG5aMCatNLO_WZ0j_pythia8_TuneCUETP8M1_Ntuple.root",
@@ -238,6 +244,12 @@ sample_info = {
         "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialGridpack/new_gridpack/MG5aMCatNLO_WZ01j_OfficialGridpack_new_pythia8_TuneCUETP8M1.root",
         "crossSection" : 4.712, 
         "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/MG5aMCatNLO_WZ01j_OfficialGridpack/new_gridpack/MG5aMCatNLO_WZ01j_OfficialGridpack_new_pythia8_TuneCUETP8M1_Ntuple.root",
+        "isMiniAOD" : 0
+    },
+    'WZto2Mu1E1Nu-fixed-PWG': {
+        "inputFiles" : "file:/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZ/WZTo2Mu1E1Nu_fixedscale_powheg_pythia8.root",
+        "crossSection" : 0.50392,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/POWHEG_WZ/WZTo2Mu1E1Nu_fixedscale_powheg_pythia8_Ntuple.root",
         "isMiniAOD" : 0
     },
     'WZ-PWG-Off': {

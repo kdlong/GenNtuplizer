@@ -28,8 +28,8 @@ process.TFileService = cms.Service("TFileService",
 
 process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
-    leptons = cms.InputTag("%sLeptons" % 
-        ("dressed" if options.leptonType == "dressed" else "sorted")),
+    leptons = cms.InputTag("sorted%sLeptons" % 
+        ("Dressed" if options.leptonType == "dressed" else "")),
     extraParticle = cms.untracked.InputTag("sortedNeutrinos" if not options.genMet else "slimmedMETs"),
     lheSource = cms.InputTag("externalLHEProducer" if options.isMiniAOD else "source"),
     zCands = cms.InputTag("sortedZCands"),
@@ -37,7 +37,7 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     nKeepZs = cms.untracked.uint32(2),
     nKeepLeps = cms.untracked.uint32(3),
     nKeepJets = cms.untracked.uint32(2),
-    nKeepExtra = cms.untracked.uint32(0),
+    nKeepExtra = cms.untracked.uint32(1),
     extraName = cms.untracked.string("Nu" if not options.genMet else "genMET"),
     nKeepWs = cms.untracked.uint32(3),
     xSec = cms.untracked.double(options.crossSection)
