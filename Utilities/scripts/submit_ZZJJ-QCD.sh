@@ -5,13 +5,13 @@ DATE=`date +%Y-%m-%d`
 farmoutAnalysisJobs \
     --infer-cmssw-path \
     --input-files-per-job=5 \
-    --input-file-list=../../MetaData/ZZ/ZZ_mg5amcatnlo_files.txt \
+    --input-file-list=../../MetaData/ZZJJ_VBS/ZZJJ-QCD_files.txt \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $2 \
-    MGNLO_Off_GenNtuples_leptonType-$1_$DATE \
+    ZZJJ_QCD-MGNLO_Off_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
-    useDefaultDataset=ZZ-MGNLO-Off \
+    useDefaultDataset=ZZJJ_QCD-MGNLO \
     submit=1 \
     leptonType=$1 \
     'inputFiles=$inputFileNames' \

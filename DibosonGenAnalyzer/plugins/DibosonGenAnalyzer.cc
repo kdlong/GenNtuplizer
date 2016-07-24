@@ -73,6 +73,10 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         unsigned int nKeepWs_;
         unsigned int nZsCut_;
         float lep_system_mass_;
+        float lep_system_pt_;
+        float mass_;
+        float pt_;
+        float mjj_;
         double initSumWeights_;
         double fidSumWeights_;
         double weight_;
@@ -153,6 +157,10 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     ntuple_->Branch("weight", &weight_);
     ntuple_->Branch("XWGTUP", &XWGTUP_);
     ntuple_->Branch((std::to_string(nKeepLeps_) + "lmass").c_str(), &lep_system_mass_);
+    ntuple_->Branch((std::to_string(nKeepLeps_) + "lPt").c_str(), &lep_system_pt_);
+    ntuple_->Branch("Pt", &pt_);
+    ntuple_->Branch("Mass", &mass_);
+    ntuple_->Branch("mjj", &mjj_);
     
     // Raise autosave value to fix annoying issue of ntuple being written 
     // into file multiple times
@@ -193,16 +201,23 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons->size()); i++)
         lepton_system += (*genLeptons)[i].p4();
     lep_system_mass_ = lepton_system.mass();
+    lep_system_pt_ = lepton_system.pt();
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
 
     reco::CandidateCollection cleanedJets = cleanJets(*genJets, *genLeptons);
     particleEntries_["jets"]->setCollection(cleanedJets);
+    
+    reco::Candidate::LorentzVector final_state = lepton_system;
     if (nKeepExtra_ > 0) { 
         edm::Handle<reco::CandidateCollection> extraParticle;
         event.getByToken(extraParticleToken_, extraParticle);
         particleEntries_["extra"]->setCollection(*extraParticle);
+        final_state += extraParticle->front().p4();
     }
+    mass_ = final_state.mass();
+    pt_ = final_state.pt();
+    mjj_ = cleanedJets.size() > 1 ? (cleanedJets[0].p4() + cleanedJets[1].p4()).mass() : -999;
     edm::Handle<reco::CandidateCollection> wCands;
     if (nKeepWs_ > 0) { 
         event.getByToken(wCandsToken_, wCands);
@@ -217,16 +232,15 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
-    for (const auto& part : *genLeptons) {
-        std::cout << "in analyzer pdgid is " << part.pdgId() << std::endl;
-    }
     //if (wCands->size() != 1)
     //   return; 
     if (zCands->size() < nZsCut_) {
         std::cout << "Failed Z cut" << std::endl;
+        return;
     }
     setWeightInfo(event);
     fillNtuple();
+
     eventid_ = event.id().event();
     nPass_++;
 }

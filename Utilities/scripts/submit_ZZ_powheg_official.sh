@@ -10,7 +10,7 @@ farmoutAnalysisJobs \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $2 \
     powhegOff_GenNtuples_leptonType-$1_$DATE \
-    ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
+    ../../DibosonGenAnalyzer/test/zzGen_cfg.py \
     useDefaultDataset=ZZ-PWG-Off \
     submit=1 \
     leptonType=$1 \
