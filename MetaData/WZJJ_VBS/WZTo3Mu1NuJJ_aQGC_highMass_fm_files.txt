@@ -1,0 +1,9 @@
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_1.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_21.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_35.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_47.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_56.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_68.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_79.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_89.root
+/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_99.root

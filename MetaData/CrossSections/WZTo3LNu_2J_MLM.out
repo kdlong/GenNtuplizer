@@ -1,0 +1,41 @@
+
+27-Jul-2016 13:52:55 CEST  Closed file root://cmsxrootd.hep.wisc.edu//store/user/kelong/WZTo3LNu_2J_13TeV_madgraphMLM-pythia8_2016-07-25-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_118.root
+
+------------------------------------
+GenXsecAnalyzer:
+------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Overall cross-section summary
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Process         xsec_before [pb]                passed  nposw   nnegw   tried   nposw   nnegw   xsec_match [pb]                 accepted [%] event_eff [%]
+0               4.539e-01 +/- 3.260e-04         24808   24808   0       93070   93070   0       1.210e-01 +/- 6.636e-04         26.7 +/- 0.126.7 +/- 0.1
+1               2.789e-01 +/- 2.003e-04         15087   15087   0       56930   56930   0       7.391e-02 +/- 5.186e-04         26.5 +/- 0.226.5 +/- 0.2
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total           7.328e-01 +/- 3.826e-04         39895   39895   0       150000  150000  0       1.949e-01 +/- 8.422e-04         26.6 +/- 0.126.6 +/- 0.1
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Before matching: total cross section = 7.328e-01 +- 3.826e-04 pb
+After matching: total cross section = 1.949e-01 +- 8.422e-04 pb
+Filter efficiency (taking into account weights)= (39895) / (39895) = 1.000e+00 +- 0.000e+00
+Filter efficiency (event-level)= (39895) / (39895) = 1.000e+00 +- 0.000e+00
+After filter: final cross section = 1.949e-01 +- 8.422e-04 pb
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 GenXSecAnalyzer      -w GenXSecAnalyzer:                      13       13
+    2 fileAction           -s file_close                             3        3
+    3 fileAction           -s file_open                              6        6
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 GenXSecAnalyzer      PostEndRun       PostEndRun       PostEndRun
+    2 fileAction           PostProcessEvent PostProcessEvent PostEndRun
+    3 fileAction           pre-events       pre-events       PostProcessEvent
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+Warning                13                  13
+System                  9                   9
