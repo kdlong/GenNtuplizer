@@ -19,17 +19,10 @@ options.register('isMiniAOD',
     " rather than genParticles)"
 )
 options.register('lheSource',
-    0, # Default value
+    "externalLHEProducer", # Default value
     options.multiplicity.singleton,
-    options.varType.int,
+    options.varType.string,
     "Use 'source' as LHE product name"
-)
-options.register('redoGen',
-    0, # Default value
-    options.multiplicity.singleton,
-    options.varType.int,
-    "redo GEN particle, MET, and Jet creation"
-    " (necessary for 7_1_X samples)"
 )
 options.register('includeTaus',
     0, # Default value

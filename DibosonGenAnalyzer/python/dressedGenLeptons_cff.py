@@ -11,7 +11,7 @@ fromHPFSleptons = cms.EDFilter("GenParticleSelector",
 )
 promptPhotons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("pdgId = 22 && isPromptFinalState")
+    cut = cms.string("pdgId = 22 && statusFlags().isPrompt() && status() == 1")
 )
 dressedLeptons = cms.EDProducer("DressedGenParticlesProducer",
     baseCollection = cms.InputTag("fromHPFSleptons"),

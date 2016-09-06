@@ -30,26 +30,20 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sorted%sLeptons" % 
         ("Dressed" if options.leptonType == "dressed" else "")),
-    extraParticle = cms.untracked.InputTag("sortedNeutrinos" if not options.genMet else "slimmedMETs"),
-    lheSource = cms.InputTag("source" if options.lheSource else "externalLHEProducer"),
+    extraParticle = cms.untracked.InputTag("sortedNeutrinos"),
+    lheSource = cms.untracked.string(options.lheSource),
     zCands = cms.InputTag("sortedZCands"),
     wCands = cms.untracked.InputTag("sortedWCands"),
     nKeepZs = cms.untracked.uint32(2),
     nKeepLeps = cms.untracked.uint32(3),
-    nKeepJets = cms.untracked.uint32(2),
+    nKeepJets = cms.untracked.uint32(4),
     nKeepExtra = cms.untracked.uint32(1),
-    extraName = cms.untracked.string("Nu" if not options.genMet else "genMET"),
+    extraName = cms.untracked.string("Nu"),
     nKeepWs = cms.untracked.uint32(3),
     xSec = cms.untracked.double(options.crossSection)
 )
 
-if options.redoGen:
-    from PhysicsTools.HepMCCandAlgos.genParticles_cfi import *
-    process.p = cms.Path(genParticles*
-        (process.dressLeptons if options.leptonType == "dressed" \
-            else process.selectLeptons))
-else:
-    process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
+process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
         else process.selectLeptons)
 process.p *= (process.selectZCands * 
     process.selectNeutrinos * 

@@ -6,8 +6,8 @@ genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParti
 
 neutrinos = cms.EDFilter("CandViewSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("(abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16)" 
-                     " && fromHardProcessFinalState")  
+    cut = cms.string("(abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16)"
+                     " && statusFlags().fromHardProcess() && status() == 1")
 )
 
 sortedNeutrinos = cms.EDFilter("LargestPtCandSelector",

@@ -33,7 +33,7 @@ sortedWCands = cms.EDFilter("BestWCandSelector",
 
 trueWs = cms.EDFilter("CandViewSelector",
     src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("abs(pdgId) == 24 && isHardProcess")  
+    cut = cms.string("abs(pdgId) == 24 && statusFlags().isHardProcess()")  
 )
 selectWCands = cms.Sequence(
         (wpCands + wmCands + trueWs)

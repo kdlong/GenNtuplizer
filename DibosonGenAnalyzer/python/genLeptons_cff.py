@@ -5,8 +5,8 @@ options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
 leptonOpts = {"hardProcess" : "isHardProcess",
         "fromHardProcessFS" : "fromHardProcessFinalState", 
-        "pythia6HardProcess" :  "status = 3",
-        "finalstate" : "status = 1"
+        "pythia6HardProcess" :  "status() == 3",
+        "finalstate" : "status() == 1"
 }
 try:
     leptonsFlag = leptonOpts[options.leptonType]
