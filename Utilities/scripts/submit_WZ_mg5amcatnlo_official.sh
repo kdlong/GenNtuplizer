@@ -9,7 +9,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $2 \
-    MGNLO_Off_76X_GenNtuples_leptonType-$1_$DATE \
+    MGNLO_Off_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZ-MGNLO-Off \
     submit=1 \

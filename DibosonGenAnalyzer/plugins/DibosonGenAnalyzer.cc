@@ -129,9 +129,9 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     nZsCut_  = cfg.getUntrackedParameter<unsigned int>("nZsCut", 1);
    
     if (lheSource_ != "") {
-        lheRunInfoToken_ = consumes<LHERunInfoProduct, edm::InRun>(
-            cfg.getParameter<edm::InputTag>(lheSource_));
-        lheEventToken_ = consumes<LHEEventProduct>(cfg.getParameter<edm::InputTag>(lheSource_));
+        edm::InputTag lheSourceTag = edm::InputTag(lheSource_.c_str());
+        lheRunInfoToken_ = consumes<LHERunInfoProduct, edm::InRun>(lheSourceTag);
+        lheEventToken_ = consumes<LHEEventProduct>(lheSourceTag);
     }
     
         unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
