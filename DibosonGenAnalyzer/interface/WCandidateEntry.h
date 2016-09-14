@@ -2,7 +2,7 @@
 #define W_CANDIDATE_ENTRY_H
 
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
-//#include "DataFormats/METReco/interface/GenMET.h"
+#include "DataFormats/METReco/interface/GenMET.h"
 
 class WCandidateEntry : public BasicParticleEntry {
     public:
@@ -11,7 +11,7 @@ class WCandidateEntry : public BasicParticleEntry {
                                size_t idx,
                                reco::CandidateCollection compCands);
         bool isTrueW(const reco::Candidate& zCand);
-//        void setGenMet(reco::GenMET genMet);
+        void setGenMet(reco::GenMET genMet);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
     private:
@@ -20,8 +20,8 @@ class WCandidateEntry : public BasicParticleEntry {
         std::vector<float> masses_;
         std::vector<float> mTsTrue_;
         std::vector<float> mTsGenMET_;
-//        reco::GenMET genMET_;
-//        float mt(const reco::Candidate::LorentzVector& obj1, 
-//            const reco::Candidate::LorentzVector& obj2);
+        reco::GenMET genMET_;
+        float mt(const reco::Candidate::LorentzVector& obj1, 
+            const reco::Candidate::LorentzVector& obj2);
 };
 #endif
