@@ -17,8 +17,6 @@ WCandidateEntry::isTrueW(const reco::Candidate& wCand) {
         const reco::Candidate& dau1mother = getFirstDistinctMother(daughter1);
         const reco::Candidate& dau2mother = getFirstDistinctMother(daughter2);
         return ((abs(daughter1.pdgId() + daughter2.pdgId()) == 1) 
-//                && daughter1.fromHardProcessFinalState()
-//                && daughter2.fromHardProcessFinalState()
                 && (dau1mother.pdgId() == dau2mother.pdgId())
                 && sameKinematics(dau1mother, dau2mother));
     }
@@ -45,12 +43,22 @@ WCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
     return true;
 }
 
+//float 
+//WCandidateEntry::mt(const reco::Candidate::LorentzVector& obj1, 
+//        const reco::Candidate::LorentzVector& obj2) {
+//    float system_pt = (obj1 + obj2).pt();
+//    float system_Et = obj1.Et() + obj2.Et();
+//    return sqrt(system_Et*system_Et-system_pt*system_pt);
+//}
+
 void
 WCandidateEntry::createNtupleEntry(TTree* ntuple) {
     BasicParticleEntry::createNtupleEntry(ntuple);
     isTrueWValues_.resize(nKeep_, -999);
     isUniqueValues_.resize(nKeep_, -999);
     masses_.resize(nKeep_, -999);
+    mTsTrue_.resize(nKeep_, -999);
+    mTsGenMET_.resize(nKeep_, -999);
     for (unsigned int i = 1; i <= nKeep_; i++)
     {
         std::string particleName = name_;
@@ -59,8 +67,16 @@ WCandidateEntry::createNtupleEntry(TTree* ntuple) {
         ntuple->Branch((particleName + "mass").c_str(), &masses_[i-1]);
         ntuple->Branch((particleName + "isUnique").c_str(), &isUniqueValues_[i-1]);
         ntuple->Branch((particleName + "isTrueW").c_str(), &isTrueWValues_[i-1]);
+        ntuple->Branch((particleName + "MTtrue").c_str(), &mTsTrue_[i-1]);
+        ntuple->Branch((particleName + "MTGenMET").c_str(), &mTsGenMET_[i-1]);
     }
 }
+//void
+//WCandidateEntry::setGenMet(reco::GenMET genMet) {
+//    //genMET_ = genMet;
+//    return;
+//}
+
 void
 WCandidateEntry::fillNtupleInfo() {
     BasicParticleEntry::fillNtupleInfo();
@@ -75,6 +91,8 @@ WCandidateEntry::fillNtupleInfo() {
         isUniqueValues_[i] = hasUniqueDaughters(particle, i, particles_);
         isTrueWValues_[i] = isTrueW(particle);
         masses_[i] = particle.mass();
+//        mTsTrue_[i] = mt(particle.p4(), genMET_.p4());
+//        mTsGenMET_[i] = mt(particle.p4(), genMET_.p4());
     }
 }
 

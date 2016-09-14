@@ -39,6 +39,7 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     nKeepJets = cms.untracked.uint32(4),
     nKeepExtra = cms.untracked.uint32(1),
     extraName = cms.untracked.string("Nu"),
+    metSource = cms.untracked.string("slimmedMETs" if options.isMiniAOD else "genMetTrue"),
     nKeepWs = cms.untracked.uint32(3),
     xSec = cms.untracked.double(options.crossSection)
 )

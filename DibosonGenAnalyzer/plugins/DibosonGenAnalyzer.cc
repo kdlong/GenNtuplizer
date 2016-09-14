@@ -35,6 +35,9 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
+#include "DataFormats/METReco/interface/GenMET.h"
+#include "DataFormats/PatCandidates/interface/PATObject.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
 
 #include "GenNtuplizer/DataFormats/interface/DressedGenParticle.h"
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
@@ -63,6 +66,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         edm::EDGetTokenT<LHERunInfoProduct> lheRunInfoToken_;
         edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
         std::string lheSource_;
+        std::string metSource_;
+        edm::EDGetTokenT<edm::View<reco::MET>> metToken_;
         edm::Service<TFileService> fileService_;
         TTree* ntuple_;
         std::map<std::string, BasicParticleEntry*> particleEntries_;
@@ -79,6 +84,10 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         float eta_;
         float pt_;
         float mjj_;
+        float etajj_;
+        float trueMt_;
+        float genMetMt_;
+        float MET_;
         double initSumWeights_;
         double fidSumWeights_;
         double weight_;
@@ -104,6 +113,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         reco::CandidateCollection cleanJets(reco::CandidateCollection, reco::CandidateCollection);
         //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
         virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+        float mt(const reco::Candidate::LorentzVector& obj1, const reco::Candidate::LorentzVector& obj2);
+        void fillMETVars(const reco::GenMET& genMet, const reco::Candidate::LorentzVector&);
         //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
         //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
@@ -118,7 +129,8 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
         "wCands", edm::InputTag("zCands")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
     genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
-    lheSource_(cfg.getUntrackedParameter<std::string>("lheSource", ""))
+    lheSource_(cfg.getUntrackedParameter<std::string>("lheSource", "")),
+    metSource_(cfg.getUntrackedParameter<std::string>("metSource", ""))
 {
     lheHeader_ = "";
     nProcessed_ = 0;
@@ -129,12 +141,16 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     nZsCut_  = cfg.getUntrackedParameter<unsigned int>("nZsCut", 1);
    
     if (lheSource_ != "") {
-        edm::InputTag lheSourceTag = edm::InputTag(lheSource_.c_str());
-        lheRunInfoToken_ = consumes<LHERunInfoProduct, edm::InRun>(lheSourceTag);
-        lheEventToken_ = consumes<LHEEventProduct>(lheSourceTag);
+        lheRunInfoToken_ = consumes<LHERunInfoProduct, edm::InRun>(
+            edm::InputTag(lheSource_));
+        lheEventToken_ = consumes<LHEEventProduct>(edm::InputTag(lheSource_));
     }
     
-        unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
+    if (metSource_ != "") {
+        metToken_ = consumes<edm::View<reco::MET>>(
+            edm::InputTag(metSource_.c_str()));
+    }
+    unsigned int nJets = cfg.getUntrackedParameter<unsigned int>("nKeepJets", 0);
     std::string jetsName = cfg.getUntrackedParameter<std::string>("jetsName", "j");
     particleEntries_["jets"] = new BasicParticleEntry(jetsName, nJets, false);
     
@@ -166,8 +182,12 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     ntuple_->Branch((std::to_string(nKeepLeps_) + "lPt").c_str(), &lep_system_pt_);
     ntuple_->Branch("Pt", &pt_);
     ntuple_->Branch("Mass", &mass_);
+    ntuple_->Branch("MTtrue", &trueMt_);
+    ntuple_->Branch("MTgenMET", &genMetMt_);
+    ntuple_->Branch("MET", &MET_);
     ntuple_->Branch("Eta", &eta_);
     ntuple_->Branch("mjj", &mjj_);
+    ntuple_->Branch("etajj", &etajj_);
     
     // Raise autosave value to fix annoying issue of ntuple being written 
     // into file multiple times
@@ -225,11 +245,27 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         event.getByToken(extraParticleToken_, extraParticle);
         particleEntries_["extra"]->setCollection(*extraParticle);
         final_state += extraParticle->front().p4();
+        trueMt_ = mt(lepton_system, extraParticle->front().p4());
+    }
+   
+    if (metSource_ != "") {
+        edm::Handle<edm::View<reco::MET>> metHandle;
+        event.getByToken(metToken_, metHandle);
+        if (metSource_ == "slimmedMETs") {
+            const pat::MET& met = static_cast<const pat::MET&>(metHandle->front());
+            fillMETVars(static_cast<const reco::GenMET&>(*(met.genMET())),
+                lepton_system);
+        }
+        else {
+          fillMETVars(static_cast<const reco::GenMET&>(metHandle->front()),
+              lepton_system);
+        }
     }
     mass_ = final_state.mass();
     eta_ = final_state.eta();
     pt_ = final_state.pt();
     mjj_ = cleanedJets.size() > 1 ? (cleanedJets[0].p4() + cleanedJets[1].p4()).mass() : -999;
+    etajj_ = cleanedJets.size() > 1 ? std::abs(cleanedJets[0].eta() + cleanedJets[1].eta()) : -999;
     edm::Handle<reco::CandidateCollection> wCands;
     if (nKeepWs_ > 0) { 
         event.getByToken(wCandsToken_, wCands);
@@ -255,6 +291,21 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
 
     eventid_ = event.id().event();
     nPass_++;
+}
+
+void
+DibosonGenAnalyzer::fillMETVars(const reco::GenMET& genMet, 
+    const reco::Candidate::LorentzVector& lepton_system) {
+    MET_ = genMet.pt();
+    genMetMt_ = mt(lepton_system, genMet.p4());
+}
+
+float 
+DibosonGenAnalyzer::mt(const reco::Candidate::LorentzVector& obj1, 
+        const reco::Candidate::LorentzVector& obj2) {
+    float system_pt = (obj1 + obj2).pt();
+    float system_Et = obj1.Et() + obj2.Et();
+    return sqrt(system_Et*system_Et-system_pt*system_pt);
 }
 
 void 
