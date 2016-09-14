@@ -3,6 +3,7 @@
 
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
 #include "DataFormats/METReco/interface/GenMET.h"
+#include "DataFormats/METReco/interface/MET.h"
 
 class WCandidateEntry : public BasicParticleEntry {
     public:
@@ -11,7 +12,7 @@ class WCandidateEntry : public BasicParticleEntry {
                                size_t idx,
                                reco::CandidateCollection compCands);
         bool isTrueW(const reco::Candidate& zCand);
-        void setGenMet(reco::GenMET genMet);
+//        void setGenMet(reco::GenMET genMet);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
     private:

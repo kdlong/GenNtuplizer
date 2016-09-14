@@ -6,15 +6,19 @@
   <use name="FWCore/PluginManager"/>
   <use name="FWCore/ParameterSet"/>
 
-  <use   name="GenNtuplizer/DibosonGenAnalyzer"/>
-  <use   name="FWCore/MessageLogger"/>
-  <use   name="FWCore/Utilities"/>
-  <use   name="DataFormats/Candidate"/>
-  <use   name="DataFormats/PatCandidates"/>
-  <use   name="DataFormats/Common"/>
-  <use   name="PhysicsTools/PatUtils"/>
-  <use   name="PhysicsTools/Utilities"/>
-  <use   name="CommonTools/UtilAlgos"/>
-  <use   name="root"/>
+  <use name="GenNtuplizer/DibosonGenAnalyzer"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/Utilities"/>
+  <use name="DataFormats/Candidate"/>
+  <use name="DataFormats/PatCandidates"/>
+  <use name="DataFormats/Common"/>
+  <use name="DataFormats/METReco"/>
+  <use name="DataFormats/RecoCandidate"/>
+  <use name="DataFormats/JetReco"/>
+  <use name="PhysicsTools/PatUtils"/>
+  <use name="PhysicsTools/Utilities"/>
+  <use name="CommonTools/UtilAlgos"/>
+  <use   name="boost"/>
+  <use name="root"/>
 </library>
 

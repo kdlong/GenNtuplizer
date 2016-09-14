@@ -1,9 +1,15 @@
 <use name="root"/>
+<use   name="boost"/>
+<use   name="clhep"/>
+<use   name="hepmc"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/ParameterSet"/>
+<use name="DataFormats/Common"/>
 <use name="GenNtuplizer/DataFormats"/>
 <use name="DataFormats/METReco"/>
 <use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/RecoCandidate"/>
+<use name="DataFormats/JetReco"/>
 <export>
     <lib   name="1"/>
 </export>

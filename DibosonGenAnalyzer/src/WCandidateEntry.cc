@@ -72,10 +72,10 @@ WCandidateEntry::createNtupleEntry(TTree* ntuple) {
     }
 }
 
-void
-WCandidateEntry::setGenMet(reco::GenMET genMet) {
-    genMET_ = genMet;
-}
+//void
+//WCandidateEntry::setGenMet(reco::GenMET genMet) {
+//    genMET_ = genMet;
+//}
 
 void
 WCandidateEntry::fillNtupleInfo() {
@@ -91,8 +91,8 @@ WCandidateEntry::fillNtupleInfo() {
         isUniqueValues_[i] = hasUniqueDaughters(particle, i, particles_);
         isTrueWValues_[i] = isTrueW(particle);
         masses_[i] = particle.mass();
-        mTsTrue_[i] = mt(particle.p4(), genMET_.p4());
-        mTsGenMET_[i] = mt(particle.p4(), genMET_.p4());
+        //mTsTrue_[i] = mt(particle.p4(), genMET_.p4());
+        //mTsGenMET_[i] = mt(particle.p4(), genMET_.p4());
     }
 }
 
