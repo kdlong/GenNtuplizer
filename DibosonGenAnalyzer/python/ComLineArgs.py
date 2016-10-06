@@ -46,6 +46,7 @@ options.register('leptonType',
     "\n    dressed --> dressed leptons, configured in dressedGenLeptons"
     "\n    pythia6HardProcess --> status = 3"
     "\n    finalstate --> status = 1"
+    "\n    herwig --> status = 11"
 )
 options.register('includeRadiated',
     0, # Default value

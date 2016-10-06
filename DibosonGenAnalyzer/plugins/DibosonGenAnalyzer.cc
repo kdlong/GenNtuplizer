@@ -33,6 +33,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "DataFormats/METReco/interface/GenMET.h"
@@ -62,7 +63,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
         edm::EDGetTokenT<reco::CandidateCollection> wCandsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> zCandsToken_;
-        edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
+        //edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
+        edm::EDGetTokenT<edm::HepMCProduct> genEventInfoToken_;
         edm::EDGetTokenT<LHERunInfoProduct> lheRunInfoToken_;
         edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
         std::string lheSource_;
@@ -114,6 +116,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
         virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
         float mt(const reco::Candidate::LorentzVector& obj1, const reco::Candidate::LorentzVector& obj2);
+        float partiallyMasslessMT(const reco::Candidate::LorentzVector& obj1, const reco::Candidate::LorentzVector& obj2);
+        float masslessMT(const reco::Candidate::LorentzVector& obj1, const reco::Candidate::LorentzVector& obj2);
         void fillMETVars(const reco::GenMET& genMet, const reco::Candidate::LorentzVector&);
         //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
         //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
@@ -128,7 +132,8 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     wCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "wCands", edm::InputTag("zCands")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
-    genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
+    //genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
+    genEventInfoToken_(consumes<edm::HepMCProduct>(edm::InputTag("source"))),
     lheSource_(cfg.getUntrackedParameter<std::string>("lheSource", "")),
     metSource_(cfg.getUntrackedParameter<std::string>("metSource", ""))
 {
@@ -212,6 +217,7 @@ void
 DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSetup)
 {
     nProcessed_++;
+    
     initSumWeights_ += getEventWeight(event);
     if (lheSource_ != "") { 
         edm::Handle<LHEEventProduct> lheEventInfo;
@@ -224,7 +230,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
             i++;
         }
     }
-    
     edm::Handle<reco::CandidateCollection> genLeptons;
     event.getByToken(genLeptonsToken_, genLeptons);
     particleEntries_["leps"]->setCollection(*genLeptons);
@@ -239,15 +244,32 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     reco::CandidateCollection cleanedJets = cleanJets(*genJets, *genLeptons);
     particleEntries_["jets"]->setCollection(cleanedJets);
     
+    edm::Handle<reco::CandidateCollection> wCands;
+    if (nKeepWs_ > 0) { 
+        event.getByToken(wCandsToken_, wCands);
+        particleEntries_["Ws"]->setCollection(*wCands);
+    }
+    
     reco::Candidate::LorentzVector final_state = lepton_system;
     if (nKeepExtra_ > 0) { 
         edm::Handle<reco::CandidateCollection> extraParticle;
         event.getByToken(extraParticleToken_, extraParticle);
         particleEntries_["extra"]->setCollection(*extraParticle);
-        final_state += extraParticle->front().p4();
-        trueMt_ = mt(lepton_system, extraParticle->front().p4());
+        if (extraParticle->size() != 0 ) {
+            final_state += extraParticle->front().p4();
+            trueMt_ = mt(lepton_system, extraParticle->front().p4());
+        }
+        else
+            std::cout << "WARNING: Requested " << nKeepExtra_ << "extra particles "
+                      << "but 0 were found" << std::endl;
     }
    
+    mass_ = final_state.mass();
+    eta_ = final_state.eta();
+    pt_ = final_state.pt();
+    mjj_ = cleanedJets.size() > 1 ? (cleanedJets[0].p4() + cleanedJets[1].p4()).mass() : -999;
+    etajj_ = cleanedJets.size() > 1 ? std::abs(cleanedJets[0].eta() + cleanedJets[1].eta()) : -999;
+    
     if (metSource_ != "") {
         edm::Handle<edm::View<reco::MET>> metHandle;
         event.getByToken(metToken_, metHandle);
@@ -255,21 +277,19 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
             const pat::MET& met = static_cast<const pat::MET&>(metHandle->front());
             fillMETVars(static_cast<const reco::GenMET&>(*(met.genMET())),
                 lepton_system);
+            if (nKeepWs_ > 0) {
+                static_cast<WCandidateEntry*>(
+                    particleEntries_["Ws"])->setGenMET(&metHandle->front());
+            }
         }
         else {
           fillMETVars(static_cast<const reco::GenMET&>(metHandle->front()),
               lepton_system);
+            if (nKeepWs_ > 0) {
+                static_cast<WCandidateEntry*>(
+                    particleEntries_["Ws"])->setGenMET(&metHandle->front());
+            }
         }
-    }
-    mass_ = final_state.mass();
-    eta_ = final_state.eta();
-    pt_ = final_state.pt();
-    mjj_ = cleanedJets.size() > 1 ? (cleanedJets[0].p4() + cleanedJets[1].p4()).mass() : -999;
-    etajj_ = cleanedJets.size() > 1 ? std::abs(cleanedJets[0].eta() + cleanedJets[1].eta()) : -999;
-    edm::Handle<reco::CandidateCollection> wCands;
-    if (nKeepWs_ > 0) { 
-        event.getByToken(wCandsToken_, wCands);
-        particleEntries_["Ws"]->setCollection(*wCands);
     }
     edm::Handle<reco::CandidateCollection> zCands;
     event.getByToken(zCandsToken_, zCands);
@@ -288,8 +308,8 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     }
     setWeightInfo(event);
     fillNtuple();
-
     eventid_ = event.id().event();
+    
     nPass_++;
 }
 
@@ -297,7 +317,24 @@ void
 DibosonGenAnalyzer::fillMETVars(const reco::GenMET& genMet, 
     const reco::Candidate::LorentzVector& lepton_system) {
     MET_ = genMet.pt();
+    genMetMt_ = partiallyMasslessMT(lepton_system, genMet.p4());
     genMetMt_ = mt(lepton_system, genMet.p4());
+}
+
+float 
+DibosonGenAnalyzer::masslessMT(const reco::Candidate::LorentzVector& a, 
+            const reco::Candidate::LorentzVector& b) {
+    float magA = std::sqrt(a.px()*a.px()+a.py()*a.py());
+    float magB = std::sqrt(b.px()*b.px()+b.py()*b.py());
+    return std::sqrt(2*(magA*magB-a.px()*b.px()-a.py()*b.py()));
+}
+
+float 
+DibosonGenAnalyzer::partiallyMasslessMT(const reco::Candidate::LorentzVector& a, 
+            const reco::Candidate::LorentzVector& b) {
+    float magA = std::sqrt(a.px()*a.px()+a.py()*a.py());
+    float magB = std::sqrt(b.px()*b.px()+b.py()*b.py());
+    return std::sqrt(a.M2() + 2*(magA*magB-a.px()*b.px()-a.py()*b.py()));
 }
 
 float 
@@ -347,10 +384,13 @@ DibosonGenAnalyzer::fillNtuple() {
 }
 
 double DibosonGenAnalyzer::getEventWeight(const edm::Event& event) {
-    edm::Handle<GenEventInfoProduct> genEventInfo;
+    //edm::Handle<GenEventInfoProduct> genEventInfo;
+    edm::Handle<edm::HepMCProduct> genEventInfo;
     event.getByToken(genEventInfoToken_, genEventInfo);
-    if(genEventInfo->weights().size() > 0)
-        return genEventInfo->weights()[0];
+    //if(genEventInfo->weights().size() > 0)
+    //    return genEventInfo->weights()[0];
+    if(genEventInfo->GetEvent()->weights().size() > 0)
+        return genEventInfo->GetEvent()->weights()[0];
     return 1;
 } 
 

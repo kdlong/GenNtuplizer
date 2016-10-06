@@ -1,0 +1,7 @@
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/064D833C-537F-E611-987E-20CF3027A5BC.root
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/0ED38CBA-CA7E-E611-89A9-0025904A894A.root
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/7423E43C-537F-E611-B601-0090FAA57AE0.root
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/743D551B-CC7E-E611-B881-008CFA165F30.root
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/A2ACBE1A-B27E-E611-B022-008CFA197E0C.root
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/C26B241B-CC7E-E611-AFA2-008CFA197DA8.root
+/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/EC84362C-517F-E611-968B-0025905749E6.root

@@ -11,7 +11,7 @@ class WCandidateEntry : public BasicParticleEntry {
                                size_t idx,
                                reco::CandidateCollection compCands);
         bool isTrueW(const reco::Candidate& zCand);
-        void setGenMet(reco::GenMET genMet);
+        void setGenMET(const reco::Candidate* genMet);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
     private:
@@ -20,8 +20,8 @@ class WCandidateEntry : public BasicParticleEntry {
         std::vector<float> masses_;
         std::vector<float> mTsTrue_;
         std::vector<float> mTsGenMET_;
-        reco::GenMET genMET_;
-        float mt(const reco::Candidate::LorentzVector& obj1, 
-            const reco::Candidate::LorentzVector& obj2);
+        const reco::Candidate* genMET_;
+        float masslessMT(const reco::Candidate::LorentzVector& a, 
+            const reco::Candidate::LorentzVector& b);
 };
 #endif

@@ -3,11 +3,23 @@ import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
+neuOpts = {"hardProcess" : "isHardProcess()",
+        "fromHardProcessFS" : "statusFlags().fromHardProcess() && status() == 1",
+        "pythia6HardProcess" :  "status() == 1",
+        "finalstate" : "status() == 1",
+        "herwig" : "status() == 11",
+}
+try:
+    neutrinoFlag = neuOpts[options.leptonType]
+except:
+    print "Invalid lepton type choice '%s'. Please choose from" % options.leptonType
+    print neuOpts.keys()
+    exit(0)
 
 neutrinos = cms.EDFilter("CandViewSelector",
     src = cms.InputTag(genParticlesLabel),
     cut = cms.string("(abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16)"
-                     " && statusFlags().fromHardProcess() && status() == 1")
+                     " && %s" % neutrinoFlag)
 )
 
 sortedNeutrinos = cms.EDFilter("LargestPtCandSelector",

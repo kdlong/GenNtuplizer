@@ -30,6 +30,8 @@ class BasicParticleEntry {
         bool storeGenInfo_;
         std::vector<float> pts_;
         std::vector<float> etas_;
+        std::vector<float> phis_;
+        std::vector<int> statuses_;
         std::vector<int> pdgids_;
         std::vector<int> motherIds_;
         std::vector<int> isHPvals_;

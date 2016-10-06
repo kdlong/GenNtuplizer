@@ -16,7 +16,9 @@ void
 BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
     etas_.resize(nKeep_, -999);
     pts_.resize(nKeep_, -999);
+    phis_.resize(nKeep_, -999);
     if (storeGenInfo_) {
+        statuses_.resize(nKeep_, -999);
         isHPvals_.resize(nKeep_, -999);
         fromHPFSvals_.resize(nKeep_, -999);
         pdgids_.resize(nKeep_, -999);
@@ -29,7 +31,9 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
             particleName += std::to_string(i);
         ntuple->Branch((particleName + "Pt").c_str(), &pts_[i-1]);
         ntuple->Branch((particleName + "Eta").c_str(), &etas_[i-1]);
+        ntuple->Branch((particleName + "Phi").c_str(), &phis_[i-1]);
         if (storeGenInfo_) {
+            ntuple->Branch((particleName + "Status").c_str(), &statuses_[i-1]);
             ntuple->Branch((particleName + "fromHardProcessFS").c_str(), &fromHPFSvals_[i-1]);
             ntuple->Branch((particleName + "isHardProcess").c_str(), &isHPvals_[i-1]);
             ntuple->Branch((particleName + "pdgId").c_str(), &pdgids_[i-1]);
@@ -53,7 +57,9 @@ void
 BasicParticleEntry::fillNtupleInfo() {
     etas_.assign(nKeep_, -999);
     pts_.assign(nKeep_, -999); 
+    phis_.assign(nKeep_, -999); 
     if (storeGenInfo_) {
+        statuses_.assign(nKeep_, -999); 
         isHPvals_.assign(nKeep_, -999);
         fromHPFSvals_.assign(nKeep_, -999);
         pdgids_.assign(nKeep_, -999);
@@ -66,7 +72,9 @@ BasicParticleEntry::fillNtupleInfo() {
         const reco::Candidate& particle = particles_[i];
         pts_[i] = particle.pt();
         etas_[i] = particle.eta();
+        phis_[i] = particle.phi();
         if (storeGenInfo_) {
+            statuses_[i] = particle.status();
             isHPvals_[i] = isHardProcess(particle);
             fromHPFSvals_[i] = fromHardProcessFinalState(particle);
             pdgids_[i] = particle.pdgId();

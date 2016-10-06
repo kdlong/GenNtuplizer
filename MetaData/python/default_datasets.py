@@ -357,6 +357,13 @@ sample_info = {
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_EWK_QCD-MGLO_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WLLJJ_EWK-MGLO': {
+        "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/064D833C-537F-E611-987E-20CF3027A5BC.root,
+            /store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/0ED38CBA-CA7E-E611-89A9-0025904A894A.root""",
+        "crossSection" : 0.047,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Ntuple.root",
+        "isMiniAOD" : 1
+    },
     'WZJJ_QCD-MGLO': {
         "inputFiles" : """/store/mc/RunIIFall15MiniAODv1/WZJJ_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/CA3544A8-06AD-E511-B75A-00266CFFA768.root,
                 /store/mc/RunIIFall15MiniAODv1/WZJJ_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/D03EC1DA-06AD-E511-951E-E41D2D08DD70.root,

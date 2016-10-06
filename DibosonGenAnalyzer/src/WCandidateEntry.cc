@@ -43,12 +43,13 @@ WCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
     return true;
 }
 
-float 
-WCandidateEntry::mt(const reco::Candidate::LorentzVector& obj1, 
-        const reco::Candidate::LorentzVector& obj2) {
-    float system_pt = (obj1 + obj2).pt();
-    float system_Et = obj1.Et() + obj2.Et();
-    return sqrt(system_Et*system_Et-system_pt*system_pt);
+// Types A and B must implement X() and Y()
+float
+WCandidateEntry::masslessMT(const reco::Candidate::LorentzVector& a, 
+            const reco::Candidate::LorentzVector& b) {
+    float magA = std::sqrt(a.px()*a.px()+a.py()*a.py());
+    float magB = std::sqrt(b.px()*b.px()+b.py()*b.py());
+    return std::sqrt(2*(magA*magB-a.px()*b.px()-a.py()*b.py()));
 }
 
 void
@@ -73,7 +74,7 @@ WCandidateEntry::createNtupleEntry(TTree* ntuple) {
 }
 
 void
-WCandidateEntry::setGenMet(reco::GenMET genMet) {
+WCandidateEntry::setGenMET(const reco::Candidate* genMet) {
     genMET_ = genMet;
 }
 
@@ -91,8 +92,14 @@ WCandidateEntry::fillNtupleInfo() {
         isUniqueValues_[i] = hasUniqueDaughters(particle, i, particles_);
         isTrueWValues_[i] = isTrueW(particle);
         masses_[i] = particle.mass();
-        mTsTrue_[i] = mt(particle.p4(), genMET_.p4());
-        mTsGenMET_[i] = mt(particle.p4(), genMET_.p4());
+        const reco::Candidate* lep = (0 || 
+                std::abs(particle.daughter(0)->pdgId()) == 11 ||
+                std::abs(particle.daughter(0)->pdgId()) == 13 ||
+                std::abs(particle.daughter(0)->pdgId()) == 15
+            ) ? particle.daughter(0) : particle.daughter(1);
+       
+        mTsGenMET_[i] = masslessMT(lep->p4(), genMET_->p4());
+        mTsTrue_[i] = masslessMT(particle.daughter(0)->p4(), particle.daughter(1)->p4());
     }
 }
 

@@ -6,13 +6,14 @@ genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParti
 leptonOpts = {"hardProcess" : "isHardProcess",
         "fromHardProcessFS" : "fromHardProcessFinalState", 
         "pythia6HardProcess" :  "status() == 3",
-        "finalstate" : "status() == 1"
+        "finalstate" : "status() == 1",
+        "herwig" : "status() == 11",
 }
 try:
     leptonsFlag = leptonOpts[options.leptonType]
 except:
-    print "Invalid lepton type choice. Please choose from"
-    print leptonOpts
+    print "Invalid lepton type choice '%s'. Please choose from" % options.leptonType
+    print leptonOpts.keys()
     exit(0)
 tauFlag = leptonsFlag.replace("fromHardProcessFinalState", "statusFlags().fromHardProcess && isLastCopy")
 
