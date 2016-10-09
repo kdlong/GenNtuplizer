@@ -33,7 +33,6 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "DataFormats/METReco/interface/GenMET.h"
@@ -63,8 +62,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
         edm::EDGetTokenT<reco::CandidateCollection> wCandsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> zCandsToken_;
-        //edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
-        edm::EDGetTokenT<edm::HepMCProduct> genEventInfoToken_;
+        edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
         edm::EDGetTokenT<LHERunInfoProduct> lheRunInfoToken_;
         edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
         std::string lheSource_;
@@ -132,8 +130,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     wCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "wCands", edm::InputTag("zCands")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
-    //genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
-    genEventInfoToken_(consumes<edm::HepMCProduct>(edm::InputTag("source"))),
+    genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
     lheSource_(cfg.getUntrackedParameter<std::string>("lheSource", "")),
     metSource_(cfg.getUntrackedParameter<std::string>("metSource", ""))
 {
@@ -384,13 +381,10 @@ DibosonGenAnalyzer::fillNtuple() {
 }
 
 double DibosonGenAnalyzer::getEventWeight(const edm::Event& event) {
-    //edm::Handle<GenEventInfoProduct> genEventInfo;
-    edm::Handle<edm::HepMCProduct> genEventInfo;
+    edm::Handle<GenEventInfoProduct> genEventInfo;
     event.getByToken(genEventInfoToken_, genEventInfo);
-    //if(genEventInfo->weights().size() > 0)
-    //    return genEventInfo->weights()[0];
-    if(genEventInfo->GetEvent()->weights().size() > 0)
-        return genEventInfo->GetEvent()->weights()[0];
+    if(genEventInfo->weights().size() > 0)
+        return genEventInfo->weights()[0];
     return 1;
 } 
 

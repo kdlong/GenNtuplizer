@@ -6,6 +6,7 @@ genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParti
 neuOpts = {"hardProcess" : "isHardProcess()",
         "fromHardProcessFS" : "statusFlags().fromHardProcess() && status() == 1",
         "pythia6HardProcess" :  "status() == 1",
+        "dressed" : "statusFlags().fromHardProcess() && status() == 1",
         "finalstate" : "status() == 1",
         "herwig" : "status() == 11",
 }
