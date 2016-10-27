@@ -357,19 +357,19 @@ sample_info = {
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_EWK_QCD-MGLO_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'ZZJJ_EWK-MGLO': {
+        "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/ZZJJTo4L_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/E67E79A3-CE71-E611-A649-0025901E1158.root,
+            /store/mc/RunIISpring16MiniAODv2/ZZJJTo4L_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/F27AE861-E471-E611-B4F1-7845C4FBB644.root""",
+        "crossSection" : 0.0004404,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/ZZ_VBS/ZZJJ_EWK-MGLO_Ntuple.root",
+        "isMiniAOD" : 1
+    },
     'WLLJJ_EWK-MGLO': {
         "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/064D833C-537F-E611-987E-20CF3027A5BC.root,
             /store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/0ED38CBA-CA7E-E611-89A9-0025904A894A.root""",
         "crossSection" : 0.047,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Ntuple.root",
         "isMiniAOD" : 1
-    },
-    'WLLJJ_aQGC-FT_EWK-MGLO': {
-        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_aQGC-FT_EWKOnly_madgraph-pythia8_2016-10-20-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_65.root,
-            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_EWKOnly_madgraph-pythia8_2016-10-20-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_9.root""",
-        "crossSection" : 0.02855,
-        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_aTGC-FT_EWKOnly-MGLO_Ntuple.root",
-        "isMiniAOD" : 0
     },
     'WZJJ_QCD-MGLO': {
         "inputFiles" : """/store/mc/RunIIFall15MiniAODv1/WZJJ_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/CA3544A8-06AD-E511-B75A-00266CFFA768.root,
