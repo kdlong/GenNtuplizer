@@ -20,6 +20,7 @@ tauFlag = leptonsFlag.replace("fromHardProcessFinalState", "statusFlags().fromHa
 selectedElectrons = cms.EDFilter("GenParticleSelector",
     src = cms.InputTag(genParticlesLabel),
     cut = cms.string("abs(pdgId) == 11 && %s" %
+    #cut = cms.string("(abs(pdgId) == 11 || abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16) && %s" %
             leptonsFlag)
 )
 selectedMuons = cms.EDFilter("GenParticleSelector",

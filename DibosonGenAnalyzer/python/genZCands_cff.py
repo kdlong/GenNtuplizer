@@ -3,7 +3,8 @@ import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
-decay_string = "{type}{part}@+ {type}{part}@-"
+decay_string = "{type}{part}@- {type}{part}@+"
+#decay_string = "{type}{part} {type}{part}"
 lep_type = "dressed" if options.leptonType == "dressed" else "selected"
 zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string(decay_string.format(type=lep_type, part="Muons")),
@@ -13,7 +14,7 @@ zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
 
 zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string(decay_string.format(type=lep_type, part="Electrons")),
-    cut = cms.string('charge=0'),
+    cut = cms.string("charge=0"),
     minNumber = cms.uint32(2)
 )
 if options.includeTaus:

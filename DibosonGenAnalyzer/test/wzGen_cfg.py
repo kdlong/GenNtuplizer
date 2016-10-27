@@ -46,6 +46,11 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
 
 process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
         else process.selectLeptons)
+
+if options.leptonType == "finalstate":
+    process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
+    process.p *= process.filterGenTaus
+
 process.p *= (process.selectZCands * 
     process.selectNeutrinos * 
     process.selectWCands *

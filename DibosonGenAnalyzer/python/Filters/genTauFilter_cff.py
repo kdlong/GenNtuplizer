@@ -19,6 +19,5 @@ tauFilter = cms.EDFilter("CandViewCountFilter",
 filterGenTaus = cms.Sequence(
     (hardProcessTausM + hardProcessTausP)*
     hardProcessTaus*
-    tauFilter
-    #~tauFilter
+    ~tauFilter
 )

@@ -364,6 +364,13 @@ sample_info = {
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WLLJJ_aQGC-FT_EWK-MGLO': {
+        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_aQGC-FT_EWKOnly_madgraph-pythia8_2016-10-20-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_65.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_EWKOnly_madgraph-pythia8_2016-10-20-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_9.root""",
+        "crossSection" : 0.02855,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_aTGC-FT_EWKOnly-MGLO_Ntuple.root",
+        "isMiniAOD" : 0
+    },
     'WZJJ_QCD-MGLO': {
         "inputFiles" : """/store/mc/RunIIFall15MiniAODv1/WZJJ_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/CA3544A8-06AD-E511-B75A-00266CFFA768.root,
                 /store/mc/RunIIFall15MiniAODv1/WZJJ_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/D03EC1DA-06AD-E511-951E-E41D2D08DD70.root,
