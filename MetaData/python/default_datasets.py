@@ -86,8 +86,6 @@ sample_info = {
         "crossSection" : 6025.2, 
         "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
         "isMiniAOD" : 1,
-        "includeRadiated" : 1,
-        "isHardProcess" : 0
     },
     'DYeeM50': {
         "inputFiles" : "/store/mc/RunIISpring15DR74/DYToEE_NNPDF30_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/FA2E71F8-D55F-E511-80BC-0CC47A0AD704.root",
@@ -363,6 +361,13 @@ sample_info = {
         "crossSection" : 0.0004404,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/ZZ_VBS/ZZJJ_EWK-MGLO_Ntuple.root",
         "isMiniAOD" : 1
+    },
+    'WLLJJ_EWK_4F-MGLO': {
+        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_4F_EWK_2016-11-06-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_81.root,
+            /store/user/kelong/WLLJJ_WToLNu_4F_EWK_2016-11-06-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_90.root""",
+        "crossSection" : 0.01770,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK_4F-MGLO_Ntuple.root",
+        "isMiniAOD" : 0
     },
     'WLLJJ_EWK-MGLO': {
         "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/064D833C-537F-E611-987E-20CF3027A5BC.root,

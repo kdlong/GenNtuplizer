@@ -84,6 +84,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         float eta_;
         float pt_;
         float mjj_;
+        float ht_;
         float etajj_;
         float trueMt_;
         float genMetMt_;
@@ -189,6 +190,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     ntuple_->Branch("MET", &MET_);
     ntuple_->Branch("Eta", &eta_);
     ntuple_->Branch("mjj", &mjj_);
+    ntuple_->Branch("ht", &ht_);
     ntuple_->Branch("etajj", &etajj_);
     
     // Raise autosave value to fix annoying issue of ntuple being written 
@@ -265,6 +267,10 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     eta_ = final_state.eta();
     pt_ = final_state.pt();
     mjj_ = cleanedJets.size() > 1 ? (cleanedJets[0].p4() + cleanedJets[1].p4()).mass() : -999;
+    ht_ = 0;
+    for (auto& jet : cleanedJets) {
+        ht_ += jet.pt();
+    }
     etajj_ = cleanedJets.size() > 1 ? std::abs(cleanedJets[0].eta() + cleanedJets[1].eta()) : -999;
     
     if (metSource_ != "") {
