@@ -5,13 +5,13 @@ DATE=`date +%Y-%m-%d`
 farmoutAnalysisJobs \
     --infer-cmssw-path \
     --input-files-per-job=5 \
-    --input-file-list=../../MetaData/WZ/WZTo3LNu_0J_MLM_files.txt \
+    --input-file-list=../../MetaData/WZ/WZTo3LNu_3J_MLM_qcut27_files.txt \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $2 \
-    WZTo3LNu_0J_qcut27_MLM_GenNtuples_leptonType-$1_$DATE \
+    WZTo3LNu_3J_MLM_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
-    useDefaultDataset=WZTo3LNu-2J-MLM \
+    useDefaultDataset=WZTo3LNu-3J-MLM-qcut27 \
     submit=1 \
     leptonType=$1 \
     'inputFiles=$inputFileNames' \

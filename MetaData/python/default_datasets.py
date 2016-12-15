@@ -400,6 +400,52 @@ sample_info = {
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_M-60_EWK_QCD-MGLO_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WZTo3LNu-0J-MLM-qcut27': {
+        "inputFiles" : """/store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_72.root,
+            /store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_81.root,
+            /store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_90.root""",
+        "crossSection" : 0.4664,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_0J_MLM.root",
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
+    'WZTo3LNu-1J-MLM-qcut27': {
+        "inputFiles" : """/store/user/kelong/WZTo3LNu_1J_13TeV_madgraphMLM-pythia8_fixGen_2016-07-23-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_599.root,
+            /store/user/kelong/WZTo3LNu_1J_13TeV_madgraphMLM-pythia8_fixGen_2016-07-23-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_608.root,
+            /store/user/kelong/WZTo3LNu_1J_13TeV_madgraphMLM-pythia8_fixGen_2016-07-23-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_617.root""",
+        "crossSection" : 0.3483,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_1J_MLM.root",
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
+    'WZTo3LNu-2J-MLM-qcut27': {
+        "inputFiles" : """/store/user/kelong/WZTo3LNu_2J_13TeV_madgraphMLM-pythia8_2016-07-25-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_72.root,
+            /store/user/kelong/WZTo3LNu_2J_13TeV_madgraphMLM-pythia8_2016-07-25-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_81.root,
+            /store/user/kelong/WZTo3LNu_2J_13TeV_madgraphMLM-pythia8_2016-07-25-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_91.root""",
+        "crossSection" : 0.1949,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_2J_MLM.root",
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
+    'WZTo3LNu-2JMax3J-MLM-qcut27': {
+        "inputFiles" : """/store/user/kelong/WZTo3LNu_2J_Max3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_977.root,
+            /store/user/kelong/WZTo3LNu_2J_Max3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_986.root,
+            /store/user/kelong/WZTo3LNu_2J_Max3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_995.root""",
+        "crossSection" : 0.07705,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_2J_Max3J_MLM.root",
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
+    'WZTo3LNu-3J-MLM-qcut27': {
+        "inputFiles" : """/store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_120.root,
+            /store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_268.root,
+            /store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_2736.root,
+            /store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_52.root""",
+        "crossSection" : 0.1171,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_2J_Max3J_MLM.root",
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
     'WZTo3LNu-0J-MLM': {
         "inputFiles" : """/store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_72.root,
             /store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_81.root,
