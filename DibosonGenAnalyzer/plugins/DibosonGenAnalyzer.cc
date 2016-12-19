@@ -97,6 +97,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         std::vector<double> LHEWeights_;
         std::vector<double> fidLHEWeightSums_;
         std::vector<double> initLHEWeightSums_;
+        double minScaleWeight_;
+        double maxScaleWeight_;
         unsigned int eventid_;
         unsigned int nProcessed_;
         unsigned int nPass_;
@@ -197,6 +199,8 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     // into file multiple times
     ntuple_->SetAutoSave(-30000000000000);
     ntuple_->Branch("LHEweights", &LHEWeights_);
+    ntuple_->Branch("maxScaleWeight", &maxScaleWeight_);
+    ntuple_->Branch("minScaleWeight", &minScaleWeight_);
     std::cout << "We make it here also";
 }
 
@@ -417,6 +421,15 @@ DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
             for (size_t i = 0; i < fidLHEWeightSums_.size(); i++)
                 fidLHEWeightSums_[i] += LHEWeights_[i];
         }
+        std::vector<double> scaleWeights;
+        for (size_t i = 0; i <= 9 i++) {
+            // Indices 5 and 7 are fully antisemetric variations
+            if (i == 5 || i == 7)
+                continue;
+            scaleWeights.push_back(LHEWeights_[i]/LHEWeights_[0]);
+        }
+        maxScaleWeight_ = *std::max_element(scaleWeights.begin(), scaleWeights.end());
+        minScaleWeight_ = *std::min_element(scaleWeights.begin(), scaleWeights.end());
     }
 }
 reco::CandidateCollection
