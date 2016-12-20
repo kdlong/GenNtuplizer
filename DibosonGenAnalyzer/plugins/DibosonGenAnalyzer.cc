@@ -422,7 +422,7 @@ DibosonGenAnalyzer::setWeightInfo(const edm::Event& event) {
                 fidLHEWeightSums_[i] += LHEWeights_[i];
         }
         std::vector<double> scaleWeights;
-        for (size_t i = 0; i <= 9 i++) {
+        for (size_t i = 0; i <= 8; i++) {
             // Indices 5 and 7 are fully antisemetric variations
             if (i == 5 || i == 7)
                 continue;
