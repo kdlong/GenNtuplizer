@@ -348,6 +348,17 @@ sample_info = {
         "outputFile" : "file:/nfs_scratch/kdlong/DibosonGenAnalysisSamples/ZZTo4LNu0j_5f_NLO_FXFX/ggZZ2e2mu_MCFM_pythia8_TuneCUETP8M1_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WZJJ_OF-VBFNLO': {
+        "inputFiles" : """/store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_1.root,
+                /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_10.root,
+                /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_100.root,
+                /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_11.root""",
+        "crossSection" : 0.00354,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_OF-VBFNLO_Ntuple.root",
+        "isMiniAOD" : 1,
+        "leptonType" : "finalstate",
+        "lheSource" : ""
+    },
     'WZJJ_EWK_QCD-MGNLO': {
         "inputFiles" : """/store/mc/RunIIFall15MiniAODv1/WZJJ_EWK_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/80000/3E105396-14D1-E511-9EB2-0023AEFF2CF0.root,
             /store/mc/RunIIFall15MiniAODv1/WZJJ_EWK_QCD_13TeV-madgraph-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/80000/5298E481-14D1-E511-A630-0025904403FE.root""",
