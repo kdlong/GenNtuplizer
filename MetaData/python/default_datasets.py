@@ -87,6 +87,13 @@ sample_info = {
         "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
         "isMiniAOD" : 1,
     },
+    'DYm50_pt100-250': {
+        "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/50000/000C2C14-1D59-E611-B0FD-00266CFF0234.root,
+            /store/mc/RunIISpring16MiniAODv2/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/50000/081C6BD7-1659-E611-8894-001E67F11FC7.root""",
+        "crossSection" : 83.11, 
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
+        "isMiniAOD" : 1,
+    },
     'DYeeM50': {
         "inputFiles" : "/store/mc/RunIISpring15DR74/DYToEE_NNPDF30_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/FA2E71F8-D55F-E511-80BC-0CC47A0AD704.root",
         "crossSection" : 1997.4, 
@@ -272,6 +279,14 @@ sample_info = {
         "outputFile" : "/nfs_scratch/kdlong/DibosonGenAnalysisSamples/MG5aMCatNLO_ZZ01j_OfficialSample/MG5aMCatNLO_ZZ01j_OfficialSample_pythia8_TuneCUETP8M1_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'ZZ-PDF4LHC': {
+        "inputFiles" : 
+            """/store/user/kelong/ZZTo4L_PDF4LHC_13TeV-powheg-pythia8_2017-01-14-fixGen_cfg/fixGen_cfg-HIG-RunIISummer15wmLHEGS-00441_984.root,
+            /store/user/kelong/ZZTo4L_PDF4LHC_13TeV-powheg-pythia8_2017-01-14-fixGen_cfg/fixGen_cfg-HIG-RunIISummer15wmLHEGS-00441_993.root""",
+        "crossSection" : 1.2610, 
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZ_pdf4lhc_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
+        "isMiniAOD" : 0
+    },
     'ZZ-PWG-Off': {
         "inputFiles" : 
             """/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/20D8A050-8216-E511-8497-0025905B8562.root,
@@ -373,14 +388,15 @@ sample_info = {
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/ZZ_VBS/ZZJJ_EWK-MGLO_Ntuple.root",
         "isMiniAOD" : 1
     },
-    'WLLJJ_EWK_4F-MGLO': {
-        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_4F_EWK_2016-11-06-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_81.root,
-            /store/user/kelong/WLLJJ_WToLNu_4F_EWK_2016-11-06-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00029_90.root""",
-        "crossSection" : 0.01770,
-        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK_4F-MGLO_Ntuple.root",
-        "isMiniAOD" : 0
-    },
     'WLLJJ_EWK-MGLO': {
+        "inputFiles" : """/store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/3630ED78-EAC9-E611-9C25-0CC47A4C8EA8.root,
+                /store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/8C4C505E-DAC9-E611-81F3-0CC47A4D7628.root,
+                /store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/A6918F82-EAC9-E611-8EB3-0CC47A4C8E66.root""",
+        "crossSection" : 0.01785,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Off_Ntuple.root",
+        "isMiniAOD" : 1
+    },
+    'WLLJJ_5F_EWK-MGLO': {
         "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/064D833C-537F-E611-987E-20CF3027A5BC.root,
             /store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/0ED38CBA-CA7E-E611-89A9-0025904A894A.root""",
         "crossSection" : 0.047,

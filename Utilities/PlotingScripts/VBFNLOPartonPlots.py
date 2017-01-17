@@ -1,7 +1,7 @@
 import ROOT
 from DataFormats.FWLite import Events, Handle
 
-events = Events ('GENTEST_WZ_relaxed.root')
+events = Events ('/data/kelong/DibosonGenAnalysisSamples/WZJJ_VBFNLO/GENTEST_WZ_relaxed.root')
 handle  = Handle ('std::vector<reco::GenParticle>')
 label = ("genParticles")
 
@@ -30,11 +30,15 @@ hptz = ROOT.TH1F("hptz","hptz",30,0,600)
 hmw = ROOT.TH1F("hmw","hmw",30,0,150)
 hyw = ROOT.TH1F("hyw","hyw",30,-6,6)
 hptw = ROOT.TH1F("hptw","hptw",30,0,600)
-
+hmwq1 = ROOT.TH1F("hmwq1","hmwq1",60,0,1800)
+hmwq2 = ROOT.TH1F("hmwq2","hmwq2",60,0,1800)
 
 first = True
  
+nPass = 0 
+nEvents = 0 
 for event in events:
+    nEvents += 1
 
     event.getByLabel (label, handle)
     
@@ -49,6 +53,8 @@ for event in events:
     zp=ROOT.TLorentzVector(0.,0.,0.,0.)
     zm=ROOT.TLorentzVector(0.,0.,0.,0.)
     for genp in genps:
+        if abs(genp.pdgId())==6:
+            print "TOP EVENT!"
         if (genp.status()==1 and abs(genp.pdgId())<7):
             if found!=0 :
                 q2.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
@@ -60,25 +66,30 @@ for event in events:
 
         if (genp.status()==1 and genp.pdgId()==-11):
             wl.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            hptlw.Fill(genp.pt())
-            hetalw.Fill(genp.eta())
         if (genp.status()==1 and genp.pdgId()==12):
             wn.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            hptnw.Fill(genp.pt())
-            hetanw.Fill(genp.eta())
         if (genp.status()==1 and genp.pdgId()==13):
             zp.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            hptlzp.Fill(genp.pt())
-            hetalzp.Fill(genp.eta())
         if (genp.status()==1 and genp.pdgId()==-13):
             zm.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            hptlzm.Fill(genp.pt())
-            hetalzm.Fill(genp.eta())
         
     
     if nfound != 2:
         print "number of quarks !=2 ????"
         continue
+    if abs(q1.Eta() - q2.Eta()) < 3.0: continue
+    if (q1+q2).M() < 500.0: continue
+    nPass +=1
+    
+    hptlw.Fill(wl.Perp())
+    hetalw.Fill(wl.Eta())
+    hptnw.Fill(wn.Perp())
+    hetanw.Fill(wn.Eta())
+    hptlzp.Fill(zp.Perp())
+    hetalzp.Fill(zp.Eta())
+    hptlzm.Fill(zm.Perp())
+    hetalzm.Fill(zm.Eta())
+        
 
     hpt.Fill(q1.Perp())
     hpt.Fill(q2.Perp())
@@ -95,9 +106,12 @@ for event in events:
     hmz.Fill((zm+zp).M())
     hptz.Fill((zm+zp).Perp())
     hyz.Fill((zm+zp).Rapidity())
+    hmwq1.Fill((wn+wl+q1).M())
+    hmwq2.Fill((wn+wl+q2).M())
 
-
-rfile = ROOT.TFile.Open("plots.root","RECREATE")
+print "From %i total events" % nEvents
+print "%i passed selection" % nPass
+rfile = ROOT.TFile.Open("VBFNLOplots.root","RECREATE")
 
 hmqq.Write()
 heta.Write()
@@ -121,6 +135,9 @@ hptz.Write()
 hmw.Write()
 hyw.Write()
 hptw.Write()
+
+hmwq1.Write()
+hmwq2.Write()
 
 rfile.Close()
 
