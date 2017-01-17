@@ -34,7 +34,7 @@ DressedGenParticlesProducer::DressedGenParticlesProducer(
 }
 
 void DressedGenParticlesProducer::produce(edm::Event& event, const edm::EventSetup& es) {
-    std::auto_ptr<reco::CandidateCollection> dressedCollection(new reco::CandidateCollection);
+    std::unique_ptr<reco::CandidateCollection> dressedCollection(new reco::CandidateCollection);
     
     edm::Handle<reco::GenParticleCollection> baseCollection;
     event.getByToken(baseCollectionToken_, baseCollection);
@@ -52,7 +52,7 @@ void DressedGenParticlesProducer::produce(edm::Event& event, const edm::EventSet
     //        {return part1.pt() > part2.pt();});
         //GreaterByPt<reco::Candidate>());
 
-    event.put(dressedCollection);
+    event.put(std::move(dressedCollection));
 }
 bool DressedGenParticlesProducer::allUniqueAssociates(
         reco::CandidateCollection& dressedParticles) {
