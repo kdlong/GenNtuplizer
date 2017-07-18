@@ -23,7 +23,7 @@ if "WZ" in options.useDefaultDataset:
 process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(options.maxEvents))
 
 process.source = cms.Source("PoolSource",
-    # replace 'myfile.root' with the source file you want to use
+    inputCommands = cms.untracked.vstring('keep *', 'drop LHERunInfoProduct_*_*_*'),
     fileNames = cms.untracked.vstring(options.inputFiles)
 )
 

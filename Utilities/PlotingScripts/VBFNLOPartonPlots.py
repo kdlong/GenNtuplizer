@@ -1,37 +1,41 @@
 import ROOT
 from DataFormats.FWLite import Events, Handle
 
-events = Events ('/data/kelong/DibosonGenAnalysisSamples/WZJJ_VBFNLO/GENTEST_WZ_relaxed.root')
+events = Events ('/eos/user/k/kelong/WZGenStudies/GENTEST_WZ_relaxed.root')
 handle  = Handle ('std::vector<reco::GenParticle>')
 label = ("genParticles")
 
 ROOT.gROOT.SetStyle('Plain') # white background
 
+hmqq = ROOT.TH1F("hmqq","m_{jj}",30,0,3000)   
+hdeta = ROOT.TH1F("hdeta","#Delta#eta(j_{1}, j_{2})",30,0,12)   
+heta  = ROOT.TH1F("heta","#eta(3l)",30,-6,6)
+hpt = ROOT.TH1F("hpt","p_{T}(3l)",30,0,300)
+hptq1 = ROOT.TH1F("hptq1","p_{T}(q_{1})",50,0,500)
+hptq2 = ROOT.TH1F("hptq2","p_{T}(q_{2})",30,0,300)
+hetaq1 = ROOT.TH1F("hetaq1","#eta(q_{1})",30,-6,6)
+hetaq2 = ROOT.TH1F("hetaq2","#eta(q_{2})",30,-6,6)
 
-hmqq = ROOT.TH1F("hmqq","hmqq",30,0,3000)   
-hdeta = ROOT.TH1F("hdeta","hdeta",30,0,12)   
-heta  = ROOT.TH1F("heta","heta",30,-6,6)
-hpt = ROOT.TH1F("hpt","hpt",30,0,300)
+hptlw = ROOT.TH1F("hptlw","p_{T}(l_{W})",30,0,600)
+hptnw = ROOT.TH1F("hptnw","p_{T}(#nu)",30,0,600)
+hptlzp = ROOT.TH1F("hptzp","p_{T}(l^{+}_{Z})",30,0,600)
+hptlzm = ROOT.TH1F("hptzm","p_{T}(l^{-}_{Z})",30,0,600)
 
-hptlw = ROOT.TH1F("hptlw","hptlw",30,0,600)
-hptnw = ROOT.TH1F("hptnw","hptnw",30,0,600)
-hptlzp = ROOT.TH1F("hptzp","hptzp",30,0,600)
-hptlzm = ROOT.TH1F("hptzm","hptzm",30,0,600)
+hetalw = ROOT.TH1F("hetalw","#eta(l^{-}_{W})",30,-6,6)
+hetanw = ROOT.TH1F("hetanw","#eta(#nu))",30,-6,6)
+hetalzp = ROOT.TH1F("hetazp","#eta(l^{+}_{Z})",30,-6,6)
+hetalzm = ROOT.TH1F("hetazm","#eta(l^{-}_{Z})",30,-6,6)
 
-hetalw = ROOT.TH1F("hetalw","hetalw",30,-6,6)
-hetanw = ROOT.TH1F("hetanw","hetanw",30,-6,6)
-hetalzp = ROOT.TH1F("hetazp","hetazp",30,-6,6)
-hetalzm = ROOT.TH1F("hetazm","hetazm",30,-6,6)
+hmz = ROOT.TH1F("hmz","m_{Z}",30,0,150)
+hyz = ROOT.TH1F("hyz","#eta(Z)",30,-6,6)
+hptz = ROOT.TH1F("hptz","p_{T}(Z)",30,0,600)
 
-hmz = ROOT.TH1F("hmz","hmz",30,0,150)
-hyz = ROOT.TH1F("hyz","hyz",30,-6,6)
-hptz = ROOT.TH1F("hptz","hptz",30,0,600)
-
-hmw = ROOT.TH1F("hmw","hmw",30,0,150)
-hyw = ROOT.TH1F("hyw","hyw",30,-6,6)
-hptw = ROOT.TH1F("hptw","hptw",30,0,600)
-hmwq1 = ROOT.TH1F("hmwq1","hmwq1",60,0,1800)
-hmwq2 = ROOT.TH1F("hmwq2","hmwq2",60,0,1800)
+hmw = ROOT.TH1F("hmw","m_{W}",30,0,150)
+hmwz = ROOT.TH1F("hmwz","m_{WZ}",50,0,1000)
+hyw = ROOT.TH1F("hyw","y(W)",30,-6,6)
+hptw = ROOT.TH1F("hptw","p_{T}(W)",30,0,600)
+hmwq1 = ROOT.TH1F("hmwq1","m_{W+q1}",60,0,1800)
+hmwq2 = ROOT.TH1F("hmwq2","m_{W+q2}",60,0,1800)
 
 first = True
  
@@ -79,8 +83,19 @@ for event in events:
         continue
     if abs(q1.Eta() - q2.Eta()) < 3.0: continue
     if (q1+q2).M() < 500.0: continue
+    if (zp + zm).M() < 60: continue
+    if wl.Perp() < 10: continue
+    if zm.Perp() < 10: continue
+    if zp.Perp() < 10: continue
+    if q1.Perp() < 30: continue
+    if q2.Perp() < 30: continue
+    if abs(q1.Rapidity()) > 4.5: continue
+    if abs(q2.Rapidity()) > 4.5: continue
+    if abs(wl.Rapidity()) > 2.5: continue
+    if abs(zm.Rapidity()) > 2.5: continue
+    if abs(zp.Rapidity()) > 2.5: continue
     nPass +=1
-    
+
     hptlw.Fill(wl.Perp())
     hetalw.Fill(wl.Eta())
     hptnw.Fill(wn.Perp())
@@ -89,33 +104,41 @@ for event in events:
     hetalzp.Fill(zp.Eta())
     hptlzm.Fill(zm.Perp())
     hetalzm.Fill(zm.Eta())
-        
 
-    hpt.Fill(q1.Perp())
-    hpt.Fill(q2.Perp())
+    leadq = q1 if q1.Perp() > q2.Perp() else q2
+    subleadq = q2 if q1.Perp() > q2.Perp() else q1
+    hptq1.Fill(leadq.Perp())
+    hptq2.Fill(subleadq.Pt())
+    hetaq1.Fill(leadq.Eta())
+    hetaq2.Fill(subleadq.Eta())
+    hpt.Fill((wn+wl+zm+zp).Perp())
+    heta.Fill((wn+wl+zm+zp).Eta())
 
     hmqq.Fill((q1+q2).M())
-    heta.Fill(q1.Eta())
-    heta.Fill(q2.Eta())
     hdeta.Fill(abs(q1.Eta() - q2.Eta()) )           
 
     hmw.Fill((wn+wl).M())
     hptw.Fill((wn+wl).Perp())
-    hyw.Fill((wn+wl).Rapidity())
+    hyw.Fill((wn+wl).Eta())
 
     hmz.Fill((zm+zp).M())
     hptz.Fill((zm+zp).Perp())
-    hyz.Fill((zm+zp).Rapidity())
-    hmwq1.Fill((wn+wl+q1).M())
-    hmwq2.Fill((wn+wl+q2).M())
-
+    hyz.Fill((zm+zp).Eta())
+    hmwq1.Fill((wn+wl+leadq).M())
+    hmwq2.Fill((wn+wl+subleadq).M())
+    hmwz.Fill((wn+wl+zm+zp).M())
+    
 print "From %i total events" % nEvents
 print "%i passed selection" % nPass
-rfile = ROOT.TFile.Open("VBFNLOplots.root","RECREATE")
+rfile = ROOT.TFile.Open("VBFNLOplots-ptj30.root","RECREATE")
 
 hmqq.Write()
 heta.Write()
 hdeta.Write()
+hptq1.Write()
+hptq2.Write()
+hetaq1.Write()
+hetaq2.Write()
 hpt.Write()
 
 hptlw.Write()
@@ -133,6 +156,7 @@ hyz.Write()
 hptz.Write()
 
 hmw.Write()
+hmwz.Write()
 hyw.Write()
 hptw.Write()
 

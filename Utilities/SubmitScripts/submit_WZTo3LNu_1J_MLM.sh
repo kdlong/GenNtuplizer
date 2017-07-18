@@ -11,7 +11,7 @@ farmoutAnalysisJobs \
     $2 \
     WZTo3LNu_1J_MLM_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
-    useDefaultDataset=WZTo3LNu-2J-MLM \
+    useDefaultDataset=WZTo3LNu-1J-MLM-qcut27 \
     submit=1 \
     leptonType=$1 \
     'inputFiles=$inputFileNames' \

@@ -201,7 +201,6 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     ntuple_->Branch("LHEweights", &LHEWeights_);
     ntuple_->Branch("maxScaleWeight", &maxScaleWeight_);
     ntuple_->Branch("minScaleWeight", &minScaleWeight_);
-    std::cout << "We make it here also";
 }
 
 DibosonGenAnalyzer::~DibosonGenAnalyzer()
@@ -302,7 +301,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     event.getByToken(zCandsToken_, zCands);
     particleEntries_["Zs"]->setCollection(*zCands);
     
-    std::cout << genLeptons->size();
     if (genLeptons->size() < nKeepLeps_) {
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    

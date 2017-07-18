@@ -287,6 +287,25 @@ sample_info = {
         "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZ_pdf4lhc_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
         "isMiniAOD" : 0
     },
+    'ZZ4m-PDF4LHC': {
+        "inputFiles" : 
+            """/store/user/kelong/ZZTo4Mu_PDF4LHC_13TeV-powheg-pythia8/RunIISummer15wmLHEGS/170116_214411/0000/HIG-RunIISummer15wmLHEGS-00441_98.root,
+            /store/user/kelong/ZZTo4Mu_PDF4LHC_13TeV-powheg-pythia8/RunIISummer15wmLHEGS/170116_214411/0000/HIG-RunIISummer15wmLHEGS-00441_99.root""",
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZTo4Mu_pdf4lhc_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
+        "crossSection" : 0.12952, 
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
+    'ZZ2e2m-PDF4LHC': {
+        "inputFiles" : 
+            """/store/user/kelong/ZZTo2E2Mu_PDF4LHC_13TeV-powheg-pythia8/RunIISummer15wmLHEGS/170116_214529/0000/HIG-RunIISummer15wmLHEGS-00441_97.root,
+            /store/user/kelong/ZZTo2E2Mu_PDF4LHC_13TeV-powheg-pythia8/RunIISummer15wmLHEGS/170116_214529/0000/HIG-RunIISummer15wmLHEGS-00441_98.root,
+            /store/user/kelong/ZZTo2E2Mu_PDF4LHC_13TeV-powheg-pythia8/RunIISummer15wmLHEGS/170116_214529/0000/HIG-RunIISummer15wmLHEGS-00441_99.root""",
+        "crossSection" : 0.290118, 
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/POWHEG_ZZ/ZZTo2E2Mu_pdf4lhc_powheg_pythia8_CUETP8M1_officialSample_Ntuple.root",
+        "isMiniAOD" : 0,
+        "lheSource" : "externalLHEProducer"
+    },
     'ZZ-PWG-Off': {
         "inputFiles" : 
             """/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/20D8A050-8216-E511-8497-0025905B8562.root,
@@ -363,6 +382,16 @@ sample_info = {
         "outputFile" : "file:/nfs_scratch/kdlong/DibosonGenAnalysisSamples/ZZTo4LNu0j_5f_NLO_FXFX/ggZZ2e2mu_MCFM_pythia8_TuneCUETP8M1_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WZJJ_SF-VBFNLO': {
+        "inputFiles" : """/store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_1.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_10.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_100.root""",
+        "crossSection" : 0.00349,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_SF-VBFNLO_Ntuple.root",
+        "isMiniAOD" : 1,
+        "leptonType" : "finalstate",
+        "lheSource" : ""
+    },
     'WZJJ_OF-VBFNLO': {
         "inputFiles" : """/store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_1.root,
                 /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_10.root,
@@ -396,6 +425,21 @@ sample_info = {
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Off_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WLLJJ_EWK-MGLO_noBs': {
+        "inputFiles" : """file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev10000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev20000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev30000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev40000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev50000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev60000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev70000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev80000_numEvent10000.root,
+            file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev90000_numEvent10000.root""",
+        "crossSection" : 0.001826,
+        "outputFile" : "file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_Ntuple.root",
+        "isMiniAOD" : 0
+    },
     'WLLJJ_5F_EWK-MGLO': {
         "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/064D833C-537F-E611-987E-20CF3027A5BC.root,
             /store/mc/RunIISpring16MiniAODv2/WLLJJToLNu_M-60_EWK_13TeV-madgraph-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/80000/0ED38CBA-CA7E-E611-89A9-0025904A894A.root""",
@@ -428,21 +472,23 @@ sample_info = {
         "isMiniAOD" : 1
     },
     'WZTo3LNu-0J-MLM-qcut27': {
-        "inputFiles" : """/store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_72.root,
-            /store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_81.root,
-            /store/user/kelong/WZTo3LNu_0J_MLM_2016-09-06-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_90.root""",
+        "inputFiles" : """
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_0Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/08F5B95E-90D0-E611-8F39-14187741136B.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_0Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/16A8B65D-97D0-E611-B9ED-B083FED04CAB.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_0Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/2694686E-8DD0-E611-B9E3-A4BADB1CF89C.root""",
         "crossSection" : 0.4664,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_0J_MLM.root",
-        "isMiniAOD" : 0,
+        "isMiniAOD" : 1,
         "lheSource" : "externalLHEProducer"
     },
     'WZTo3LNu-1J-MLM-qcut27': {
-        "inputFiles" : """/store/user/kelong/WZTo3LNu_1J_13TeV_madgraphMLM-pythia8_fixGen_2016-07-23-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_599.root,
-            /store/user/kelong/WZTo3LNu_1J_13TeV_madgraphMLM-pythia8_fixGen_2016-07-23-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_608.root,
-            /store/user/kelong/WZTo3LNu_1J_13TeV_madgraphMLM-pythia8_fixGen_2016-07-23-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_617.root""",
+        "inputFiles" : """
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_1Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/3C67290B-F5D6-E611-B647-02163E019C3F.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_1Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/3EAF576E-B4D7-E611-8760-02163E0134E5.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_1Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/52C8C54A-15D7-E611-A4D2-02163E013993.root""",
         "crossSection" : 0.3483,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_1J_MLM.root",
-        "isMiniAOD" : 0,
+        "isMiniAOD" : 1,
         "lheSource" : "externalLHEProducer"
     },
     'WZTo3LNu-2J-MLM-qcut27': {
@@ -455,22 +501,24 @@ sample_info = {
         "lheSource" : "externalLHEProducer"
     },
     'WZTo3LNu-2JMax3J-MLM-qcut27': {
-        "inputFiles" : """/store/user/kelong/WZTo3LNu_2J_Max3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_977.root,
-            /store/user/kelong/WZTo3LNu_2J_Max3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_986.root,
-            /store/user/kelong/WZTo3LNu_2J_Max3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_995.root""",
+        "inputFiles" : """
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_2Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/100000/10483A65-B4CF-E611-894A-0CC47A745282.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_2Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/100000/1683E381-C1CF-E611-82C0-0CC47A4C8E28.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_2Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/100000/168C7365-CCCF-E611-8BD4-0025905B8574.root""",
         "crossSection" : 0.07705,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_2J_Max3J_MLM.root",
-        "isMiniAOD" : 0,
+        "isMiniAOD" : 1,
         "lheSource" : "externalLHEProducer"
     },
     'WZTo3LNu-3J-MLM-qcut27': {
-        "inputFiles" : """/store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_120.root,
-            /store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_268.root,
-            /store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_2736.root,
-            /store/user/kelong/WZTo3LNu_3J_MLM_qcut27_2016-11-21-fixGen_cfg/fixGen_cfg-SUS-RunIISummer15wmLHEGS-00037_52.root""",
+        "inputFiles" : """
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/50C63769-CCCF-E611-A20A-0025905B8562.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/82945B85-D2CF-E611-B628-0025905A6070.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/C617DA19-F3CF-E611-AB34-0025905A608E.root,
+            /store/mc/RunIISummer16MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/F69E4F1F-F3CF-E611-91C7-0025905A60AA.root""",
         "crossSection" : 0.1171,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3LNu_2J_Max3J_MLM.root",
-        "isMiniAOD" : 0,
+        "isMiniAOD" : 1,
         "lheSource" : "externalLHEProducer"
     },
     'WZTo3LNu-0J-MLM': {
@@ -509,12 +557,25 @@ sample_info = {
         "isMiniAOD" : 0,
         "lheSource" : ""
     },
-    'WZTo3MuNuJJ-aQGCfm': {
-        "inputFiles" : """/store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_1.root,    
-            /store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_21.root, 
-            /store/user/kelong/WToMuNuMuMuJJ_ewkqcd_highMass_aQGCfm_2016-07-25-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00027_35.root""",
-        "crossSection" : 1,
-        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZT3MuNuJJ_aQGCfm.root",
+    "WLLJJ_aQGC-FT_EWK-MGLO" : {
+        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_10.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_27.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_37.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_52.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_63.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_73.root,
+            /store/user/kelong/WLLJJ_WToLNu_aQGC-FT_Update_2017-03-21-fixGen_cfg/fixGen_cfg-SMP-RunIISummer15wmLHEGS-00044_9.root""",
+        "crossSection" : 5.034e-02,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_aQGCft_update.root",
+        "isMiniAOD" : 0
+    },
+    "WLLJJ_aQGC-FM_EWK-MGLO" : {
+        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_EWK_aQGC-FM_v1/RunIISummer15wmLHEGS/170324_160358/0000/SMP-RunIISummer15wmLHEGS-00044_1.root,
+            /store/user/kelong/WLLJJ_WToLNu_EWK_aQGC-FM_v1/RunIISummer15wmLHEGS/170324_160358/0000/SMP-RunIISummer15wmLHEGS-00044_10.root,
+            /store/user/kelong/WLLJJ_WToLNu_EWK_aQGC-FM_v1/RunIISummer15wmLHEGS/170324_160358/0000/SMP-RunIISummer15wmLHEGS-00044_11.root,
+            /store/user/kelong/WLLJJ_WToLNu_EWK_aQGC-FM_v1/RunIISummer15wmLHEGS/170324_160358/0000/SMP-RunIISummer15wmLHEGS-00044_12.root""",
+        "crossSection" : 0.01432,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WLLJJ_aQGCfm.root",
         "isMiniAOD" : 0
     }
 }
