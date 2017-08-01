@@ -382,6 +382,16 @@ sample_info = {
         "outputFile" : "file:/nfs_scratch/kdlong/DibosonGenAnalysisSamples/ZZTo4LNu0j_5f_NLO_FXFX/ggZZ2e2mu_MCFM_pythia8_TuneCUETP8M1_Ntuple.root",
         "isMiniAOD" : 1
     },
+    'WZJJ_VBFNLO_LO': {
+        "inputFiles" : """/store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_LO_shower/July17_100k_LO/170717_114443/0000/WZ_gensim_1.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_LO_shower/July17_100k_LO/170717_114443/0000/WZ_gensim_10.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_LO_shower/July17_100k_LO/170717_114443/0000/WZ_gensim_14.root""",
+        "crossSection" : 0.00292,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZJJ_LO_VBFNLO_Ntuple.root",
+        "isMiniAOD" : 0,
+        "leptonType" : "finalstate",
+        "lheSource" : ""
+    },
     'WZJJ_SF-VBFNLO': {
         "inputFiles" : """/store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_1.root,
             /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_10.root,

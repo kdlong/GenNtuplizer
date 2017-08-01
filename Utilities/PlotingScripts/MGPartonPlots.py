@@ -1,6 +1,13 @@
 import ROOT
 from DataFormats.FWLite import Events, Handle
 
+def lhep4(i):
+    px = lheParticles.PUP.at(i)[0]
+    py = lheParticles.PUP.at(i)[1]
+    pz = lheParticles.PUP.at(i)[2]
+    pE = lheParticles.PUP.at(i)[3]
+    return lorentz(px, py, pz, pE)
+file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/WZJJ_VBFNLO_fromauthors.root" ]
 #file_names = [
 #    #'/eos/user/k/kelong/WZGenStudies/WZJJ_noresonance/WZJJ_WZToENu2Mu_pythia8_10E4ev.root'
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root",
@@ -42,14 +49,11 @@ from DataFormats.FWLite import Events, Handle
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/90000/EA51B8A9-7CC5-E611-8719-6C3BE5B5A308.root",
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/90000/F892C761-4CC6-E611-8C29-6C3BE5B5B108.root",
 #]
-file_names = [
-    "/eos/user/k/kelong/WZGenStudies/WZJJ_withCuts/WZJJTo1E1Nu2MuJJ_withCuts-madgraph-pythia8_ev0_numEvent10000.root",
-    "/eos/user/k/kelong/WZGenStudies/WZJJ_withCuts/WZJJTo1E1Nu2MuJJ_withCuts-madgraph-pythia8_ev10000_numEvent10000.root",
-]
 files = [Events (x) for x in file_names]
-handle  = Handle ('std::vector<reco::GenParticle>')
-label = ("genParticles")
-#label = ("prunedGenParticles")
+lheHandle = Handle('LHEEventProduct')
+lorentz = ROOT.TLorentzVector
+label = 'source'
+#label = 'externalLHEProducer'
 
 ROOT.gROOT.SetStyle('Plain') # white background
 
@@ -91,12 +95,8 @@ nEvents = 0
 nSingleChan = 0 
 nPass = 0 
 for events in files:
-    for event in events:
+    for iev, event in enumerate(events):
         nEvents += 1
-
-        event.getByLabel (label, handle)
-        
-        genps = handle.product()
 
         found=0
         nfound=0
@@ -108,39 +108,34 @@ for events in files:
         zp=ROOT.TLorentzVector(0.,0.,0.,0.)
         zm=ROOT.TLorentzVector(0.,0.,0.,0.)
         topEvent=False
-        toPrint = []
-        for genp in genps:
-            if genp.isHardProcess():
-                toPrint += genp
-            if (genp.isHardProcess() and abs(genp.pdgId())==6):
-                #print "-"*20
-                #for p in toPrint:
-                    #print "pdg id is %f, pt is %f, mother %i" %( p.pdgId(), p.pt(), p.mother().pdgId())
+        event.getByLabel(label, lheHandle)
+        lhe = lheHandle.product()
+
+        lheParticles = lhe.hepeup()
+
+        for i in range(lheParticles.NUP):
+            p4 = lhep4(i)
+            if abs(lheParticles.IDUP[i]) == 6:
                 topEvent=True
                 nTopEvents += 1
-            #if topEvent and genp.isHardProcess():
-                    #print "pdg id is %f, pt is %f, mother %i" %( genp.pdgId(), genp.pt(), genp.mother().pdgId())
-            if (genp.isHardProcess() and abs(genp.pdgId())<6 and genp.pt() > 0.001):
-                if abs(genp.pdgId()) == 5:
-                    bq.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
+            if (abs(lheParticles.IDUP[i])<6 and i > 1):
+                if abs(lheParticles.IDUP[i]) == 5:
+                    bq =lhep4(i)
                 if found!=0 :
-                    q2.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
+                    q2 =lhep4(i)
                     nfound=nfound+1
-        #            print "pdg id is %f, pt is %f" %( genp.pdgId(), genp.pt())
                 else:
-                    q1.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
+                    q1 =lhep4(i)
                     found=1
                     nfound=nfound+1
-        #            print "pdg id is %f, pt is %f" %( genp.pdgId(), genp.pt())
-            if (genp.isHardProcess() and genp.pdgId()==-11):
-                wl.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            if (genp.isHardProcess() and genp.pdgId()==12):
-                wn.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            if (genp.isHardProcess() and genp.pdgId()==13):
-                zp.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-            if (genp.isHardProcess() and genp.pdgId()==-13):
-                zm.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-    
+            if (lheParticles.IDUP[i]==-11):
+                wl = lhep4(i)
+            if (lheParticles.IDUP[i]==12):
+                wn = lhep4(i)
+            if (lheParticles.IDUP[i]==13):
+                zp = lhep4(i)
+            if (lheParticles.IDUP[i]==-13):
+                zm = lhep4(i)
         if nfound != 2:
             print "number of quarks !=2 ????"
             print "Number is ", nfound
@@ -148,40 +143,50 @@ for events in files:
         if wn.Perp() < 0.001 or zp.Perp() < 0.001 or zm.Perp() < 0.001 or wl.Perp() < 0.001:
             continue
         nSingleChan +=1
+        evPass = True
+        log = ""
         if abs(q1.Eta() - q2.Eta()) < 3.0: 
-            print "Failed dEtajj cut"
-            continue
+            log += "Failed dEtajj cut\n"
+            log += "dEtajj was %0.1f \n" % abs(q1.Eta() - q2.Eta())
+            evPass = False
         if (q1+q2).M() < 500.0: 
-            print "Failed mjj cut"
-            continue
+            log += "Failed mjj cut\n"
+            log += "mjj was %0.1f \n" % (q1+q2).M()
+            for i in range(lheParticles.NUP):
+                log += "    index %i pdgid %i\n" % (i, lheParticles.IDUP[i])
+            evPass = False
         if (zp + zm).M() < 60:
-            print "Failed mZ cut"
-            continue
+            log += "Failed mZ cut\n"
+            evPass = False
         if wl.Perp() < 10:
-            print "Failed pT(lw) cut"
-            continue
+            log += "Failed pT(lw) cut\n"
+            evPass = False
         if zm.Perp() < 10:
-            print "Failed pT(lZ-) cut"
-            continue
+            log += "Failed pT(lZ-) cut\n"
+            evPass = False
         if zp.Perp() < 10: 
-            print "Failed pT(lZ+) cut"
-            continue
-        #if q1.Perp() < 30: continue
-        #if q2.Perp() < 30: continue
+            log += "Failed pT(lZ+) cut\n"
+            evPass = False
+        #if q1.Perp() < 30: evPass = False
+        #if q2.Perp() < 30: evPass = False
         if abs(q1.Rapidity()) > 4.5:
-            print "Failed y(j1) cut"
-            continue
+            log += "Failed pT(j1) cut\n"
+            evPass = False
         if abs(q2.Rapidity()) > 4.5:
-            print "Failed y(j2) cut"
-            continue
+            log += "Failed pT(j2) cut\n"
+            evPass = False
         if abs(wl.Rapidity()) > 2.5:
-            print "Failed y(lw) cut"
-            continue
+            log += "Failed y(lw) cut\n"
+            evPass = False
         if abs(zm.Rapidity()) > 2.5:
-            print "Failed y(lz-) cut"
-            continue
+            log += "Failed y(lz-) cut\n"
+            evPass = False
         if abs(zp.Rapidity()) > 2.5:
-            print "Failed y(lz+) cut"
+            log += "Failed y(lz+) cut\n"
+            evPass = False
+        if not evPass:
+            #print "-"*80
+            #print log
             continue
         nPass +=1
         
@@ -218,8 +223,7 @@ for events in files:
         hmwz.Fill((wn+wl+zm+zp).M())
 
 #rfile = ROOT.TFile.Open("MGPartonPlots-OfficialSample-ptj30.root","RECREATE")
-#rfile = ROOT.TFile.Open("MGPartonPlots.root","RECREATE")
-rfile = ROOT.TFile.Open("MGPartonPlots-LHEcuts.root","RECREATE")
+rfile = ROOT.TFile.Open("VBFNLO-fromauthors-PartonPlots.root","RECREATE")
 print "Found %i top events" % nTopEvents
 print "From %i total events" % nEvents
 print "%i in eem+ chan" % nSingleChan

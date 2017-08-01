@@ -87,8 +87,8 @@ for event in events:
     if wl.Perp() < 10: continue
     if zm.Perp() < 10: continue
     if zp.Perp() < 10: continue
-    if q1.Perp() < 30: continue
-    if q2.Perp() < 30: continue
+    #if q1.Perp() < 30: continue
+    #if q2.Perp() < 30: continue
     if abs(q1.Rapidity()) > 4.5: continue
     if abs(q2.Rapidity()) > 4.5: continue
     if abs(wl.Rapidity()) > 2.5: continue
@@ -130,7 +130,7 @@ for event in events:
     
 print "From %i total events" % nEvents
 print "%i passed selection" % nPass
-rfile = ROOT.TFile.Open("VBFNLOplots-ptj30.root","RECREATE")
+rfile = ROOT.TFile.Open("VBFNLOplots.root","RECREATE")
 
 hmqq.Write()
 heta.Write()
