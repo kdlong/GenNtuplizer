@@ -34,7 +34,7 @@ DressedGenParticlesProducer::DressedGenParticlesProducer(
 }
 
 void DressedGenParticlesProducer::produce(edm::Event& event, const edm::EventSetup& es) {
-    std::auto_ptr<reco::CandidateCollection> dressedCollection(new reco::CandidateCollection);
+    std::unique_ptr<reco::CandidateCollection> dressedCollection(new reco::CandidateCollection);
     
     edm::Handle<reco::GenParticleCollection> baseCollection;
     event.getByToken(baseCollectionToken_, baseCollection);
@@ -46,22 +46,13 @@ void DressedGenParticlesProducer::produce(edm::Event& event, const edm::EventSet
         DressedGenParticle dressed_part = DressedGenParticle(base_particle,
             *associates, dRmax_);
         dressedCollection->push_back(dressed_part);
-        std::cout << "the pdgid of the original was " << base_particle.pdgId() << std::endl;
-        std::cout << "the pdgid was " << dressed_part.pdgId() << std::endl;
-        if (dressed_part.numAssociated() > 0) {
-            std::cout << "the pt was " << dressed_part.pt() << std::endl;
-            std::cout << "the undressed pt was " << dressed_part.undressedPt() << std::endl;
-            std::cout << "number of associated photons is" << dressed_part.numAssociated() << std::endl;
-        }
     }
-    std::cout << "All associates were unique? " << allUniqueAssociates(*dressedCollection) 
-              << std::endl;
     //std::sort(dressedCollection->begin(),dressedCollection->end(), 
     //    [](const reco::Candidate& part1, const reco::Candidate& part2)
     //        {return part1.pt() > part2.pt();});
         //GreaterByPt<reco::Candidate>());
 
-    event.put(dressedCollection);
+    event.put(std::move(dressedCollection));
 }
 bool DressedGenParticlesProducer::allUniqueAssociates(
         reco::CandidateCollection& dressedParticles) {

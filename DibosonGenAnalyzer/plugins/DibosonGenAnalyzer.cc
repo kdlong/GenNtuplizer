@@ -133,7 +133,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
         "wCands", edm::InputTag("zCands")))),
     zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
     //genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
-    genEventInfoToken_(consumes<edm::HepMCProduct>(edm::InputTag("source"))),
+    genEventInfoToken_(consumes<edm::HepMCProduct>(edm::InputTag("generator"))),
     lheSource_(cfg.getUntrackedParameter<std::string>("lheSource", "")),
     metSource_(cfg.getUntrackedParameter<std::string>("metSource", ""))
 {
