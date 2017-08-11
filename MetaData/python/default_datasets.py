@@ -82,16 +82,17 @@ sample_info = {
         "isHardProcess" : 0
     },
     'DYm50': {
-        "inputFiles" : "/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root",
+        "inputFiles" : "/store/user/kelong/DY_GenSkim_finesplit/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJetsInclusive_fineSplit/170730_125617/0000/test_1.root",
         "crossSection" : 6025.2, 
-        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
         "isMiniAOD" : 1,
+        "redoJets" : 1,
     },
     'DYm50_pt100-250': {
         "inputFiles" : """/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/50000/000C2C14-1D59-E611-B0FD-00266CFF0234.root,
             /store/mc/RunIISpring16MiniAODv2/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/50000/081C6BD7-1659-E611-8894-001E67F11FC7.root""",
         "crossSection" : 83.11, 
-        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DrellYan-ZZselection/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
+        "outputFile" : "/data/kelong/DibosonGenAnalysisSamples/DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Ntuple.root",
         "isMiniAOD" : 1,
     },
     'DYeeM50': {

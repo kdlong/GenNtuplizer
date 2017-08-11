@@ -1,0 +1,4 @@
+/store/user/kelong/DY_GenSkim/DYJetsToLL_Pt-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJets_Pt-650ToInf/170727_104200/0000/test_1.root
+/store/user/kelong/DY_GenSkim/DYJetsToLL_Pt-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJets_Pt-650ToInf/170727_104200/0000/test_2.root
+/store/user/kelong/DY_GenSkim/DYJetsToLL_Pt-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJets_Pt-650ToInf_ext1/170727_104205/0000/test_1.root
+/store/user/kelong/DY_GenSkim/DYJetsToLL_Pt-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJets_Pt-650ToInf_ext2/170727_104209/0000/test_1.root
