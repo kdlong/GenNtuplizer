@@ -77,6 +77,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         size_t nKeepLeps_;
         unsigned int nKeepExtra_;
         unsigned int nKeepWs_;
+        unsigned int nKeepZs_;
         unsigned int nZsCut_;
         float lep_system_mass_;
         float lep_system_pt_;
@@ -131,8 +132,9 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "extraParticle", edm::InputTag("leptons")))),
     wCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
-        "wCands", edm::InputTag("zCands")))),
-    zCandsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("zCands"))),
+        "wCands", edm::InputTag("wTemp")))),
+    zCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
+        "zCands", edm::InputTag("zTemp")))),
     genEventInfoToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
     lheSource_(cfg.getUntrackedParameter<std::string>("lheSource", "")),
     metSource_(cfg.getUntrackedParameter<std::string>("metSource", ""))
@@ -163,9 +165,13 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     std::string lepsName = cfg.getUntrackedParameter<std::string>("lepsName", "l");
     particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_, true);
 
-    unsigned int nKeepZs  = cfg.getUntrackedParameter<unsigned int>("nKeepZs", 0);
-    std::string ZsName = cfg.getUntrackedParameter<std::string>("ZsName", "Z");
-    particleEntries_["Zs"] = new ZCandidateEntry(ZsName, nKeepZs);
+    nKeepZs_  = cfg.getUntrackedParameter<unsigned int>("nKeepZs", 0);
+    if (nKeepZs_ > 0) {
+        std::string ZsName = cfg.getUntrackedParameter<std::string>("ZsName", "Z");
+        particleEntries_["Zs"] = new ZCandidateEntry(ZsName, nKeepZs_);
+    }
+    else
+        nZsCut_ = 0;
     
     nKeepExtra_ = cfg.getUntrackedParameter<unsigned int>("nKeepExtra", 0);
     if (nKeepExtra_ > 0) {
@@ -298,8 +304,11 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         }
     }
     edm::Handle<reco::CandidateCollection> zCands;
-    event.getByToken(zCandsToken_, zCands);
-    particleEntries_["Zs"]->setCollection(*zCands);
+    if (nKeepZs_ > 0) { 
+        std::cout << "Well that's odd";
+        event.getByToken(zCandsToken_, zCands);
+        particleEntries_["Zs"]->setCollection(*zCands);
+    }
     
     if (genLeptons->size() < nKeepLeps_) {
         std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
@@ -307,7 +316,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     }
     //if (wCands->size() != 1)
     //   return; 
-    if (zCands->size() < nZsCut_) {
+    if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
         std::cout << "Failed Z cut" << std::endl;
         return;
     }
