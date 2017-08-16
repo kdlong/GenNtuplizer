@@ -305,19 +305,15 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     }
     edm::Handle<reco::CandidateCollection> zCands;
     if (nKeepZs_ > 0) { 
-        std::cout << "Well that's odd";
         event.getByToken(zCandsToken_, zCands);
         particleEntries_["Zs"]->setCollection(*zCands);
     }
     
     if (genLeptons->size() < nKeepLeps_) {
-        std::cout << "Failed to find " << nKeepLeps_ << " leptons" << std::endl;
         return;    
     }
-    //if (wCands->size() != 1)
-    //   return; 
+
     if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
-        std::cout << "Failed Z cut" << std::endl;
         return;
     }
     setWeightInfo(event);
