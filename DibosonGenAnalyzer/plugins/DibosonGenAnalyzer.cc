@@ -268,7 +268,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
             trueMt_ = mt(lepton_system, extraParticle->front().p4());
         }
         else
-            std::cout << "WARNING: Requested " << nKeepExtra_ << "extra particles "
+            std::cout << "WARNING: Requested " << nKeepExtra_ << " extra particles "
                       << "but 0 were found" << std::endl;
     }
    
