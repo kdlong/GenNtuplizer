@@ -166,6 +166,7 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_, true);
 
     nKeepZs_  = cfg.getUntrackedParameter<unsigned int>("nKeepZs", 0);
+    std::cout << "nKeepZs " << nKeepZs_;
     if (nKeepZs_ > 0) {
         std::string ZsName = cfg.getUntrackedParameter<std::string>("ZsName", "Z");
         particleEntries_["Zs"] = new ZCandidateEntry(ZsName, nKeepZs_);
@@ -303,6 +304,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
             }
         }
     }
+
     edm::Handle<reco::CandidateCollection> zCands;
     if (nKeepZs_ > 0) { 
         event.getByToken(zCandsToken_, zCands);
@@ -310,14 +312,17 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     }
     
     if (genLeptons->size() < nKeepLeps_) {
+        std::cout << "Failed to find " << nKeepLeps_ << " leptons!" << std::endl;
         return;    
     }
 
     if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
+        std::cout << "Failed to find " << nZsCut_ << "Z candidates!" << std::endl;
         return;
     }
     setWeightInfo(event);
     fillNtuple();
+    return;
     eventid_ = event.id().event();
     
     nPass_++;
@@ -387,8 +392,9 @@ DibosonGenAnalyzer::fillNtuple() {
             static_cast<WCandidateEntry*>(
                 particleEntry.second)->fillNtupleInfo();;
         }
-        else
+        else {
             particleEntry.second->fillNtupleInfo();
+        }
     }
     ntuple_->Fill();
 }

@@ -7,6 +7,15 @@ process.load("PhysicsTools.HepMCCandAlgos.genParticles_cfi")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
+#if options.useRivetParticles:
+if True:
+    process.load("GeneratorInterface.RivetInterface.mergedGenParticles_cfi")
+    process.load("GeneratorInterface.RivetInterface.genParticles2HepMC_cff")
+    process.load("GeneratorInterface.RivetInterface.rivetAnalyzer_cfi") 
+    process.genParticles2HepMC.genParticles = cms.InputTag("mergedGenParticles")
+    process.rivetAnalyzer.HepMCCollection = cms.InputTag("genParticles2HepMC:unsmeared")
+
+
 process.load("GenNtuplizer.DibosonGenAnalyzer.genZCands_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genJets_cff")
 process.load("GenNtuplizer.DibosonGenAnalyzer.genNeutrinos_cff")

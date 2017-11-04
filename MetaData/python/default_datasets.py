@@ -437,11 +437,48 @@ sample_info = {
         "isMiniAOD" : 1
     },
     'WLLJJ_EWK-MGLO_allScales': {
-        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_EWK_ScaleMaxPtJ_PDFandScaleVar-v1/RunIISummer15wmLHEGS/170905_144011/0000/SMP-RunIISummer15wmLHEGS-00044_1.root,
-            /store/user/kelong/WLLJJ_WToLNu_EWK_ScaleMaxPtJ_PDFandScaleVar-v1/RunIISummer15wmLHEGS/170905_144011/0000/SMP-RunIISummer15wmLHEGS-00044_10.root""",
+        "inputFiles" : """/store/user/kelong/WLLJJ_WToLNu_EWK_ScaleMaxPtJ_PDFandScaleVar-v2/RunIISummer15wmLHEGS/170905_214449/0000/SMP-RunIISummer15wmLHEGS-00044_1.root,
+            /store/user/kelong/WLLJJ_WToLNu_EWK_ScaleMaxPtJ_PDFandScaleVar-v2/RunIISummer15wmLHEGS/170905_214449/0000/SMP-RunIISummer15wmLHEGS-00044_10.root,
+            /store/user/kelong/WLLJJ_WToLNu_EWK_ScaleMaxPtJ_PDFandScaleVar-v2/RunIISummer15wmLHEGS/170905_214449/0000/SMP-RunIISummer15wmLHEGS-00044_100.root""",
         "crossSection" : 0.001058,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Off_Ntuple.root",
-        "isMiniAOD" : 0
+        "isMiniAOD" : 0,
+    },
+    'WLLJJ_EWK-MGLO_FixedScaleMZ': {
+        "inputFiles" : """
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_10.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_101.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_102.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_103.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_104.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_105.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_106.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_107.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_108.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_109.root,
+        /store/user/kelong/WZJJ_WZTo3LNu_EWK_FixedScaleMZ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171103_101409/0000/SMP-RunIISummer15wmLHEGS-00044_11.root
+        """,
+        "crossSection" : 0.007200135,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Off_ScaleMaxPtJ_Ntuple.root",
+        "isMiniAOD" : 0,
+    },
+    'WLLJJ_EWK-MGLO_ScalePtJ': {
+        "inputFiles" : """
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_1.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_103.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_104.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_105.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_106.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_109.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_11.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_110.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_111.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_112.root,
+/store/user/kelong/WZJJ_WZTo3LNu_EWK_ScalePtJ_13TeV-madgraph-pythia8/RunIISummer15wmLHEGS/171102_114755/0000/SMP-RunIISummer15wmLHEGS-00044_113.root
+        """,
+        "crossSection" : .007051,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WLLJJ_EWK-MGLO_Off_ScaleMaxPtJ_Ntuple.root",
+        "isMiniAOD" : 0,
     },
     'WLLJJ_EWK-MGLO_noBs': {
         "inputFiles" : """file:/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root,
