@@ -59,7 +59,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
     private:
         edm::EDGetTokenT<reco::CandidateCollection> genLeptonsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> genJetsToken_;
-        edm::EDGetTokenT<reco::CandidateCollection> extraParticleToken_;
+        edm::EDGetTokenT<reco::GenParticleCollection> extraParticleToken_;
         edm::EDGetTokenT<reco::CandidateCollection> wCandsToken_;
         edm::EDGetTokenT<reco::CandidateCollection> zCandsToken_;
         edm::EDGetTokenT<GenEventInfoProduct> genEventInfoToken_;
@@ -129,7 +129,7 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
 DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     genLeptonsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("leptons"))),
     genJetsToken_(consumes<reco::CandidateCollection>(cfg.getParameter<edm::InputTag>("jets"))),
-    extraParticleToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
+    extraParticleToken_(consumes<reco::GenParticleCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "extraParticle", edm::InputTag("leptons")))),
     wCandsToken_(consumes<reco::CandidateCollection>(cfg.getUntrackedParameter<edm::InputTag>(
         "wCands", edm::InputTag("wTemp")))),
@@ -261,12 +261,13 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     
     reco::Candidate::LorentzVector final_state = lepton_system;
     if (nKeepExtra_ > 0) { 
-        edm::Handle<reco::CandidateCollection> extraParticle;
+        edm::Handle<reco::GenParticleCollection> extraParticle;
         event.getByToken(extraParticleToken_, extraParticle);
-        particleEntries_["extra"]->setCollection(*extraParticle);
+        //particleEntries_["extra"]->setCollection(*extraParticle);
         if (extraParticle->size() != 0 ) {
             final_state += extraParticle->front().p4();
             trueMt_ = mt(lepton_system, extraParticle->front().p4());
+            std::cout << "MT IS" << trueMt_ << std::endl;
         }
         else
             std::cout << "WARNING: Requested " << nKeepExtra_ << " extra particles "
