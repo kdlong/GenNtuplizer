@@ -263,7 +263,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     if (nKeepExtra_ > 0) { 
         edm::Handle<reco::GenParticleCollection> extraParticle;
         event.getByToken(extraParticleToken_, extraParticle);
-        //particleEntries_["extra"]->setCollection(*extraParticle);
+        particleEntries_["extra"]->setCollection(*extraParticle);
         if (extraParticle->size() != 0 ) {
             final_state += extraParticle->front().p4();
             trueMt_ = mt(lepton_system, extraParticle->front().p4());

@@ -4,6 +4,7 @@
 // system include files
 #include <memory>
 #include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 // user include files
 #include "TTree.h"
 #include <vector>
@@ -19,6 +20,7 @@ class BasicParticleEntry {
         bool isHardProcess(const reco::Candidate& cand);
         bool fromHardProcessFinalState(const reco::Candidate& cand);
         void setCollection(reco::CandidateCollection);
+        void setCollection(const std::vector<reco::GenParticle> cands);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
         const reco::Candidate& getFirstDistinctMother(const reco::Candidate& cand);

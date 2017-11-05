@@ -82,9 +82,16 @@ BasicParticleEntry::fillNtupleInfo() {
         }
     }
 } 
+
 void
 BasicParticleEntry::setCollection(reco::CandidateCollection particles) {
     particles_ = particles;
+}
+
+void
+BasicParticleEntry::setCollection(const std::vector<reco::GenParticle> particles) {
+    for (const auto& particle : particles)
+    particles_.push_back(particle);
 }
 
 const reco::Candidate& 
