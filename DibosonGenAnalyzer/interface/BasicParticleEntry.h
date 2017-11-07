@@ -17,8 +17,8 @@ class BasicParticleEntry {
         ~BasicParticleEntry();
         bool sameKinematics(const reco::Candidate& cand1, 
                             const reco::Candidate& cand2);
-        bool isHardProcess(const reco::Candidate& cand);
-        bool fromHardProcessFinalState(const reco::Candidate& cand);
+        bool isHardProcess(const reco::Candidate* cand);
+        bool fromHardProcessFinalState(const reco::Candidate* cand);
         void setCollection(reco::CandidateCollection);
         void setCollection(const std::vector<reco::GenParticle> cands);
         void createNtupleEntry(TTree* ntuple);

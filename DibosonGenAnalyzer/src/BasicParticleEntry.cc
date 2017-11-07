@@ -43,14 +43,16 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
     ntuple->Branch((std::string("n") + name_).c_str(), &num_);
 }
 bool
-BasicParticleEntry::isHardProcess(const reco::Candidate& particle) {
-    const reco::GenParticle& part = dynamic_cast<const reco::GenParticle&>(particle);
-    return part.isHardProcess();
+BasicParticleEntry::isHardProcess(const reco::Candidate* particle) {
+    if (const reco::GenParticle* part = dynamic_cast<const reco::GenParticle*>(particle))
+        return part->isHardProcess();
+    return -1;
 }
 bool
-BasicParticleEntry::fromHardProcessFinalState(const reco::Candidate& particle) {
-    const reco::GenParticle& part = dynamic_cast<const reco::GenParticle&>(particle);
-    return part.fromHardProcessFinalState();
+BasicParticleEntry::fromHardProcessFinalState(const reco::Candidate* particle) {
+    if (const reco::GenParticle* part = dynamic_cast<const reco::GenParticle*>(particle))
+        return part->fromHardProcessFinalState();
+    return -1;
 }
 
 void
@@ -75,8 +77,8 @@ BasicParticleEntry::fillNtupleInfo() {
         phis_[i] = particle.phi();
         if (storeGenInfo_) {
             statuses_[i] = particle.status();
-            isHPvals_[i] = isHardProcess(particle);
-            fromHPFSvals_[i] = fromHardProcessFinalState(particle);
+            isHPvals_[i] = isHardProcess(&particle);
+            fromHPFSvals_[i] = fromHardProcessFinalState(&particle);
             pdgids_[i] = particle.pdgId();
             motherIds_[i] = getFirstDistinctMother(particle).pdgId();
         }

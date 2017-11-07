@@ -23,7 +23,6 @@ ZCandidateEntry::isTrueDecay(const reco::Candidate& zCand) {
                 && (dau1mother.pdgId() == dau2mother.pdgId())
                 && sameKinematics(dau1mother, dau2mother));
     }
-    std::cout << "Why don't the leptons have mothers?" << std::endl;
     return false;    
 }
 

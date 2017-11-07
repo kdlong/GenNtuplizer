@@ -24,6 +24,12 @@ options.register('lheSource',
     options.varType.string,
     "Use 'source' as LHE product name"
 )
+options.register('channel',
+    "WZ", # Default value
+    options.multiplicity.singleton,
+    options.varType.string,
+    "channel considered (WZ/ZZ/W/Z)"
+)
 options.register('includeTaus',
     0, # Default value
     options.multiplicity.singleton,
@@ -47,6 +53,7 @@ options.register('leptonType',
     "\n    pythia6HardProcess --> status = 3"
     "\n    finalstate --> status = 1"
     "\n    herwig --> status = 11"
+    "\n    rivet --> use Rivet objects"
 )
 options.register('includeRadiated',
     0, # Default value
@@ -87,6 +94,8 @@ options.outputFile = "test.root"
 options.maxEvents = -1
 options.parseArguments() 
 
+def setChannel(channel):
+    options.channel = channel
 
 def getArgs():
     if options.inputFiles == "" and options.useDefaultDataset == "":
@@ -102,8 +111,9 @@ def getArgs():
                     options.outputFile = sample_info["outputFile"]    
                 else:
                     exit(0)
-        if not options.submit:
+        if not options.submit and not options.inputFiles:
             options.inputFiles = sample_info["inputFiles"]
+
         for key, value in sample_info.iteritems():
             if key in ["inputFiles", "outputFile"]:
                 continue

@@ -9,6 +9,7 @@ neuOpts = {"hardProcess" : "isHardProcess()",
         "dressed" : "statusFlags().fromHardProcess() && status() == 1",
         "finalstate" : "status() == 1",
         "herwig" : "status() == 11",
+        "rivet" : "",
 }
 try:
     neutrinoFlag = neuOpts[options.leptonType]
@@ -17,10 +18,11 @@ except:
     print neuOpts.keys()
     exit(0)
 
+neutrino_cut = "" if options.leptonType == "rivet" else \
+        "(abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16) && %s" % neutrinoFlag
 neutrinos = cms.EDFilter("CandViewSelector",
-    src = cms.InputTag(genParticlesLabel),
-    cut = cms.string("(abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16)"
-                     " && %s" % neutrinoFlag)
+    src = cms.InputTag(genParticlesLabel if options.leptonType != "rivet" else "particleLevel:neutrinos"),
+    cut = cms.string(neutrino_cut)
 )
 
 sortedNeutrinos = cms.EDFilter("LargestPtCandSelector",
