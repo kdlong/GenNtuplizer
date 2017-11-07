@@ -1,4 +1,5 @@
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/WCandidateEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/helpers.h"
 
 WCandidateEntry::WCandidateEntry(std::string name, unsigned int nKeep) :
     BasicParticleEntry(name, nKeep, false) {}
@@ -14,11 +15,11 @@ WCandidateEntry::isTrueW(const reco::Candidate& wCand) {
     const reco::Candidate& daughter1 = *wCand.daughter(0);
     const reco::Candidate& daughter2 = *wCand.daughter(1);
     if (daughter1.numberOfMothers() > 0 && daughter2.numberOfMothers() > 0) {
-        const reco::Candidate& dau1mother = getFirstDistinctMother(daughter1);
-        const reco::Candidate& dau2mother = getFirstDistinctMother(daughter2);
+        const reco::Candidate& dau1mother = helpers::getFirstDistinctMother(daughter1);
+        const reco::Candidate& dau2mother = helpers::getFirstDistinctMother(daughter2);
         return ((abs(daughter1.pdgId() + daughter2.pdgId()) == 1) 
                 && (dau1mother.pdgId() == dau2mother.pdgId())
-                && sameKinematics(dau1mother, dau2mother));
+                && helpers::sameKinematics(dau1mother, dau2mother));
     }
     return false;    
 }
@@ -34,7 +35,7 @@ WCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
             for(size_t k = 0; k < cand.numberOfDaughters(); k++) {
                 const reco::Candidate& candDaughter = *cand.daughter(k);
                 if ((compCandDaughter.pdgId() == candDaughter.pdgId())
-                        && sameKinematics(compCandDaughter, candDaughter))
+                        && helpers::sameKinematics(compCandDaughter, candDaughter))
                     return false;    
             }
         }

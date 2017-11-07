@@ -5,7 +5,8 @@ options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
 decay_string = "{type}{part}@- {type}{part}@+"
 #decay_string = "{type}{part} {type}{part}"
-lep_type = "dressed" if options.leptonType in ["dressed", "rivet"] else "selected"
+lep_type = "sortedDressed" if options.leptonType == "dressed" else "selected"
+
 zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string(decay_string.format(type=lep_type, part="Muons")),
     cut = cms.string('charge=0'),

@@ -7,7 +7,7 @@ options = ComLineArgs.getArgs()
 
 process.options = cms.untracked.PSet(
     allowUnscheduled = cms.untracked.bool(True),
-    wantSummary      = cms.untracked.bool(True)
+    #wantSummary      = cms.untracked.bool(True)
 )
 
 process.load("PhysicsTools.HepMCCandAlgos.genParticles_cfi")

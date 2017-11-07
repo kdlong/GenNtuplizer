@@ -43,6 +43,7 @@
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/ZCandidateEntry.h"
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/WCandidateEntry.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/helpers.h"
 #include "TTree.h"
 #include <vector>
 //
@@ -239,25 +240,73 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
             i++;
         }
     }
-    edm::Handle<reco::CandidateCollection> genLeptons;
-    event.getByToken(genLeptonsToken_, genLeptons);
-    particleEntries_["leps"]->setCollection(*genLeptons);
-    reco::Candidate::LorentzVector lepton_system = reco::Candidate::LorentzVector();
-    for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons->size()); i++)
-        lepton_system += (*genLeptons)[i].p4();
-    lep_system_mass_ = lepton_system.mass();
-    lep_system_pt_ = lepton_system.pt();
-    edm::Handle<reco::CandidateCollection> genJets;
-    event.getByToken(genJetsToken_, genJets);
 
-    reco::CandidateCollection cleanedJets = cleanJets(*genJets, *genLeptons);
-    particleEntries_["jets"]->setCollection(cleanedJets);
+    edm::Handle<reco::CandidateCollection> zCands;
+    if (nKeepZs_ > 0) { 
+        event.getByToken(zCandsToken_, zCands);
+        particleEntries_["Zs"]->setCollection(*zCands);
+    }
     
     edm::Handle<reco::CandidateCollection> wCands;
     if (nKeepWs_ > 0) { 
         event.getByToken(wCandsToken_, wCands);
         particleEntries_["Ws"]->setCollection(*wCands);
     }
+
+    reco::CandidateCollection genLeptons;
+    reco::CandidateCollection sortedWCands;
+    for (const auto& part : *wCands) {
+        sortedWCands.push_back(part.clone());
+    }
+    if (false) {
+        edm::Handle<reco::CandidateCollection> genLeptonsHandle;
+        genLeptons = *genLeptonsHandle;
+        event.getByToken(genLeptonsToken_, genLeptonsHandle);
+        particleEntries_["leps"]->setCollection(genLeptons);
+    }
+    else {
+        particleEntries_["Ws"]->setCollection(sortedWCands);
+        const reco::Candidate* zlep1 = zCands->front().daughter(0);
+        const reco::Candidate* zlep2 = zCands->front().daughter(1);
+        const reco::Candidate* wlep; 
+        if (zlep1.pt() < zlep2.pt()) {
+            auto temp = zlep1;
+            zlep1 = zlep2;
+            zlep2 = temp;
+        }
+        
+        // Make sure first W candidate doesn't share a lepton with first
+        // Z candidate
+        bool needsSwitch = true;
+        while (needsSwitch) {
+            auto& part = sortedWCands.front();
+            wlep = part.daughter(0);
+            if (wlep->pdgId() != 11 && wlep->pdgId() != 13 && wlep->pdgId() != 15 )
+                wlep = part.daughter(1);
+            if (helpers::sameGenParticle(*wlep, *zlep1) || helpers::sameGenParticle(*wlep, *zlep2)) {
+                sortedWCands.push_back(wlep->clone());
+                sortedWCands.erase(sortedWCands.begin());
+            }
+            else
+                needsSwitch = false;
+        }
+
+        genLeptons.push_back(zlep1->clone());
+        genLeptons.push_back(zlep2->clone());
+        genLeptons.push_back(wlep->clone());
+        particleEntries_["leps"]->setCollection(genLeptons);
+    }
+
+    reco::Candidate::LorentzVector lepton_system = reco::Candidate::LorentzVector();
+    for (size_t i = 0; i < std::min(nKeepLeps_, genLeptons.size()); i++)
+        lepton_system += (genLeptons)[i].p4();
+    lep_system_mass_ = lepton_system.mass();
+    lep_system_pt_ = lepton_system.pt();
+
+    edm::Handle<reco::CandidateCollection> genJets;
+    event.getByToken(genJetsToken_, genJets);
+    reco::CandidateCollection cleanedJets = cleanJets(*genJets, genLeptons);
+    particleEntries_["jets"]->setCollection(cleanedJets);
     
     reco::Candidate::LorentzVector final_state = lepton_system;
     if (nKeepExtra_ > 0) { 
@@ -305,13 +354,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         }
     }
 
-    edm::Handle<reco::CandidateCollection> zCands;
-    if (nKeepZs_ > 0) { 
-        event.getByToken(zCandsToken_, zCands);
-        particleEntries_["Zs"]->setCollection(*zCands);
-    }
-    
-    if (genLeptons->size() < nKeepLeps_) {
+    if (genLeptons.size() < nKeepLeps_) {
         std::cout << "Failed to find " << nKeepLeps_ << " leptons!" << std::endl;
         return;    
     }
@@ -322,7 +365,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     }
     setWeightInfo(event);
     fillNtuple();
-    return;
     eventid_ = event.id().event();
     
     nPass_++;

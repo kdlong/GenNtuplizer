@@ -30,16 +30,17 @@ selectedLeptons = cms.EDFilter("CandViewSelector",
 sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("selectedLeptons"),
     # This needs to be set specifically for ZZ and WZ
-    maxNumber = cms.uint32(3 if options.channel == 'WZ' else 4),
+    #maxNumber = cms.uint32(3 if options.channel == 'WZ' else 4),
+    maxNumber = cms.uint32(10),
 )
 
 selectedElectrons = cms.EDFilter("CandViewSelector",
-    src = cms.InputTag("selectedLeptons"),
+    src = cms.InputTag("sortedLeptons"),
     cut = cms.string("abs(pdgId) = 11")
 )
 
 selectedMuons = cms.EDFilter("CandViewSelector",
-    src = cms.InputTag("selectedLeptons"),
+    src = cms.InputTag("sortedLeptons"),
     cut = cms.string("abs(pdgId) = 13")
 )
 

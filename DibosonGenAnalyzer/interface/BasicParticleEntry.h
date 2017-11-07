@@ -15,15 +15,10 @@ class BasicParticleEntry {
         BasicParticleEntry();
         BasicParticleEntry(std::string name, unsigned int nKeep, bool);
         ~BasicParticleEntry();
-        bool sameKinematics(const reco::Candidate& cand1, 
-                            const reco::Candidate& cand2);
-        bool isHardProcess(const reco::Candidate* cand);
-        bool fromHardProcessFinalState(const reco::Candidate* cand);
         void setCollection(reco::CandidateCollection);
         void setCollection(const std::vector<reco::GenParticle> cands);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
-        const reco::Candidate& getFirstDistinctMother(const reco::Candidate& cand);
     protected:
         reco::CandidateCollection particles_;
         std::string name_;

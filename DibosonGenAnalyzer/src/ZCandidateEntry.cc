@@ -1,5 +1,6 @@
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/ZCandidateEntry.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/helpers.h"
 
 ZCandidateEntry::ZCandidateEntry(std::string name, unsigned int nKeep) :
     BasicParticleEntry(name, nKeep, false) {}
@@ -15,13 +16,13 @@ ZCandidateEntry::isTrueDecay(const reco::Candidate& zCand) {
     const reco::Candidate& daughter1 = *zCand.daughter(0);
     const reco::Candidate& daughter2 = *zCand.daughter(1);
     if (daughter1.numberOfMothers() > 0 && daughter2.numberOfMothers() > 0) {
-        const reco::Candidate& dau1mother = getFirstDistinctMother(daughter1);
-        const reco::Candidate& dau2mother = getFirstDistinctMother(daughter2);
+        const reco::Candidate& dau1mother = helpers::getFirstDistinctMother(daughter1);
+        const reco::Candidate& dau2mother = helpers::getFirstDistinctMother(daughter2);
         return ((daughter1.pdgId() + daughter2.pdgId() == 0) 
 //                && daughter1.fromHardProcessFinalState()
 //                && daughter2.fromHardProcessFinalState()
                 && (dau1mother.pdgId() == dau2mother.pdgId())
-                && sameKinematics(dau1mother, dau2mother));
+                && helpers::sameKinematics(dau1mother, dau2mother));
     }
     return false;    
 }
@@ -44,7 +45,7 @@ ZCandidateEntry::hasUniqueDaughters(const reco::Candidate& cand,
             for(size_t k = 0; k < cand.numberOfDaughters(); k++) {
                 const reco::Candidate& candDaughter = *cand.daughter(k);
                 if ((compCandDaughter.pdgId() == candDaughter.pdgId())
-                        && sameKinematics(compCandDaughter, candDaughter))
+                        && helpers::sameKinematics(compCandDaughter, candDaughter))
                     return false;    
             }
         }
@@ -84,4 +85,3 @@ ZCandidateEntry::fillNtupleInfo() {
         masses_[i] = particle.mass();
     }
 }
-

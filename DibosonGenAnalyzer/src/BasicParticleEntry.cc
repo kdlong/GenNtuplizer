@@ -1,5 +1,6 @@
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "GenNtuplizer/DibosonGenAnalyzer/interface/helpers.h"
 
 BasicParticleEntry::BasicParticleEntry(std::string name, 
         unsigned int nKeep, 
@@ -42,18 +43,6 @@ BasicParticleEntry::createNtupleEntry(TTree* ntuple) {
     }
     ntuple->Branch((std::string("n") + name_).c_str(), &num_);
 }
-bool
-BasicParticleEntry::isHardProcess(const reco::Candidate* particle) {
-    if (const reco::GenParticle* part = dynamic_cast<const reco::GenParticle*>(particle))
-        return part->isHardProcess();
-    return -1;
-}
-bool
-BasicParticleEntry::fromHardProcessFinalState(const reco::Candidate* particle) {
-    if (const reco::GenParticle* part = dynamic_cast<const reco::GenParticle*>(particle))
-        return part->fromHardProcessFinalState();
-    return -1;
-}
 
 void
 BasicParticleEntry::fillNtupleInfo() {
@@ -77,10 +66,10 @@ BasicParticleEntry::fillNtupleInfo() {
         phis_[i] = particle.phi();
         if (storeGenInfo_) {
             statuses_[i] = particle.status();
-            isHPvals_[i] = isHardProcess(&particle);
-            fromHPFSvals_[i] = fromHardProcessFinalState(&particle);
+            isHPvals_[i] = helpers::isHardProcess(&particle);
+            fromHPFSvals_[i] = helpers::fromHardProcessFinalState(&particle);
             pdgids_[i] = particle.pdgId();
-            motherIds_[i] = getFirstDistinctMother(particle).pdgId();
+            motherIds_[i] = helpers::getFirstDistinctMother(particle).pdgId();
         }
     }
 } 
@@ -96,19 +85,3 @@ BasicParticleEntry::setCollection(const std::vector<reco::GenParticle> particles
     particles_.push_back(particle);
 }
 
-const reco::Candidate& 
-BasicParticleEntry::getFirstDistinctMother(const reco::Candidate& cand) {
-    reco::Candidate* mother = const_cast<reco::Candidate*>(&cand);
-    while (mother->numberOfMothers() > 0 
-            && mother->pdgId() == cand.pdgId())
-        mother = const_cast<reco::Candidate*>(mother->mother(0));
-    return *mother;
-}
-
-bool 
-BasicParticleEntry::sameKinematics(const reco::Candidate& cand1, 
-                          const reco::Candidate& cand2) {
-    return ((std::abs(cand1.pt() - cand2.pt()) < 0.001)
-            && (std::abs(cand1.eta() - cand2.eta()) < 0.001)
-            && (std::abs(cand1.phi() - cand2.phi()) < 0.001));
-}
