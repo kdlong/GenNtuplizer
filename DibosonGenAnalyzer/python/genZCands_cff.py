@@ -17,7 +17,10 @@ zeeCands = cms.EDProducer("CandViewShallowCloneCombiner",
     cut = cms.string("charge=0"),
     minNumber = cms.uint32(2)
 )
-if options.includeTaus:
+
+includeTaus = options.leptonType not in ["rivet", "finalstate"] and options.includeTaus
+
+if includeTaus:
     zttCands = cms.EDProducer("CandViewShallowCloneCombiner",
         decay = cms.string(decay_string.format(type="selected", part="Taus")),
         cut = cms.string('charge=0'),
@@ -26,7 +29,7 @@ if options.includeTaus:
 
 combinedHPCands = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", "zeeCands")
-) if not options.includeTaus else cms.EDProducer("CandViewMerger",
+) if not includeTaus else cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zMuMuCands", 
         "zeeCands",
         "zttCands"
@@ -38,7 +41,7 @@ trueZs = cms.EDFilter("CandViewSelector",
     cut = cms.string("pdgId == 23 && isHardProcess")  
 )
 
-selectZCands = cms.Sequence(((zMuMuCands + zeeCands) if not options.includeTaus else
+selectZCands = cms.Sequence(((zMuMuCands + zeeCands) if not includeTaus else
     (zMuMuCands + zeeCands + zttCands))*trueZs)
 
 

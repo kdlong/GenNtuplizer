@@ -19,18 +19,18 @@ except:
 leptonsSource = "genParticles"
 if options.leptonType == "rivet":
     leptonsSource = "particleLevel:leptons"
-    rivetSequence = cms.Sequence()
+    from GeneratorInterface.RivetInterface.particleLevel_cfi import particleLevel
+
     if options.isMiniAOD:
         from GeneratorInterface.RivetInterface.mergedGenParticles_cfi import mergedGenParticles
-        from GeneratorInterface.RivetInterface.genParticles2HepMC_cff import genParticles2HepMC
+        from GeneratorInterface.RivetInterface.genParticles2HepMC_cff import *
         genParticles2HepMC.genParticles = cms.InputTag("mergedGenParticles")
         rivetSequence = cms.Sequence(mergedGenParticles * genParticles2HepMC)
-
-    from GeneratorInterface.RivetInterface.particleLevel_cfi import particleLevel
-    if not options.isMiniAOD:
-        #particleLevel.src = cms.InputTag("generatorUnsmeared")
+    else:
+        from SimGeneral.HepPDTESSource.pythiapdt_cfi import *
         particleLevel.src = cms.InputTag("generator")
-    rivetSequence += particleLevel
+        rivetSequence = cms.Sequence(particleLevel)
+
     particleLevel.particleMinPt  = cms.double(0.)
     particleLevel.particleMaxEta = cms.double(999.) # HF range. Maximum 6.0 on MiniAOD
     particleLevel.lepMinPt = cms.double(0.)
@@ -49,17 +49,19 @@ sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("selectedLeptons"),
     # This needs to be set specifically for ZZ and WZ
     #maxNumber = cms.uint32(3 if options.channel == 'WZ' else 4),
-    maxNumber = cms.uint32(10),
+    maxNumber = cms.uint32(5),
 )
 
 selectedElectrons = cms.EDFilter("CandViewSelector",
     src = cms.InputTag("sortedLeptons"),
     cut = cms.string("abs(pdgId) = 11")
+    maxNumber = cms.uint32(5),
 )
 
 selectedMuons = cms.EDFilter("CandViewSelector",
     src = cms.InputTag("sortedLeptons"),
     cut = cms.string("abs(pdgId) = 13")
+    maxNumber = cms.uint32(5),
 )
 
 if options.leptonType == "rivet":

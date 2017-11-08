@@ -7,6 +7,7 @@ options = ComLineArgs.getArgs()
 
 process.options = cms.untracked.PSet(
     #wantSummary      = cms.untracked.bool(True)
+    #allowUnscheduled  = cms.untracked.bool(True)
 )
 
 process.load("PhysicsTools.HepMCCandAlgos.genParticles_cfi")
@@ -15,7 +16,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
 process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(options.maxEvents))
-
 
 process.load("GenNtuplizer.DibosonGenAnalyzer.%sLeptons_cff" % 
         ("dressedGen" if options.leptonType == "dressed" else "gen"))
@@ -54,7 +54,7 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
 process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
         else process.selectLeptons)
 
-if options.leptonType in ["rivet", "finalstate"]:
+if options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
     process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
     process.p *= process.filterGenTaus
 

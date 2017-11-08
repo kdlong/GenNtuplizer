@@ -298,7 +298,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         while (needsSwitch) {
             auto& part = sortedWCands.front();
             wlep = part.daughter(0);
-            if ( nSwitch > maxSwitches) {
+            if ( nSwitch++ > maxSwitches) {
                 std::cerr << "ERROR: Reached max number of reorderings for W collection. " 
                           << "probably this means the W and Z have no unique combinations." 
                           << std::endl;
