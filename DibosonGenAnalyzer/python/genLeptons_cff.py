@@ -19,6 +19,24 @@ except:
 leptonsSource = "genParticles"
 if options.leptonType == "rivet":
     leptonsSource = "particleLevel:leptons"
+    rivetSequence = cms.Sequence()
+    if options.isMiniAOD:
+        from GeneratorInterface.RivetInterface.mergedGenParticles_cfi import mergedGenParticles
+        from GeneratorInterface.RivetInterface.genParticles2HepMC_cff import genParticles2HepMC
+        genParticles2HepMC.genParticles = cms.InputTag("mergedGenParticles")
+        rivetSequence = cms.Sequence(mergedGenParticles * genParticles2HepMC)
+
+    from GeneratorInterface.RivetInterface.particleLevel_cfi import particleLevel
+    if not options.isMiniAOD:
+        #particleLevel.src = cms.InputTag("generatorUnsmeared")
+        particleLevel.src = cms.InputTag("generator")
+    rivetSequence += particleLevel
+    particleLevel.particleMinPt  = cms.double(0.)
+    particleLevel.particleMaxEta = cms.double(999.) # HF range. Maximum 6.0 on MiniAOD
+    particleLevel.lepMinPt = cms.double(0.)
+    particleLevel.lepMaxEta = cms.double(999)
+    particleLevel.jetMaxEta = cms.double(4.7)
+
 elif options.isMiniAOD:
     leptonsSource = "prunedGenParticles"
 
@@ -44,4 +62,7 @@ selectedMuons = cms.EDFilter("CandViewSelector",
     cut = cms.string("abs(pdgId) = 13")
 )
 
-selectLeptons = cms.Sequence(selectedLeptons*sortedLeptons*(selectedElectrons + selectedMuons))
+if options.leptonType == "rivet":
+    selectLeptons = cms.Sequence(rivetSequence*selectedLeptons*sortedLeptons*(selectedElectrons + selectedMuons))
+else:
+    selectLeptons = cms.Sequence(selectedLeptons*sortedLeptons*(selectedElectrons + selectedMuons))

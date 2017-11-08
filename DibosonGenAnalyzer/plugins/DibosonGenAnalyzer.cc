@@ -167,7 +167,6 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     particleEntries_["leps"] = new BasicParticleEntry(lepsName, nKeepLeps_, true);
 
     nKeepZs_  = cfg.getUntrackedParameter<unsigned int>("nKeepZs", 0);
-    std::cout << "nKeepZs " << nKeepZs_;
     if (nKeepZs_ > 0) {
         std::string ZsName = cfg.getUntrackedParameter<std::string>("ZsName", "Z");
         particleEntries_["Zs"] = new ZCandidateEntry(ZsName, nKeepZs_);
@@ -250,46 +249,75 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
     edm::Handle<reco::CandidateCollection> wCands;
     if (nKeepWs_ > 0) { 
         event.getByToken(wCandsToken_, wCands);
-        particleEntries_["Ws"]->setCollection(*wCands);
     }
+
+    if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
+        std::cerr << "WARNING: Failed to find " << nZsCut_ << " Z candidates. " 
+                  << "Skipping event." << std::endl;
+        return;
+    }
+
+    edm::Handle<reco::CandidateCollection> genLeptonsHandle;
+    event.getByToken(genLeptonsToken_, genLeptonsHandle);
+    if (genLeptonsHandle->size() < nKeepLeps_) {
+        std::cerr << "WARNING: Failed to find " << nKeepLeps_ << " leptons. "
+                  << "Skipping event." << std::endl;
+        return;    
+    }
+
 
     reco::CandidateCollection genLeptons;
     reco::CandidateCollection sortedWCands;
+    
     for (const auto& part : *wCands) {
-        sortedWCands.push_back(part.clone());
+        sortedWCands.push_back(*part.clone());
     }
+
     if (false) {
-        edm::Handle<reco::CandidateCollection> genLeptonsHandle;
         genLeptons = *genLeptonsHandle;
-        event.getByToken(genLeptonsToken_, genLeptonsHandle);
         particleEntries_["leps"]->setCollection(genLeptons);
+        particleEntries_["Ws"]->setCollection(*wCands);
     }
     else {
-        particleEntries_["Ws"]->setCollection(sortedWCands);
         const reco::Candidate* zlep1 = zCands->front().daughter(0);
         const reco::Candidate* zlep2 = zCands->front().daughter(1);
         const reco::Candidate* wlep; 
-        if (zlep1.pt() < zlep2.pt()) {
+        if (zlep1->pt() < zlep2->pt()) {
             auto temp = zlep1;
             zlep1 = zlep2;
             zlep2 = temp;
         }
-        
+
         // Make sure first W candidate doesn't share a lepton with first
         // Z candidate
         bool needsSwitch = true;
+        // So we don't get stuck in a continuous loop if the W and Zs are completely
+        // overlapping
+        size_t maxSwitches = 5;
+        size_t nSwitch = 0;
         while (needsSwitch) {
             auto& part = sortedWCands.front();
             wlep = part.daughter(0);
+            if ( nSwitch > maxSwitches) {
+                std::cerr << "ERROR: Reached max number of reorderings for W collection. " 
+                          << "probably this means the W and Z have no unique combinations." 
+                          << std::endl;
+                return;
+            }
+            if( wlep == nullptr) {
+                std::cerr << "ERROR: Encountered W boson without child" << std::endl;
+                return;
+            }
             if (wlep->pdgId() != 11 && wlep->pdgId() != 13 && wlep->pdgId() != 15 )
                 wlep = part.daughter(1);
             if (helpers::sameGenParticle(*wlep, *zlep1) || helpers::sameGenParticle(*wlep, *zlep2)) {
-                sortedWCands.push_back(wlep->clone());
+                sortedWCands.push_back(part);
                 sortedWCands.erase(sortedWCands.begin());
             }
             else
                 needsSwitch = false;
         }
+        particleEntries_["Ws"]->setCollection(sortedWCands);
 
         genLeptons.push_back(zlep1->clone());
         genLeptons.push_back(zlep2->clone());
@@ -318,7 +346,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
             trueMt_ = mt(lepton_system, extraParticle->front().p4());
         }
         else
-            std::cout << "WARNING: Requested " << nKeepExtra_ << " extra particles "
+            std::cerr << "WARNING: Requested " << nKeepExtra_ << " extra particles "
                       << "but 0 were found" << std::endl;
     }
    
@@ -354,15 +382,6 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         }
     }
 
-    if (genLeptons.size() < nKeepLeps_) {
-        std::cout << "Failed to find " << nKeepLeps_ << " leptons!" << std::endl;
-        return;    
-    }
-
-    if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
-        std::cout << "Failed to find " << nZsCut_ << "Z candidates!" << std::endl;
-        return;
-    }
     setWeightInfo(event);
     fillNtuple();
     eventid_ = event.id().event();

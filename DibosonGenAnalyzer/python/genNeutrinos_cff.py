@@ -27,7 +27,7 @@ neutrinos = cms.EDFilter("CandViewSelector",
 
 sortedNeutrinos = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("neutrinos"),
-    maxNumber = cms.uint32(10)
+    maxNumber = cms.uint32(1)
 )
 
 selectNeutrinos = cms.Sequence(neutrinos*sortedNeutrinos)
