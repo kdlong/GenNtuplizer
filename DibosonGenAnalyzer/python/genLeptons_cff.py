@@ -42,7 +42,8 @@ elif options.isMiniAOD:
 
 selectedLeptons = cms.EDFilter("CandViewSelector",
     src = cms.InputTag(leptonsSource),
-    cut = cms.string("(abs(pdgId) = 11 || abs(pdgId) = 13) && %s" % leptonsFlag)
+    cut = cms.string(("(abs(pdgId) = 11 || abs(pdgId) = 13) && %s" % leptonsFlag)
+        if options.leptonType != "rivet" else "(abs(pdgId) = 11 || abs(pdgId) = 13)")
 )
 
 sortedLeptons = cms.EDFilter("LargestPtCandSelector",

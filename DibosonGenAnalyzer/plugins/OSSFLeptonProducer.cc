@@ -51,12 +51,6 @@ void OSSFLeptonCollectionProducer::produce(edm::Event& event, const edm::EventSe
                 tempCollection.push_back(&part);
             else {
                 for (auto tempPart : tempCollection) {
-                    if (tempPart == nullptr)
-                        std::cout << "Oui, c'est ca le problem";
-                    if (part.pdgId())
-                        std::cout << "no mais c'est ca le problem";
-                    if (&part == nullptr)
-                        std::cout << "mais d'ailleurs c'est ca";
                     if (tempPart->pdgId() + part.pdgId() == 0) {
                         //remove 2nd lepton and replace with OSSF pair
                         outputCollection->pop_back();
@@ -69,16 +63,6 @@ void OSSFLeptonCollectionProducer::produce(edm::Event& event, const edm::EventSe
                 }
             }
         }
-    }
-    if (outputCollection->size() != 3) {
-        std::cout << "-------------------------" << std::endl;
-        std::cout << "output collection" << std::endl;
-        std::cout << "sumPdgIds" << sumPdgIds << std::endl;
-        for (auto& part : *outputCollection) 
-            std::cout << "pdgId is " << part.pdgId() << "pt is " << part.pt() << std::endl;
-        std::cout << "input collection size" << srcCollection->size() << std::endl;
-        for (auto& part : *srcCollection) 
-            std::cout << "pdgId is " << part.pdgId() << "pt is " << part.pt() << std::endl;
     }
     
     event.put(std::move(outputCollection));

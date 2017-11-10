@@ -5,7 +5,7 @@ from genNeutrinos_cff import *
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
 decay_string = "sortedNeutrinos {type}Leptons@{sign}"
-lep_type = "sortedDressed" if options.leptonType == "dressed" else "selected"
+lep_type = "sortedDressed" if options.leptonType == "dressed" else "ossf"
 
 print decay_string.format(type=lep_type, sign="+")
 wpCands = cms.EDProducer("CandViewShallowCloneCombiner",

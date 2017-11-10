@@ -52,13 +52,14 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     xSec = cms.untracked.double(options.crossSection)
 )
 
-process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
-        else process.selectLeptons)
-
-if True or options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
+if options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
     process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
-    process.p *= process.filterGenTaus
-    print "TRIGGERING!"
+    process.p = cms.Path(process.filterGenTaus*
+                        (process.dressLeptons if options.leptonType == "dressed" \
+                        else process.selectLeptons))
+else:
+    process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
+        else process.selectLeptons)
 
 process.p *= (
     process.selectZCands * 
