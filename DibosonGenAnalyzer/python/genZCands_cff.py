@@ -4,7 +4,7 @@ import GenNtuplizer.DibosonGenAnalyzer.ComLineArgs as ComLineArgs
 options = ComLineArgs.getArgs()
 genParticlesLabel = "genParticles" if not options.isMiniAOD else "prunedGenParticles"
 decay_string = "{type}{part}@- {type}{part}@+"
-lep_type = "sortedDressed" if options.leptonType == "dressed" else "selected"
+lep_type = "dressed" if options.leptonType == "dressed" else "ossf"
 
 zMuMuCands = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string(decay_string.format(type=lep_type, part="Muons")),

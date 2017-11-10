@@ -80,7 +80,13 @@ BasicParticleEntry::setCollection(reco::CandidateCollection particles) {
 }
 
 void
-BasicParticleEntry::setCollection(const std::vector<reco::GenParticle> particles) {
+BasicParticleEntry::setCollection(const reco::GenParticleCollection& particles) {
+    for (const auto& particle : particles)
+    particles_.push_back(particle);
+}
+
+void
+BasicParticleEntry::setCollection(const reco::CompositeCandidateCollection& particles) {
     for (const auto& particle : particles)
     particles_.push_back(particle);
 }

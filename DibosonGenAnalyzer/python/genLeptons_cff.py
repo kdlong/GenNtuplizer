@@ -25,7 +25,7 @@ if options.leptonType == "rivet":
         from GeneratorInterface.RivetInterface.mergedGenParticles_cfi import mergedGenParticles
         from GeneratorInterface.RivetInterface.genParticles2HepMC_cff import *
         genParticles2HepMC.genParticles = cms.InputTag("mergedGenParticles")
-        rivetSequence = cms.Sequence(mergedGenParticles * genParticles2HepMC)
+        rivetSequence = cms.Sequence(mergedGenParticles*genParticles2HepMC*particleLevel)
     else:
         from SimGeneral.HepPDTESSource.pythiapdt_cfi import *
         particleLevel.src = cms.InputTag("generator")
@@ -42,29 +42,33 @@ elif options.isMiniAOD:
 
 selectedLeptons = cms.EDFilter("CandViewSelector",
     src = cms.InputTag(leptonsSource),
-    cut = cms.string("abs(pdgId) = 11 || abs(pdgId) = 13 && %s" % leptonsFlag)
+    cut = cms.string("(abs(pdgId) = 11 || abs(pdgId) = 13) && %s" % leptonsFlag)
 )
 
 sortedLeptons = cms.EDFilter("LargestPtCandSelector",
     src = cms.InputTag("selectedLeptons"),
     # This needs to be set specifically for ZZ and WZ
     #maxNumber = cms.uint32(3 if options.channel == 'WZ' else 4),
-    maxNumber = cms.uint32(5),
+    maxNumber = cms.uint32(10),
+)
+
+ossfLeptons = cms.EDProducer("OSSFLeptonCollectionProducer",
+    src = cms.InputTag("sortedLeptons"),
 )
 
 selectedElectrons = cms.EDFilter("CandViewSelector",
-    src = cms.InputTag("sortedLeptons"),
+    #src = cms.InputTag("sortedLeptons"),
+    src = cms.InputTag("ossfLeptons"),
     cut = cms.string("abs(pdgId) = 11")
-    maxNumber = cms.uint32(5),
 )
 
 selectedMuons = cms.EDFilter("CandViewSelector",
-    src = cms.InputTag("sortedLeptons"),
+    #src = cms.InputTag("sortedLeptons"),
+    src = cms.InputTag("ossfLeptons"),
     cut = cms.string("abs(pdgId) = 13")
-    maxNumber = cms.uint32(5),
 )
 
 if options.leptonType == "rivet":
-    selectLeptons = cms.Sequence(rivetSequence*selectedLeptons*sortedLeptons*(selectedElectrons + selectedMuons))
+    selectLeptons = cms.Sequence(rivetSequence*selectedLeptons*sortedLeptons*ossfLeptons*(selectedElectrons + selectedMuons))
 else:
-    selectLeptons = cms.Sequence(selectedLeptons*sortedLeptons*(selectedElectrons + selectedMuons))
+    selectLeptons = cms.Sequence(selectedLeptons*sortedLeptons*ossfLeptons*(selectedElectrons + selectedMuons))

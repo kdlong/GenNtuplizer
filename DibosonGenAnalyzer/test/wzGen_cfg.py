@@ -35,8 +35,9 @@ process.TFileService = cms.Service("TFileService",
 
 process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
-    leptons = cms.InputTag("sorted%sLeptons" % 
-        ("Dressed" if options.leptonType == "dressed" else "")),
+    leptons = cms.InputTag("sortedDressedLeptons" if \
+            options.leptonType == "dressed" else "ossfLeptons"),
+            #options.leptonType == "dressed" else "sortedLeptons"),
     extraParticle = cms.untracked.InputTag("sortedNeutrinos"),
     lheSource = cms.untracked.string(options.lheSource),
     zCands = cms.untracked.InputTag("sortedZCands"),
@@ -54,9 +55,10 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
 process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
         else process.selectLeptons)
 
-if options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
+if True or options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
     process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
     process.p *= process.filterGenTaus
+    print "TRIGGERING!"
 
 process.p *= (
     process.selectZCands * 

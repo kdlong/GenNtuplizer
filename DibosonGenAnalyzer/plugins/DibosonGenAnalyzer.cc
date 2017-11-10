@@ -38,6 +38,7 @@
 #include "DataFormats/METReco/interface/GenMET.h"
 #include "DataFormats/PatCandidates/interface/PATObject.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 
 #include "GenNtuplizer/DataFormats/interface/DressedGenParticle.h"
 #include "GenNtuplizer/DibosonGenAnalyzer/interface/BasicParticleEntry.h"
@@ -245,26 +246,32 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         event.getByToken(zCandsToken_, zCands);
         particleEntries_["Zs"]->setCollection(*zCands);
     }
-    
+
     edm::Handle<reco::CandidateCollection> wCands;
     if (nKeepWs_ > 0) { 
         event.getByToken(wCandsToken_, wCands);
-    }
-
-    if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
-        std::cerr << "WARNING: Failed to find " << nZsCut_ << " Z candidates. " 
-                  << "Skipping event." << std::endl;
-        return;
     }
 
     edm::Handle<reco::CandidateCollection> genLeptonsHandle;
     event.getByToken(genLeptonsToken_, genLeptonsHandle);
     if (genLeptonsHandle->size() < nKeepLeps_) {
         std::cerr << "WARNING: Failed to find " << nKeepLeps_ << " leptons. "
-                  << "Skipping event." << std::endl;
+                  << "Skipping event " << event.id().event() << std::endl;
         return;    
     }
 
+    if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
+        std::cerr << "WARNING: Failed to find " << nZsCut_ << " Z candidates. " 
+                  << "Skipping event " << event.id().event() << std::endl;
+        std::cout << "size of leptons " << genLeptonsHandle->size() << std::endl;
+        for (auto& part : *genLeptonsHandle) {
+            std::cout << "lep pdg id is " << part.pdgId() << std::endl;
+            std::cout << "lep pt is " << part.pt() << std::endl;
+            std::cout << "lep isHardProcess " << dynamic_cast<const reco::GenParticle&>(part).isHardProcess() << std::endl;
+        }
+        std::cout << "-------------------------------------" << std::endl;
+        return;
+    }
 
     reco::CandidateCollection genLeptons;
     reco::CandidateCollection sortedWCands;

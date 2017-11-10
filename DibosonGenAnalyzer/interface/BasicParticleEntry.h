@@ -5,6 +5,7 @@
 #include <memory>
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 // user include files
 #include "TTree.h"
 #include <vector>
@@ -16,7 +17,8 @@ class BasicParticleEntry {
         BasicParticleEntry(std::string name, unsigned int nKeep, bool);
         ~BasicParticleEntry();
         void setCollection(reco::CandidateCollection);
-        void setCollection(const std::vector<reco::GenParticle> cands);
+        void setCollection(const reco::GenParticleCollection& cands);
+        void setCollection(const reco::CompositeCandidateCollection& cands);
         void createNtupleEntry(TTree* ntuple);
         void fillNtupleInfo();
     protected:
