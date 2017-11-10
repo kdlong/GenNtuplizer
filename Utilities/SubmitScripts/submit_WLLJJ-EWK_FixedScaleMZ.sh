@@ -9,7 +9,7 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $2 \
-    WLLJJ_EWK-MGLO_ScalesMaxPtJ_GenNtuples_leptonType-$1_$DATE \
+    WLLJJ_EWK-MGLO_FixedScaleMZ_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WLLJJ_EWK-MGLO_FixedScaleMZ \
     submit=1 \

@@ -22,3 +22,4 @@ filterPromptLeps = cms.Sequence(
     promptLepsFilter
     #~tauFilter
 )
+

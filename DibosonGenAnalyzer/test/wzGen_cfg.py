@@ -54,12 +54,14 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
 
 if options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
     process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
+    process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.wzOppositeFlavorFilter_cff")
     process.p = cms.Path(process.filterGenTaus*
-                        (process.dressLeptons if options.leptonType == "dressed" \
-                        else process.selectLeptons))
+                        # Only take emm and eem chans
+                        # process.filterSameFlavorChans*
+                        process.selectLeptons
+    )
 else:
-    process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" \
-        else process.selectLeptons)
+    process.p = cms.Path(process.dressLeptons)
 
 process.p *= (
     process.selectZCands * 
