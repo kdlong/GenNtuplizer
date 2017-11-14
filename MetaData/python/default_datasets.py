@@ -390,7 +390,6 @@ sample_info = {
         "crossSection" : 0.00292,
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZJJ_LO_VBFNLO_Ntuple.root",
         "isMiniAOD" : 0,
-        "leptonType" : "finalstate",
         "lheSource" : ""
     },
     'WZJJ_SF-VBFNLO': {
@@ -409,9 +408,31 @@ sample_info = {
                 /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_100.root,
                 /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17_MINIAOD/161224_084849/0000/WZ_MINIAOD_11.root""",
         "crossSection" : 0.00354,
+        "leptonType" : "finalstate",
         "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_OF-VBFNLO_Ntuple.root",
         "isMiniAOD" : 1,
-        "leptonType" : "finalstate",
+        "lheSource" : ""
+    },
+    'WZJJ_SF-VBFNLO-riv': {
+        "inputFiles" : """/store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_1.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_10.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_SF_unweight/Dec16_300k_Moriond17_MINIAOD/170130_074057/0000/WZ_MINIAOD_100.root""",
+        "crossSection" : 0.00349,
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_SF-VBFNLO_Ntuple.root",
+        "isMiniAOD" : 0,
+        "leptonType" : "riv",
+        "lheSource" : ""
+    },
+    'WZJJ_OF-VBFNLO-riv': {
+        "inputFiles" : """
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17/161220_170148/0000/WZ_gensim_1.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17/161220_170148/0000/WZ_gensim_10.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17/161220_170148/0000/WZ_gensim_100.root,
+            /store/user/mmozer/WZ/Private_MC/VBSWZ_H7VBFNLO_OF_unweight/Dec16_300k_Moriond17/161220_170148/0000/WZ_gensim_101.root""",
+        "crossSection" : 0.00354,
+        "leptonType" : "rivet",
+        "outputFile" : "file:/data/kelong/DibosonGenAnalysisSamples/WZ_VBS/WZJJ_OF-VBFNLO_Ntuple.root",
+        "isMiniAOD" : 0,
         "lheSource" : ""
     },
     'WZJJ_EWK_QCD-MGNLO': {

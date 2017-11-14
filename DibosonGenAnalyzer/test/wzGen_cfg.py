@@ -51,7 +51,7 @@ process.analyzeWZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     nKeepWs = cms.untracked.uint32(3),
     xSec = cms.untracked.double(options.crossSection)
 )
-
+print "leptonType is", options.leptonType
 if options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
     process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.genTauFilter_cff")
     process.load("GenNtuplizer.DibosonGenAnalyzer.Filters.wzOppositeFlavorFilter_cff")
@@ -61,7 +61,7 @@ if options.leptonType in ["rivet", "finalstate"] and not options.includeTaus:
                         process.selectLeptons
     )
 else:
-    process.p = cms.Path(process.dressLeptons)
+    process.p = cms.Path(process.dressLeptons if options.leptonType == "dressed" else process.selectLeptons)
 
 process.p *= (
     process.selectZCands * 

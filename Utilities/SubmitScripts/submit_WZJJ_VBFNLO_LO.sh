@@ -9,9 +9,10 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $1 \
-    WZJJ_VBS_LO-VBFNLO_GenNtuples_leptonType-finalstate_$DATE \
+    WZJJ_VBS_LO-VBFNLO_GenNtuples_leptonType-rivet_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
     useDefaultDataset=WZJJ_VBFNLO_LO \
+    leptonType=rivet \
     submit=1 \
     'inputFiles=$inputFileNames' \
     'outputFile=$outputFileName'
