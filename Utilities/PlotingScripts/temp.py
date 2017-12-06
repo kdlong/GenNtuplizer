@@ -7,10 +7,11 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-mgfile = ROOT.TFile("MGPartonPlots.root")
-mgofffile = ROOT.TFile("MGPartonPlots-OfficialSample.root")
-#vbfnlofile = ROOT.TFile("VBFNLOplots.root")
-vbfnlofile = ROOT.TFile("VBFNLO-fromauthors-PartonPlots.root")
+ROOT.SetBatch(True)
+mgfile = ROOT.TFile("MGPartonPlots-nobquarks-ptj30.root")
+mgofffile = ROOT.TFile("MGPartonPlots-OfficialSample-ptj30.root")
+vbfnlofile = ROOT.TFile("VBFNLOplots-ptj30.root")
+#vbfnlofile = ROOT.TFile("VBFNLO-fromauthors-PartonPlots-ptj30.root")
 for i in vbfnlofile.GetListOfKeys():
     mg_hist = mgfile.Get(i.GetName())
     mgoff_hist = mgofffile.Get(i.GetName())
@@ -42,14 +43,14 @@ for i in vbfnlofile.GetListOfKeys():
     legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
     legend.AddEntry(mgoff_hist, "MG5_aMC LO 4F", "lp")
     legend.AddEntry(mg_hist, "#splitline{MG5_aMC LO 4F}{no b quarks}", "lp")
-    legend.AddEntry(vbfnlo_hist, "#splitline{VBFNLO LO}{from Michael}", "lp")
+    legend.AddEntry(vbfnlo_hist, "VBFNLO LO", "lp")
     legend.SetFillStyle(0)
     legend.Draw()
 
-    canvas = plotter.splitCanvas(canvas, "ratio to MG", [0.4, 1.6])
+    canvas = plotter.splitCanvas(canvas, [800, 800], "ratio to MG", [0.4, 1.6])
     if vbfnlo_hist.GetMaximum() > mgoff_hist.GetMaximum():
         mgoff_hist.SetMaximum(vbfnlo_hist.GetMaximum())
     mgoff_hist.SetMaximum(mgoff_hist.GetMaximum()*1.1)
-    canvas.Print("~/www/DibosonAnalysisData/PlottingResults/WZGenAnalysis/partonlevel/Jul2017Update/%s.png" % i.GetName())
-    canvas.Print("~/www/DibosonAnalysisData/PlottingResults/WZGenAnalysis/partonlevel/Jul2017Update/%s.pdf" % i.GetName())
+    canvas.Print("~/www/DibosonAnalysisData/PlottingResults/WZGenAnalysis/partonlevel/Dec2017/%s.png" % i.GetName())
+    canvas.Print("~/www/DibosonAnalysisData/PlottingResults/WZGenAnalysis/partonlevel/Dec2017/%s.pdf" % i.GetName())
     del canvas
