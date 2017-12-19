@@ -2,6 +2,7 @@ import ROOT
 import math
 from DataFormats.FWLite import Events, Handle
 
+nTopEvents = 0 
 def getHepMCParticles(event):
     handle  = Handle ('std::vector<reco::GenParticle>')
     label = ("genParticles")
@@ -42,13 +43,14 @@ def getHepMCParticles(event):
 
 def getLHEParticles(event):
     lheHandle = Handle('LHEEventProduct')
-    label = 'source' if "MiniAOD" not in file_names else "externalLHEProducer"
+    label = 'source' if "MiniAOD" not in file_names[0] else "externalLHEProducer"
     event.getByLabel(label, lheHandle)
     lhe = lheHandle.product()
 
     lheParticles = lhe.hepeup()
 
     nfound=0
+    isTopEvent = False
     q1=ROOT.TLorentzVector(0.,0.,0.,0.)
     q2=ROOT.TLorentzVector(0.,0.,0.,0.)
     bq=ROOT.TLorentzVector(0.,0.,0.,0.)
@@ -59,7 +61,7 @@ def getLHEParticles(event):
     for i in range(lheParticles.NUP):
         p4 = lhep4(i, lheParticles)
         if abs(lheParticles.IDUP[i]) == 6:
-            nTopEvents += 1
+            isTopEvent = True
         if (abs(lheParticles.IDUP[i])<6 and i > 1):
             if abs(lheParticles.IDUP[i]) == 5:
                 bq =lhep4(i, lheParticles)
@@ -69,8 +71,10 @@ def getLHEParticles(event):
             else:
                 q1 =lhep4(i, lheParticles)
                 nfound=nfound+1
+        #if (abs(lheParticles.IDUP[i])==11):
         if (lheParticles.IDUP[i]==-11):
             wl = lhep4(i, lheParticles)
+        #if (abs(lheParticles.IDUP[i])==12):
         if (lheParticles.IDUP[i]==12):
             wn = lhep4(i, lheParticles)
         if (lheParticles.IDUP[i]==13):
@@ -79,7 +83,7 @@ def getLHEParticles(event):
             zm = lhep4(i, lheParticles)
     if nfound != 2:
         raise RuntimeError("Number of quarks != 2! Found "+nfound)
-    return zp,zm,wl,wn,q1,q2
+    return zp,zm,wl,wn,q1,q2,isTopEvent
 
 def dR(p1, p2):
     return math.sqrt((p1.PseudoRapidity()-p2.PseudoRapidity())**2 + (p1.Phi()-p2.Phi())**2) 
@@ -92,21 +96,21 @@ def lhep4(i, lheParticles):
     return lorentz(px, py, pz, pE)
 
 fromLHE = True
-file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/lhelevel/WZJJ_VBFNLO_fromauthors.root" ]
-output_file = "VBFNLO-fromauthors-ptj30.root"
-#output_file = "MGPartonPlots-nobquarks-ptj30.root"
-#file_names = [
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev10000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev20000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev30000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev40000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev50000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev60000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev70000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev80000_numEvent10000.root",
-#    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev90000_numEvent10000.root",
-#]
+#file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/lhelevel/WZJJ_VBFNLO_fromauthors.root" ]
+#output_file = "VBFNLO-fromauthors-ptj30.root"
+file_names = [
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev10000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev20000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev30000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev40000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev50000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev60000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev70000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev80000_numEvent10000.root",
+    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev90000_numEvent10000.root",
+]
+output_file = "MGPartonPlots-nobquarks-ptj30.root"
 #file_names = [
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/3630ED78-EAC9-E611-9C25-0CC47A4C8EA8.root",
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/8C4C505E-DAC9-E611-81F3-0CC47A4D7628.root",
@@ -135,14 +139,14 @@ output_file = "VBFNLO-fromauthors-ptj30.root"
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/90000/EA51B8A9-7CC5-E611-8719-6C3BE5B5A308.root",
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/90000/F892C761-4CC6-E611-8C29-6C3BE5B5B108.root",
 #]
+#output_file = "MGPartonPlots-ptj30.root"
 files = [Events (x) for x in file_names]
 lorentz = ROOT.TLorentzVector
-#label = 'externalLHEProducer'
 
 ROOT.gROOT.SetStyle('Plain') # white background
 
 
-hmqq = ROOT.TH1F("hmqq","m_{jj}",30,0,3000)   
+hmqq = ROOT.TH1F("hmqq","m_{jj}",325,20,13200)   
 hdeta = ROOT.TH1F("hdeta","#Delta#eta(j_{1}, j_{2})",30,0,12)   
 heta  = ROOT.TH1F("heta","#eta(3l)",30,-6,6)
 hpt = ROOT.TH1F("hpt","p_{T}(3l)",30,0,300)
@@ -174,7 +178,6 @@ hmwq2 = ROOT.TH1F("hmwq2","m_{W+q2}",60,0,1800)
 
 
 first = True
-nTopEvents = 0 
 nEvents = 0 
 nSingleChan = 0 
 nPass = 0 
@@ -183,22 +186,24 @@ for events in files:
         nEvents += 1
 
         if fromLHE:
-            zp,zm,wl,wn,q1,q2 = getLHEParticles(event)
+            zp,zm,wl,wn,q1,q2,isTop = getLHEParticles(event)
         else:
-            zp,zm,wl,wn,q1,q2 = getHepMCParticles(event)
+            zp,zm,wl,wn,q1,q2,isTop = getHepMCParticles(event)
         if wn.Perp() < 0.001 or zp.Perp() < 0.001 or zm.Perp() < 0.001 or wl.Perp() < 0.001:
             continue
+        if isTop:
+            nTopEvents+=1
         nSingleChan +=1
         evPass = True
         log = ""
-        if abs(q1.Eta() - q2.Eta()) < 3.0: 
+        if abs(q1.Eta() - q2.Eta()) < 2.5: 
             log += "Failed dEtajj cut\n"
             log += "dEtajj was %0.1f \n" % abs(q1.Eta() - q2.Eta())
             evPass = False
         if (q1+q2).M() < 500.0: 
             log += "Failed mjj cut\n"
             evPass = False
-        if (zp + zm).M() < 76 or (zp + zm).M():
+        if (zp + zm).M() > 106 or (zp + zm).M() < 76:
             log += "Failed mZ cut\n"
             evPass = False
         if wl.Perp() < 20:
@@ -216,22 +221,22 @@ for events in files:
         if q2.Perp() < 30: 
             evPass = False
             log += "Failed q2 pT cut\n"
-        if abs(q1.Rapidity()) > 4.5:
+        if abs(q1.PseudoRapidity()) > 4.7:
             log += "Failed pT(j1) cut\n"
             evPass = False
-        if abs(q2.Rapidity()) > 4.5:
+        if abs(q2.PseudoRapidity()) > 4.7:
             log += "Failed pT(j2) cut\n"
             evPass = False
-        if abs(wl.Rapidity()) > 2.5:
+        if abs(wl.PseudoRapidity()) > 2.5:
             log += "Failed y(lw) cut\n"
             evPass = False
-        if abs(zm.Rapidity()) > 2.5:
+        if abs(zm.PseudoRapidity()) > 2.5:
             log += "Failed y(lz-) cut\n"
             evPass = False
-        if abs(zp.Rapidity()) > 2.5:
+        if abs(zp.PseudoRapidity()) > 2.5:
             log += "Failed y(lz+) cut\n"
             evPass = False
-        if dR(zm,q1) < 0.1 or dR(zm,q2) < 0.1 or dR(zp, q1) > 0.1 or dR(zp, q2) > 0.1 or dR(wl, q1) > 0.1 or dR(wl, q2) > 0.1:
+        if dR(zm,q1) < 0.4 or dR(zm,q2) < 0.4 or dR(zp, q1) > 0.4 or dR(zp, q2) > 0.4 or dR(wl, q1) > 0.4 or dR(wl, q2) > 0.4:
             log += "Failed dR(l, j) cut\n"
         if not evPass:
             print "-"*80
@@ -272,7 +277,7 @@ for events in files:
         hmwz.Fill((wn+wl+zm+zp).M())
 
 #rfile = ROOT.TFile.Open("MGPartonPlots-OfficialSample-ptj30.root","RECREATE")
-rfile = ROOT.TFile.Open(output_file,"RECREATE")
+rfile = ROOT.TFile.Open(output_file.replace(".root", "_wponly_rebin.root"),"RECREATE")
 print "Found %i top events" % nTopEvents
 print "From %i total events" % nEvents
 print "%i in eem+ chan" % nSingleChan
