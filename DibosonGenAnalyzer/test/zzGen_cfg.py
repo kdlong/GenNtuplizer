@@ -35,7 +35,7 @@ process.analyzeZZ = cms.EDAnalyzer("DibosonGenAnalyzer",
     jets = cms.InputTag("sortedJets"),
     leptons = cms.InputTag("sorted%sLeptons" % 
         ("Dressed" if options.leptonType == "dressed" else "")),
-    zCands = cms.InputTag("sortedZCands"),
+    zCands = cms.untracked.InputTag("sortedZCands"),
     lheSource = cms.untracked.string(options.lheSource),
     nKeepZs = cms.untracked.uint32(4),
     nKeepLeps = cms.untracked.uint32(4),
