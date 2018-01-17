@@ -71,11 +71,11 @@ def getLHEParticles(event):
             else:
                 q1 =lhep4(i, lheParticles)
                 nfound=nfound+1
-        #if (abs(lheParticles.IDUP[i])==11):
-        if (lheParticles.IDUP[i]==-11):
+        if (abs(lheParticles.IDUP[i])==11):
+       # if (lheParticles.IDUP[i]==-11):
             wl = lhep4(i, lheParticles)
-        #if (abs(lheParticles.IDUP[i])==12):
-        if (lheParticles.IDUP[i]==12):
+        if (abs(lheParticles.IDUP[i])==12):
+        #if (lheParticles.IDUP[i]==12):
             wn = lhep4(i, lheParticles)
         if (lheParticles.IDUP[i]==13):
             zp = lhep4(i, lheParticles)
@@ -97,9 +97,13 @@ def lhep4(i, lheParticles):
 
 fromLHE = True
 #file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/lhelevel/WZJJ_VBFNLO_fromauthors.root" ]
-#output_file = "VBFNLO-fromauthors-ptj30.root"
-file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/MathieusSettings/WZJJTo1E1Nu2MuJJ_noBquarks_MathieusSettings_EDM.root" ]
-output_file = "MGPartonPlots-nobquarks-mathieusSetup.root"
+file_names = [ "/data/kelong/DibosonGenAnalysisSamples/VBFNLO_fromMichael/WpZTo1E1Nu2Mu_VBFNLO.root" ]
+file_names = [ "/data/kelong/DibosonGenAnalysisSamples/VBFNLO_fromMichael/WmZTo1E1Nu2Mu_VBFNLO.root" ]
+output_file = "VBFNLO-fromauthors-ptj30.root"
+#file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/MathieusSettings/WZJJTo1E1Nu2MuJJ_noBquarks_MathieusSettings_EDM.root" ]
+#output_file = "MGPartonPlots-nobquarks-mathieusSetup.root"
+#file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJTo1E1NuToMu/WZJJTo1E1Nu2EJJ_13TeV-madgraph.root" ]
+#output_file = "MGPartonPlots-mathieusSetup.root"
 #file_names = [
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root",
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev10000_numEvent10000.root",
@@ -112,7 +116,7 @@ output_file = "MGPartonPlots-nobquarks-mathieusSetup.root"
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev80000_numEvent10000.root",
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev90000_numEvent10000.root",
 #]
-output_file = "MGPartonPlots-nobquarks-ptj30.root"
+#output_file = "MGPartonPlots-nobquarks-ptj30.root"
 #file_names = [
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/3630ED78-EAC9-E611-9C25-0CC47A4C8EA8.root",
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/8C4C505E-DAC9-E611-81F3-0CC47A4D7628.root",
@@ -277,9 +281,11 @@ for events in files:
         hmwq1.Fill((wn+wl+leadq).M())
         hmwq2.Fill((wn+wl+subleadq).M())
         hmwz.Fill((wn+wl+zm+zp).M())
+        #if nEvents > 10000000:
+        #    break
 
 #rfile = ROOT.TFile.Open("MGPartonPlots-OfficialSample-ptj30.root","RECREATE")
-rfile = ROOT.TFile.Open(output_file.replace(".root", "_wponly_rebin.root"),"RECREATE")
+rfile = ROOT.TFile.Open(output_file.replace(".root", "_wmonly_rebin.root"),"RECREATE")
 print "Found %i top events" % nTopEvents
 print "From %i total events" % nEvents
 print "%i in eem+ chan" % nSingleChan
