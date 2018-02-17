@@ -28,7 +28,8 @@ if options.leptonType == "rivet":
         rivetSequence = cms.Sequence(mergedGenParticles*genParticles2HepMC*particleLevel)
     else:
         from SimGeneral.HepPDTESSource.pythiapdt_cfi import *
-        particleLevel.src = cms.InputTag("generator")
+        #particleLevel.src = cms.InputTag("generator")
+        particleLevel.src = cms.InputTag("generatorSmeared")
         rivetSequence = cms.Sequence(particleLevel)
 
     particleLevel.particleMinPt  = cms.double(0.)

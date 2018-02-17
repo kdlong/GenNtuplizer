@@ -254,10 +254,10 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
 
     edm::Handle<reco::CandidateCollection> genLeptonsHandle;
     event.getByToken(genLeptonsToken_, genLeptonsHandle);
-    if (genLeptonsHandle->size() < nKeepLeps_) {
+    if (genLeptonsHandle->size() != nKeepLeps_) {
         std::cerr << "WARNING: Failed to find " << nKeepLeps_ << " leptons. "
                   << "Skipping event " << event.id().event() << std::endl;
-        return;    
+        //return;    
     }
 
     if (nKeepZs_ > 0 && zCands->size() < nZsCut_) {
@@ -280,7 +280,7 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         sortedWCands.push_back(*part.clone());
     }
 
-    if (false) {
+    if (true) {//false) {
         genLeptons = *genLeptonsHandle;
         particleEntries_["leps"]->setCollection(genLeptons);
         particleEntries_["Ws"]->setCollection(*wCands);

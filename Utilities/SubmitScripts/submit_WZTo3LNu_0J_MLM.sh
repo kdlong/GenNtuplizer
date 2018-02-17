@@ -9,9 +9,9 @@ farmoutAnalysisJobs \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
     $2 \
-    WZTo3LNu_0J_qcut27_MLM_GenNtuples_leptonType-$1_$DATE \
+    WZTo3LNu_0J_MLM_GenNtuples_leptonType-$1_$DATE \
     ../../DibosonGenAnalyzer/test/wzGen_cfg.py \
-    useDefaultDataset=WZTo3LNu-0J-MLM-qcut27 \
+    useDefaultDataset=WZTo3LNu-0J-MLM \
     submit=1 \
     leptonType=$1 \
     'inputFiles=$inputFileNames' \

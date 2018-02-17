@@ -1,5 +1,6 @@
 import ROOT
 import math
+import glob
 from DataFormats.FWLite import Events, Handle
 
 nTopEvents = 0 
@@ -10,6 +11,9 @@ def getHepMCParticles(event):
     
     genps = handle.product()
 
+    geninfo = Handle("GenEventInfoProduct")
+    event.getByLabel ("generator", geninfo)
+    weight = geninfo.product().weights()[0]
     nfound=0
     q1=ROOT.TLorentzVector(0.,0.,0.,0.)
     q2=ROOT.TLorentzVector(0.,0.,0.,0.)
@@ -17,9 +21,10 @@ def getHepMCParticles(event):
     wn=ROOT.TLorentzVector(0.,0.,0.,0.)
     zp=ROOT.TLorentzVector(0.,0.,0.,0.)
     zm=ROOT.TLorentzVector(0.,0.,0.,0.)
+    topEvent = False
     for genp in genps:
         if abs(genp.pdgId())==6:
-            print "TOP EVENT!"
+            topEvent = True
         if (genp.status()==1 and abs(genp.pdgId())<7):
             if nfound!=0 :
                 q2.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
@@ -28,9 +33,17 @@ def getHepMCParticles(event):
                 q1.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
                 nfound=nfound+1
 
-        if (genp.status()==1 and genp.pdgId()==-11):
+        wlep = [11, -11]
+        wnu = [12, -12]
+        if restrictChan == "wp":
+            wlep = [-11]
+            wnu = [12]
+        elif restrictChan == "wm":
+            wlep =[ 11]
+            wnu = [-12]
+        if (genp.status()==1 and genp.pdgId() in wlep):
             wl.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
-        if (genp.status()==1 and genp.pdgId()==12):
+        if (genp.status()==1 and genp.pdgId() in wnu):
             wn.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
         if (genp.status()==1 and genp.pdgId()==13):
             zp.SetPxPyPzE(genp.px(),genp.py(),genp.pz(),genp.energy())
@@ -39,7 +52,7 @@ def getHepMCParticles(event):
     
     if nfound != 2:
         raise RuntimeError("Number of quarks != 2! Found "+nfound)
-    return zp,zm,wl,wn,q1,q2
+    return zp,zm,wl,wn,q1,q2,topEvent,weight
 
 def getLHEParticles(event):
     lheHandle = Handle('LHEEventProduct')
@@ -71,19 +84,47 @@ def getLHEParticles(event):
             else:
                 q1 =lhep4(i, lheParticles)
                 nfound=nfound+1
-        if (abs(lheParticles.IDUP[i])==11):
-       # if (lheParticles.IDUP[i]==-11):
+        wlep = [11, -11]
+        wnu = [12, -12]
+        if restrictChan == "wp":
+            wlep = [-11]
+            wnu = [12]
+        elif restrictChan == "wm":
+            wlep =[ 11]
+            wnu = [-12]
+        if (lheParticles.IDUP[i] in wlep):
             wl = lhep4(i, lheParticles)
-        if (abs(lheParticles.IDUP[i])==12):
-        #if (lheParticles.IDUP[i]==12):
+        if (lheParticles.IDUP[i] in wnu):
             wn = lhep4(i, lheParticles)
         if (lheParticles.IDUP[i]==13):
             zp = lhep4(i, lheParticles)
         if (lheParticles.IDUP[i]==-13):
             zm = lhep4(i, lheParticles)
+
+    # Checke other Z definition
+    if (wn.Pt() < 0.001):
+        for i in range(lheParticles.NUP):
+            p4 = lhep4(i, lheParticles)
+            wlep = [13, -13]
+            wnu = [14, -14]
+            if restrictChan == "wp":
+                wlep = [-13]
+                wnu = [14]
+            elif restrictChan == "wm":
+                wlep =[ 13]
+                wnu = [-14]
+            if (lheParticles.IDUP[i] in wnu):
+                wn = lhep4(i, lheParticles)
+            if (lheParticles.IDUP[i] in wlep):
+                wl = lhep4(i, lheParticles)
+            if (lheParticles.IDUP[i]==11):
+                zp = lhep4(i, lheParticles)
+            if (lheParticles.IDUP[i]==-11):
+                zm = lhep4(i, lheParticles)
+
     if nfound != 2:
         raise RuntimeError("Number of quarks != 2! Found "+nfound)
-    return zp,zm,wl,wn,q1,q2,isTopEvent
+    return zp,zm,wl,wn,q1,q2,isTopEvent,lheParticles.XWGTUP
 
 def dR(p1, p2):
     return math.sqrt((p1.PseudoRapidity()-p2.PseudoRapidity())**2 + (p1.Phi()-p2.Phi())**2) 
@@ -96,14 +137,21 @@ def lhep4(i, lheParticles):
     return lorentz(px, py, pz, pE)
 
 fromLHE = True
+#fromLHE = False 
+restrictChan = "wp"
 #file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/lhelevel/WZJJ_VBFNLO_fromauthors.root" ]
-file_names = [ "/data/kelong/DibosonGenAnalysisSamples/VBFNLO_fromMichael/WpZTo1E1Nu2Mu_VBFNLO.root" ]
-file_names = [ "/data/kelong/DibosonGenAnalysisSamples/VBFNLO_fromMichael/WmZTo1E1Nu2Mu_VBFNLO.root" ]
-output_file = "VBFNLO-fromauthors-ptj30.root"
-#file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/MathieusSettings/WZJJTo1E1Nu2MuJJ_noBquarks_MathieusSettings_EDM.root" ]
-#output_file = "MGPartonPlots-nobquarks-mathieusSetup.root"
-#file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJTo1E1NuToMu/WZJJTo1E1Nu2EJJ_13TeV-madgraph.root" ]
-#output_file = "MGPartonPlots-mathieusSetup.root"
+path = ""
+if restrictChan == "wm":
+    path = "/eos/user/k/kelong/LesHouchesVBSstudy/WmZ_VBFNLO/" 
+elif restrictChan == "wp":
+    path = "/eos/user/k/kelong/LesHouchesVBSstudy/WpZ_VBFNLO/" 
+file_names = glob.glob(path + "*")
+output_file = "VBFNLOHists/VBFNLO-fromauthors-ptj30.root"
+#file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WZTo1E1Nu2Mu_MathieusSetup_madgraph_EDM.root" ]
+#output_file = "MGHists/MGPartonPlots-nobquarks-mathieusSetup.root"
+#file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WZTo1E1Nu2Mu_MathieusSetup_looseCuts_madgraph_HepMC.root" ]
+file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WpZTo1E1Nu2Mu_MathieusSetup_noetajj_madgraph_EDM.root" ]
+output_file = "MGPartonPlots-mathieusSetup.root"
 #file_names = [
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root",
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev10000_numEvent10000.root",
@@ -146,14 +194,19 @@ output_file = "VBFNLO-fromauthors-ptj30.root"
 #    "root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/WLLJJ_WToLNu_EWK_TuneCUETP8M1_13TeV_madgraph-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/90000/F892C761-4CC6-E611-8C29-6C3BE5B5B108.root",
 #]
 #output_file = "MGPartonPlots-ptj30.root"
+#file_names = ["/data/kelong/DibosonGenAnalysisSamples/VBFNLO_fromMatthias/testWZ.root"]
+#output_file = "newVFNLO.root"
+#file_names = ["/eos/user/k/kelong/LesHouchesVBSstudy/VBFNLO-Herwig7/ViaMichael_2017_07_28/WZTo1E1Nu2Mu_VBFNLO_Default_FO_EDM.root"]
+#output_file = "VBFNLOHists/vbfnlo_fromMichael_Jul2017.root"
 files = [Events (x) for x in file_names]
 lorentz = ROOT.TLorentzVector
 
 ROOT.gROOT.SetStyle('Plain') # white background
 
 
-hmqq = ROOT.TH1F("hmqq","m_{jj}",325,20,13200)   
-hdeta = ROOT.TH1F("hdeta","#Delta#eta(j_{1}, j_{2})",30,0,12)   
+hmqq = ROOT.TH1F("hmqq","m_{jj}",325,20,13020)   
+#hmqq = ROOT.TH1F("hmqq","m_{jj}",313,500,13020)   
+hdeta = ROOT.TH1F("hdeta","#Delta#eta(j_{1}, j_{2})",25,2.5,8.75)   
 heta  = ROOT.TH1F("heta","#eta(3l)",30,-6,6)
 hpt = ROOT.TH1F("hpt","p_{T}(3l)",30,0,300)
 hptq1 = ROOT.TH1F("hptq1","p_{T}(q_{1})",50,0,500)
@@ -187,14 +240,17 @@ first = True
 nEvents = 0 
 nSingleChan = 0 
 nPass = 0 
+sumWeights = 0 
 for events in files:
     for iev, event in enumerate(events):
         nEvents += 1
 
+        weight = 1
         if fromLHE:
-            zp,zm,wl,wn,q1,q2,isTop = getLHEParticles(event)
+            zp,zm,wl,wn,q1,q2,isTop,weight = getLHEParticles(event)
         else:
-            zp,zm,wl,wn,q1,q2,isTop = getHepMCParticles(event)
+            zp,zm,wl,wn,q1,q2,isTop,weight = getHepMCParticles(event)
+        sumWeights += weight
         if wn.Perp() < 0.001 or zp.Perp() < 0.001 or zm.Perp() < 0.001 or wl.Perp() < 0.001:
             continue
         if isTop:
@@ -206,9 +262,13 @@ for events in files:
             log += "Failed dEtajj cut\n"
             log += "dEtajj was %0.1f \n" % abs(q1.Eta() - q2.Eta())
             evPass = False
-        if (q1+q2).M() < 500.0: 
-            log += "Failed mjj cut\n"
+        if q1.Eta()*q2.Eta() > 0: 
+            log += "Failed eta sign cut\n"
+            #evPass = False
+        if (q1+q2).M() < 500: 
+            log += "Failed dijet mass cut\n"
             evPass = False
+        #if (zp + zm).M() > 106.1876 or (zp + zm).M() < 76.1876:
         if (zp + zm).M() > 106 or (zp + zm).M() < 76:
             log += "Failed mZ cut\n"
             evPass = False
@@ -242,54 +302,62 @@ for events in files:
         if abs(zp.PseudoRapidity()) > 2.5:
             log += "Failed y(lz+) cut\n"
             evPass = False
-        if dR(zm,q1) < 0.4 or dR(zm,q2) < 0.4 or dR(zp, q1) > 0.4 or dR(zp, q2) > 0.4 or dR(wl, q1) > 0.4 or dR(wl, q2) > 0.4:
+        if dR(zm,q1) < 0.4 or dR(zm,q2) < 0.4 or dR(zp, q1) < 0.4 or dR(zp, q2) < 0.4 or dR(wl, q1) < 0.4 or dR(wl, q2) < 0.4:
             log += "Failed dR(l, j) cut\n"
+            evPass = False
+        if dR(q1,q2) < 0.4:
+            log += "Failed dR(j1, j2) cut (but accepted anyway)\n"
+        #    evPass = False
         if not evPass:
             print "-"*80
             print log
             continue
         nPass +=1
         
-        hptlw.Fill(wl.Perp())
-        hetalw.Fill(wl.Eta())
-        hptnw.Fill(wn.Perp())
-        hetanw.Fill(wn.Eta())
-        hptlzp.Fill(zp.Perp())
-        hetalzp.Fill(zp.Eta())
-        hptlzm.Fill(zm.Perp())
-        hetalzm.Fill(zm.Eta())
+        hptlw.Fill(wl.Perp(), weight)
+        hetalw.Fill(wl.Eta(), weight)
+        hptnw.Fill(wn.Perp(), weight)
+        hetanw.Fill(wn.Eta(), weight)
+        hptlzp.Fill(zp.Perp(), weight)
+        hetalzp.Fill(zp.Eta(), weight)
+        hptlzm.Fill(zm.Perp(), weight)
+        hetalzm.Fill(zm.Eta(), weight)
 
         leadq = q1 if q1.Perp() > q2.Perp() else q2
         subleadq = q2 if q1.Perp() > q2.Perp() else q1
-        hptq1.Fill(leadq.Perp())
-        hptq2.Fill(subleadq.Pt())
-        hetaq1.Fill(leadq.Eta())
-        hetaq2.Fill(subleadq.Eta())
-        hpt.Fill((wn+wl+zm+zp).Perp())
-        heta.Fill((wn+wl+zm+zp).Eta())
+        hptq1.Fill(leadq.Perp(), weight)
+        hptq2.Fill(subleadq.Pt(), weight)
+        hetaq1.Fill(leadq.Eta(), weight)
+        hetaq2.Fill(subleadq.Eta(), weight)
+        hpt.Fill((wn+wl+zm+zp).Perp(), weight)
+        heta.Fill((wn+wl+zm+zp).Eta(), weight)
 
-        hmqq.Fill((q1+q2).M())
-        hdeta.Fill(abs(q1.Eta() - q2.Eta()) )           
+        hmqq.Fill((q1+q2).M(), weight)
+        hdeta.Fill(abs(q1.Eta() - q2.Eta()) , weight)           
 
-        hmw.Fill((wn+wl).M())
-        hptw.Fill((wn+wl).Perp())
-        hyw.Fill((wn+wl).Eta())
+        hmw.Fill((wn+wl).M(), weight)
+        hptw.Fill((wn+wl).Perp(), weight)
+        hyw.Fill((wn+wl).Eta(), weight)
 
-        hmz.Fill((zm+zp).M())
-        hptz.Fill((zm+zp).Perp())
-        hyz.Fill((zm+zp).Eta())
-        hmwq1.Fill((wn+wl+leadq).M())
-        hmwq2.Fill((wn+wl+subleadq).M())
-        hmwz.Fill((wn+wl+zm+zp).M())
-        #if nEvents > 10000000:
-        #    break
+        hmz.Fill((zm+zp).M(), weight)
+        hptz.Fill((zm+zp).Perp(), weight)
+        hyz.Fill((zm+zp).Eta(), weight)
+        hmwq1.Fill((wn+wl+leadq).M(), weight)
+        hmwq2.Fill((wn+wl+subleadq).M(), weight)
+        hmwz.Fill((wn+wl+zm+zp).M(), weight)
 
-#rfile = ROOT.TFile.Open("MGPartonPlots-OfficialSample-ptj30.root","RECREATE")
-rfile = ROOT.TFile.Open(output_file.replace(".root", "_wmonly_rebin.root"),"RECREATE")
+if restrictChan == "wp":
+    output_file = output_file.replace(".root", "_wponly.root")
+elif restrictChan == "wm":
+    output_file = output_file.replace(".root", "_wmonly.root")
+rfile = ROOT.TFile.Open(output_file,"RECREATE")
+
 print "Found %i top events" % nTopEvents
 print "From %i total events" % nEvents
-print "%i in eem+ chan" % nSingleChan
+print "%i in chan" % nSingleChan
 print "%i passed selection" % nPass
+print "Weighted events processed %0.3f" % sumWeights
+print "Weighted events in selection %0.3f" % hmqq.Integral(0, hmqq.GetNbinsX()+1)
 hmqq.Write()
 heta.Write()
 hdeta.Write()
@@ -320,5 +388,8 @@ hptw.Write()
 hmwq1.Write()
 hmwq2.Write()
 
-rfile.Close()
+sumWeightsHist = ROOT.TH1D("sumweights", "sumweights", 1,0,10)
+sumWeightsHist.Fill(1, sumWeights)
+sumWeightsHist.Write()
 
+rfile.Close()

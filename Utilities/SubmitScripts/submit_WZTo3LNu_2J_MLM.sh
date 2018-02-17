@@ -4,7 +4,7 @@ cd ${0%/*}
 DATE=`date +%Y-%m-%d`
 farmoutAnalysisJobs \
     --infer-cmssw-path \
-    --input-files-per-job=5 \
+    --input-files-per-job=1 \
     --input-file-list=../../MetaData/WZ/WZTo3LNu_2J_MLM_files.txt \
     --assume-input-files-exist \
     --input-dir=root://cmsxrootd.fnal.gov/ \
