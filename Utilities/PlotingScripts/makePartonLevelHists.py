@@ -4,6 +4,7 @@ import glob
 from DataFormats.FWLite import Events, Handle
 
 nTopEvents = 0 
+nTopEventsPassed = 0 
 def getHepMCParticles(event):
     handle  = Handle ('std::vector<reco::GenParticle>')
     label = ("genParticles")
@@ -56,7 +57,8 @@ def getHepMCParticles(event):
 
 def getLHEParticles(event):
     lheHandle = Handle('LHEEventProduct')
-    label = 'source' if "MiniAOD" not in file_names[0] else "externalLHEProducer"
+    #label = 'source' if "MiniAOD" not in file_names[0] else "externalLHEProducer"
+    label = "externalLHEProducer"
     event.getByLabel(label, lheHandle)
     lhe = lheHandle.product()
 
@@ -78,6 +80,8 @@ def getLHEParticles(event):
         if (abs(lheParticles.IDUP[i])<6 and i > 1):
             if abs(lheParticles.IDUP[i]) == 5:
                 bq =lhep4(i, lheParticles)
+                print "Found a b quark!"
+                isTopEvent=True
             if nfound!=0 :
                 q2 =lhep4(i, lheParticles)
                 nfound=nfound+1
@@ -138,20 +142,27 @@ def lhep4(i, lheParticles):
 
 fromLHE = True
 #fromLHE = False 
-restrictChan = "wp"
+restrictChan = "wm"
 #file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/lhelevel/WZJJ_VBFNLO_fromauthors.root" ]
 path = ""
 if restrictChan == "wm":
     path = "/eos/user/k/kelong/LesHouchesVBSstudy/WmZ_VBFNLO/" 
 elif restrictChan == "wp":
     path = "/eos/user/k/kelong/LesHouchesVBSstudy/WpZ_VBFNLO/" 
+#dyn
+path = "/eos/user/k/kelong/LesHouchesVBSstudy/WmZ_VBFNLO/MaxPtJScale/"
+output_file = "VBFNLOHists/VBFNLO-fromauthors_maxPtJ.root"
 file_names = glob.glob(path + "*")
-output_file = "VBFNLOHists/VBFNLO-fromauthors-ptj30.root"
-#file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WZTo1E1Nu2Mu_MathieusSetup_madgraph_EDM.root" ]
-#output_file = "MGHists/MGPartonPlots-nobquarks-mathieusSetup.root"
+#output_file = "VBFNLOHists/VBFNLO-fromauthors-ptj30.root"
+import subprocess
+file_names = subprocess.check_output(["dasgoclient", '--query', 
+    "file dataset=/WZJJToENu2MuJJ_EWK_LHConfig_FixedMW_AllCuts_13TeV-madgraph-pythia8/kelong-RunIISummer15wmLHEGS_RAWSIMoutput-ee1553652ca86b53d96b9f25026a7c7d/USER instance=prod/phys03"]).split()
+#    "file dataset=/WZJJToENu2MuJJ_EWK_LHConfig_13TeV-madgraph-pythia8/kelong-RunIISummer15wmLHEGS_LHEoutput-d2e0e496a649ec0c95f66a2596eade31/USER instance=prod/phys03"]).split()
+file_names = ["/eos/cms/" + f for f in file_names[:800]] 
+output_file = "MGHists/MGPartonPlots-mathieusSetup_AllCuts.root"
 #file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WZTo1E1Nu2Mu_MathieusSetup_looseCuts_madgraph_HepMC.root" ]
-file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WpZTo1E1Nu2Mu_MathieusSetup_noetajj_madgraph_EDM.root" ]
-output_file = "MGPartonPlots-mathieusSetup.root"
+#file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WpZTo1E1Nu2Mu_MathieusSetup_noetajj_madgraph_EDM.root" ]
+#output_file = "MGPartonPlots-mathieusSetup.root"
 #file_names = [
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev0_numEvent10000.root",
 #    "/eos/user/k/kelong/WZGenStudies/WZJJ_noBquarks/WZJJTo1E1Nu2MuJJ_noBquarks-madgraph-pythia8_ev10000_numEvent10000.root",
@@ -253,10 +264,10 @@ for events in files:
         sumWeights += weight
         if wn.Perp() < 0.001 or zp.Perp() < 0.001 or zm.Perp() < 0.001 or wl.Perp() < 0.001:
             continue
-        if isTop:
-            nTopEvents+=1
         nSingleChan +=1
         evPass = True
+        if isTop:
+            nTopEvents+=1
         log = ""
         if abs(q1.Eta() - q2.Eta()) < 2.5: 
             log += "Failed dEtajj cut\n"
@@ -313,6 +324,9 @@ for events in files:
             print log
             continue
         nPass +=1
+        if isTop:
+            nTopEventsPassed+=1
+            evPass=False
         
         hptlw.Fill(wl.Perp(), weight)
         hetalw.Fill(wl.Eta(), weight)
@@ -353,6 +367,7 @@ elif restrictChan == "wm":
 rfile = ROOT.TFile.Open(output_file,"RECREATE")
 
 print "Found %i top events" % nTopEvents
+print " --> %i of them passed selection" % nTopEventsPassed
 print "From %i total events" % nEvents
 print "%i in chan" % nSingleChan
 print "%i passed selection" % nPass

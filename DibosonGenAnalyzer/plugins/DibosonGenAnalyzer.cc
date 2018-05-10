@@ -83,6 +83,8 @@ class DibosonGenAnalyzer : public edm::EDAnalyzer {
         unsigned int nZsCut_;
         float lep_system_mass_;
         float lep_system_pt_;
+        float lep_system_eta_;
+        float lep_system_phi_;
         float mass_;
         float eta_;
         float pt_;
@@ -191,8 +193,10 @@ DibosonGenAnalyzer::DibosonGenAnalyzer(const edm::ParameterSet& cfg) :
     ntuple_->Branch("evtid", &eventid_);
     ntuple_->Branch("weight", &weight_);
     ntuple_->Branch("XWGTUP", &XWGTUP_);
-    ntuple_->Branch((std::to_string(nKeepLeps_) + "lmass").c_str(), &lep_system_mass_);
-    ntuple_->Branch((std::to_string(nKeepLeps_) + "lPt").c_str(), &lep_system_pt_);
+    ntuple_->Branch(("Mass"+std::to_string(nKeepLeps_)+"l").c_str(), &lep_system_mass_);
+    ntuple_->Branch(("Pt"+std::to_string(nKeepLeps_)+"l").c_str(), &lep_system_pt_);
+    ntuple_->Branch(("Eta"+std::to_string(nKeepLeps_)+"l").c_str(), &lep_system_eta_);
+    ntuple_->Branch(("Phi"+std::to_string(nKeepLeps_)+"l").c_str(), &lep_system_phi_);
     ntuple_->Branch("Pt", &pt_);
     ntuple_->Branch("Mass", &mass_);
     ntuple_->Branch("MTtrue", &trueMt_);
@@ -337,6 +341,8 @@ DibosonGenAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& evSe
         lepton_system += (genLeptons)[i].p4();
     lep_system_mass_ = lepton_system.mass();
     lep_system_pt_ = lepton_system.pt();
+    lep_system_eta_ = lepton_system.eta();
+    lep_system_phi_ = lepton_system.phi();
 
     edm::Handle<reco::CandidateCollection> genJets;
     event.getByToken(genJetsToken_, genJets);
