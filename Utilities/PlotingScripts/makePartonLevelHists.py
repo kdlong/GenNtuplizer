@@ -58,7 +58,8 @@ def getHepMCParticles(event):
 def getLHEParticles(event):
     lheHandle = Handle('LHEEventProduct')
     #label = 'source' if "MiniAOD" not in file_names[0] else "externalLHEProducer"
-    label = "externalLHEProducer"
+    #label = "externalLHEProducer"
+    label = "source"
     event.getByLabel(label, lheHandle)
     lhe = lheHandle.product()
 
@@ -105,8 +106,9 @@ def getLHEParticles(event):
         if (lheParticles.IDUP[i]==-13):
             zm = lhep4(i, lheParticles)
 
-    # Checke other Z definition
-    if (wn.Pt() < 0.001):
+    # Check other Z definition
+    if (wn.Pt() < 0.001 and False):
+        wl=ROOT.TLorentzVector(0.,0.,0.,0.)
         for i in range(lheParticles.NUP):
             p4 = lhep4(i, lheParticles)
             wlep = [13, -13]
@@ -142,7 +144,7 @@ def lhep4(i, lheParticles):
 
 fromLHE = True
 #fromLHE = False 
-restrictChan = "wm"
+restrictChan = "wp"
 #file_names = [ "/eos/user/k/kelong/WZGenStudies/WZJJ_VBFNLO_fromauthors/lhelevel/WZJJ_VBFNLO_fromauthors.root" ]
 path = ""
 if restrictChan == "wm":
@@ -154,12 +156,12 @@ path = "/eos/user/k/kelong/LesHouchesVBSstudy/WmZ_VBFNLO/MaxPtJScale/"
 output_file = "VBFNLOHists/VBFNLO-fromauthors_maxPtJ.root"
 file_names = glob.glob(path + "*")
 #output_file = "VBFNLOHists/VBFNLO-fromauthors-ptj30.root"
-import subprocess
-file_names = subprocess.check_output(["dasgoclient", '--query', 
-    "file dataset=/WZJJToENu2MuJJ_EWK_LHConfig_FixedMW_AllCuts_13TeV-madgraph-pythia8/kelong-RunIISummer15wmLHEGS_RAWSIMoutput-ee1553652ca86b53d96b9f25026a7c7d/USER instance=prod/phys03"]).split()
-#    "file dataset=/WZJJToENu2MuJJ_EWK_LHConfig_13TeV-madgraph-pythia8/kelong-RunIISummer15wmLHEGS_LHEoutput-d2e0e496a649ec0c95f66a2596eade31/USER instance=prod/phys03"]).split()
-file_names = ["/eos/cms/" + f for f in file_names[:800]] 
-output_file = "MGHists/MGPartonPlots-mathieusSetup_AllCuts.root"
+#import subprocess
+#file_names = subprocess.check_output(["dasgoclient", '--query', 
+#    "file dataset=/WZJJToENu2MuJJ_EWK_LHConfig_FixedMW_AllCuts_13TeV-madgraph-pythia8/kelong-RunIISummer15wmLHEGS_RAWSIMoutput-ee1553652ca86b53d96b9f25026a7c7d/USER instance=prod/phys03"]).split()
+##    "file dataset=/WZJJToENu2MuJJ_EWK_LHConfig_13TeV-madgraph-pythia8/kelong-RunIISummer15wmLHEGS_LHEoutput-d2e0e496a649ec0c95f66a2596eade31/USER instance=prod/phys03"]).split()
+#file_names = ["/eos/cms/" + f for f in file_names[:800]] 
+#output_file = "MGHists/MGPartonPlots-mathieusSetup_AllCuts.root"
 #file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WZTo1E1Nu2Mu_MathieusSetup_looseCuts_madgraph_HepMC.root" ]
 #file_names = [ "/eos/user/k/kelong/LesHouchesVBSstudy/MadGraph/MathieusConfiguration/EDM/WpZTo1E1Nu2Mu_MathieusSetup_noetajj_madgraph_EDM.root" ]
 #output_file = "MGPartonPlots-mathieusSetup.root"
@@ -207,8 +209,9 @@ output_file = "MGHists/MGPartonPlots-mathieusSetup_AllCuts.root"
 #output_file = "MGPartonPlots-ptj30.root"
 #file_names = ["/data/kelong/DibosonGenAnalysisSamples/VBFNLO_fromMatthias/testWZ.root"]
 #output_file = "newVFNLO.root"
-#file_names = ["/eos/user/k/kelong/LesHouchesVBSstudy/VBFNLO-Herwig7/ViaMichael_2017_07_28/WZTo1E1Nu2Mu_VBFNLO_Default_FO_EDM.root"]
-#output_file = "VBFNLOHists/vbfnlo_fromMichael_Jul2017.root"
+restrictChan = "wp"
+file_names = ["/hdfs/store/user/dteague/delphes_WZ_YR/EDM_WZ_EWK/lhe.root"]
+output_file = "WpZJJ_14TeV_fromDylan.root"
 files = [Events (x) for x in file_names]
 lorentz = ROOT.TLorentzVector
 

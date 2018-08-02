@@ -2,7 +2,8 @@ from DataFormats.FWLite import Events, Handle
 import ROOT
 
 #file_name="/afs/cern.ch/work/k/kelong/MCContactTests/WW_semileptonic/HIG-RunIISummer15wmLHEGS-02047_fixGen.root"
-file_name="/eos/user/k/kelong/LesHouchesVBSstudy/WpZ_VBFNLO/WpZTo1E1Nu2Mu_VBFNLO_100000_numEvent100000.root"
+#file_name="/eos/user/k/kelong/LesHouchesVBSstudy/WpZ_VBFNLO/WpZTo1E1Nu2Mu_VBFNLO_100000_numEvent100000.root"
+file_name="/hdfs/store/user/dteague/delphes_WZ_YR/EDM_WZ_EWK/lhe.root"
 #file_name="root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/ChargedHiggsToWZTo3LNu_M1000_13TeV-madgraph-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v3/10000/1ED09DA6-86F8-E711-A681-0025B3E025B6.root"
 
 lorentz = ROOT.TLorentzVector
